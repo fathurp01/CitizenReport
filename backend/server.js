@@ -68,12 +68,74 @@ app.use('/api/admin', adminRoutes);
 
 // ✅ Default API route
 app.get('/api', (req, res) => {
-  res.json({ message: 'CitizenReport API is running' });
+  res.json({ 
+    message: 'CitizenReport API is running',
+    version: '1.0.0',
+    status: 'online',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // ✅ Halaman root biasa
 app.get('/', (req, res) => {
-  res.send('CitizenReport API is running');
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>CitizenReport API</title>
+      <style>
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+        }
+        .container {
+          background-color: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border-radius: 16px;
+          padding: 40px;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          text-align: center;
+          max-width: 500px;
+        }
+        h1 {
+          margin-top: 0;
+          font-size: 2.5rem;
+          margin-bottom: 10px;
+        }
+        p {
+          margin: 10px 0;
+          font-size: 1.1rem;
+          opacity: 0.9;
+        }
+        .status {
+          display: inline-block;
+          background-color: #48bb78;
+          color: white;
+          font-weight: bold;
+          padding: 5px 15px;
+          border-radius: 20px;
+          margin-top: 20px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>CitizenReport API</h1>
+        <p>Backend server for the CitizenReport application</p>
+        <p>Version: 1.0.0</p>
+        <div class="status">Online</div>
+      </div>
+    </body>
+    </html>
+  `);
 });
 
 // ✅ Error handling
@@ -89,11 +151,12 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5001;
 sequelize.sync({ alter: process.env.NODE_ENV === 'development' })
   .then(() => {
-    console.log('✅ Database connected');
+    console.log('\x1b[32m%s\x1b[0m', '✅ Database connected successfully');
     app.listen(PORT, () => {
-      console.log(`✅ Server running at http://localhost:${PORT}`);
+      console.log('\x1b[36m%s\x1b[0m', `✅ Server running at http://localhost:${PORT}`);
+      console.log('\x1b[33m%s\x1b[0m', '📝 API Documentation available at http://localhost:${PORT}/api');
     });
   })
   .catch(err => {
-    console.error('❌ Failed to connect to database:', err);
+    console.error('\x1b[31m%s\x1b[0m', '❌ Failed to connect to database:', err);
   });

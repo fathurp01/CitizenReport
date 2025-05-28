@@ -40,15 +40,31 @@ const theme = createTheme({
       default: '#f8fafc',
       paper: '#ffffff',
     },
+    success: {
+      main: '#48bb78',
+      light: '#68d391',
+      dark: '#2f855a',
+    },
+    warning: {
+      main: '#ed8936',
+      light: '#f6ad55',
+      dark: '#c05621',
+    },
+    error: {
+      main: '#e53e3e',
+      light: '#fc8181',
+      dark: '#c53030',
+    },
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h1: { fontWeight: 700 },
-    h2: { fontWeight: 700 },
-    h3: { fontWeight: 600 },
-    h4: { fontWeight: 600 },
+    h1: { fontWeight: 700, letterSpacing: '-0.025em' },
+    h2: { fontWeight: 700, letterSpacing: '-0.025em' },
+    h3: { fontWeight: 600, letterSpacing: '-0.025em' },
+    h4: { fontWeight: 600, letterSpacing: '-0.025em' },
     h5: { fontWeight: 600 },
     h6: { fontWeight: 600 },
+    button: { fontWeight: 600, textTransform: 'none' },
   },
   shape: {
     borderRadius: 12,
@@ -60,6 +76,17 @@ const theme = createTheme({
           textTransform: 'none',
           borderRadius: 8,
           fontWeight: 600,
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            transform: 'translateY(-1px)',
+          },
+        },
+        containedPrimary: {
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          '&:hover': {
+            background: 'linear-gradient(135deg, #5a6eea 0%, #6a3ca2 100%)',
+          },
         },
       },
     },
@@ -68,6 +95,10 @@ const theme = createTheme({
         root: {
           borderRadius: 16,
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          },
         },
       },
     },
@@ -75,6 +106,52 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 16,
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 8,
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#667eea',
+              borderWidth: 2,
+            },
+          },
+        },
+      },
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+          overflow: 'hidden',
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#f8fafc',
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: '#f8fafc',
+          },
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          fontWeight: 500,
         },
       },
     },

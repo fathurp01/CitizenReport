@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CitizenReport API Documentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f8fafc;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 40px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eaeaea;
+      color: #333;
+    }
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      color: #667eea;
+    }
+    .endpoint {
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .method {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-right: 10px;
+    }
+    .get { background-color: #dbeafe; color: #1d4ed8; }
+    .post { background-color: #dcfce7; color: #15803d; }
+    .put { background-color: #fef3c7; color: #b45309; }
+    .delete { background-color: #fee2e2; color: #b91c1c; }
+    .path {
+      font-family: monospace;
+      font-size: 1rem;
+      background-color: #f1f5f9;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+    pre {
+      background-color: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid #e2e8f0;
+    }
+    code {
+      font-family: monospace;
+    }
+    .description {
+      margin: 15px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 15px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    th {
+      background-color: #f8fafc;
+      font-weight: 600;
+    }
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CitizenReport API Documentation</h1>
+    <p>API documentation for the CitizenReport application</p>
+  </header>
+
+  <main>
+    <h2>Authentication</h2>
+    
+    <div class="endpoint">
+      <span class="method post">POST</span>
+      <span class="path">/api/auth/register</span>
+      <div class="description">Register a new user</div>
+      <h3>Request Body</h3>
+      <pre><code>{
+  "fullName": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "phoneNumber": "1234567890",
+  "address": "123 Main St",
+  "rt": "001",
+  "rw": "002"
+}</code></pre>
+      <h3>Response</h3>
+      <pre><code>{
+  "token": "jwt_token",
+  "user": {
+    "id": 1,
+    "fullName": "John Doe",
+    "email": "john@example.com",
+    "phoneNumber": "1234567890",
+    "address": "123 Main St",
+    "rt": "001",
+    "rw": "002",
+    "role": "citizen"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+      <span class="method post">POST</span>
+      <span class="path">/api/auth/login</span>
+      <div class="description">Login a user</div>
+      <h3>Request Body</h3>
+      <pre><code>{
+  "email": "john@example.com",
+  "password": "password123"
+}</code></pre>
+      <h3>Response</h3>
+      <pre><code>{
+  "token": "jwt_token",
+  "user": {
+    "id": 1,
+    "fullName": "John Doe",
+    "email": "john@example.com",
+    "phoneNumber": "1234567890",
+    "address": "123 Main St",
+    "rt": "001",
+    "rw": "002",
+    "role": "citizen"
+  }
+}</code></pre>
+    </div>
+
+    <!-- Add more endpoints here -->
+    
+  </main>
+</body>
+</html>

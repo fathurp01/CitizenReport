@@ -80,16 +80,39 @@ const Layout = () => {
   };
 
   const drawer = (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
+    <Box sx={{ width: 280 }} role="presentation">
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+          Citizen Report
+        </Typography>
+      </Box>
+      <List sx={{ py: 2 }}>
         {getMenuItems().map((item) => (
           <ListItem 
             button 
             key={item.text} 
             onClick={item.onClick || (() => handleNavigation(item.path))}
+            sx={{
+              borderRadius: 2,
+              mx: 1,
+              mb: 0.5,
+              '&:hover': {
+                bgcolor: 'primary.light',
+                '& .MuiListItemIcon-root': {
+                  color: 'primary.main',
+                },
+                '& .MuiListItemText-primary': {
+                  color: 'primary.main',
+                  fontWeight: 600,
+                },
+              },
+            }}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
+            <ListItemIcon sx={{ minWidth: 40, color: 'text.secondary' }}>{item.icon}</ListItemIcon>
+            <ListItemText 
+              primary={item.text} 
+              primaryTypographyProps={{ fontSize: '0.95rem' }}
+            />
           </ListItem>
         ))}
       </List>
@@ -98,10 +121,19 @@ const Layout = () => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AppBar position="static">
+      <AppBar 
+        position="sticky" 
+        elevation={0} 
+        sx={{ 
+          bgcolor: 'white', 
+          color: 'text.primary',
+          borderBottom: '1px solid',
+          borderColor: 'divider'
+        }}
+      >
         <Toolbar>
           <IconButton
-            color="inherit"
+            color="primary"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
@@ -109,20 +141,55 @@ const Layout = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Citizen Report
+          <Typography 
+            variant="h6" 
+            component="div" 
+            sx={{ 
+              flexGrow: 1, 
+              fontWeight: 'bold',
+              color: 'primary.main',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <ReportIcon sx={{ mr: 1 }} /> Citizen Report
           </Typography>
           {!isMobile && (
             <Box>
               {!user ? (
                 <>
-                  <Button color="inherit" onClick={() => navigate('/')}>Home</Button>
-                  <Button color="inherit" onClick={() => navigate('/login')}>Login</Button>
+                  <Button 
+                    color="primary" 
+                    onClick={() => navigate('/')}
+                    sx={{ mr: 1 }}
+                  >
+                    Home
+                  </Button>
+                  <Button 
+                    variant="contained" 
+                    color="primary"
+                    onClick={() => navigate('/login')}
+                  >
+                    Login
+                  </Button>
                 </>
               ) : (
                 <>
-                  <Button color="inherit" onClick={() => navigate('/')}>Home</Button>
-                  <Button color="inherit" onClick={handleLogout}>Logout</Button>
+                  <Button 
+                    color="primary" 
+                    onClick={() => navigate('/')}
+                    sx={{ mr: 1 }}
+                  >
+                    Home
+                  </Button>
+                  <Button 
+                    variant="outlined" 
+                    color="primary"
+                    onClick={handleLogout}
+                    startIcon={<LogoutIcon />}
+                  >
+                    Logout
+                  </Button>
                 </>
               )}
             </Box>
@@ -134,15 +201,37 @@ const Layout = () => {
         anchor="left"
         open={drawerOpen}
         onClose={handleDrawerToggle}
+        PaperProps={{
+          sx: {
+            width: 280,
+            borderRadius: '0 16px 16px 0',
+            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
+          }
+        }}
       >
+        <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center' }}>
+          <ReportIcon sx={{ mr: 1, color: 'primary.main' }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+            Citizen Report
+          </Typography>
+        </Box>
         {drawer}
       </Drawer>
       
-      <Container component="main" sx={{ flexGrow: 1, py: 3 }}>
+      <Container component="main" sx={{ flexGrow: 1, py: 4 }}>
         <Outlet />
       </Container>
       
-      <Box component="footer" sx={{ py: 3, bgcolor: 'background.paper', mt: 'auto' }}>
+      <Box 
+        component="footer" 
+        sx={{ 
+          py: 3, 
+          bgcolor: 'background.paper', 
+          mt: 'auto',
+          borderTop: '1px solid',
+          borderColor: 'divider'
+        }}
+      >
         <Container maxWidth="lg">
           <Typography variant="body2" color="text.secondary" align="center">
             © {new Date().getFullYear()} Citizen Report. All rights reserved.

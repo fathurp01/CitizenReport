@@ -4,17 +4,16 @@ import {
   Typography,
   TextField,
   Button,
-  Paper,
   Container,
   Alert,
-  Link,
   InputAdornment,
   IconButton,
   Divider,
   Card,
-  CardContent
+  CardContent,
+  CircularProgress
 } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
@@ -33,18 +32,17 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
-    
+
     try {
       setError('');
       setLoading(true);
       const response = await login(email, password);
-      
-      // Redirect based on user role
+
       if (response.user.role === 'admin') {
         navigate('/admin/dashboard');
       } else if (response.user.role === 'village_staff') {
@@ -71,7 +69,13 @@ const Login = () => {
     >
       <Container maxWidth="sm">
         <Card elevation={10} sx={{ borderRadius: 4, overflow: 'hidden' }}>
-          <Box sx={{ bgcolor: 'primary.main', color: 'white', p: 3, textAlign: 'center' }}>
+          <Box sx={{
+            bgcolor: 'primary.main',
+            color: 'white',
+            p: 3,
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          }}>
             <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', mb: 1 }}>
               Selamat Datang
             </Typography>
@@ -79,7 +83,7 @@ const Login = () => {
               Masuk ke akun CitizenReport Anda
             </Typography>
           </Box>
-          
+
           <CardContent sx={{ p: 4 }}>
             <Button
               startIcon={<ArrowBackIcon />}
@@ -88,34 +92,33 @@ const Login = () => {
             >
               Kembali ke Beranda
             </Button>
-            
+
             {error && (
               <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
                 {error}
               </Alert>
             )}
-            
-            <Box component="form" onSubmit={handleSubmit} noValidate>
+
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
               <TextField
                 required
                 fullWidth
                 id="email"
-                label="Email"
+                label="Email Address"
                 name="email"
                 autoComplete="email"
-                autoFocus
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                sx={{ mb: 3 }}
+                margin="normal"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <EmailIcon color="action" />
+                      <EmailIcon color="primary" />
                     </InputAdornment>
                   ),
                 }}
+                sx={{ mb: 2 }}
               />
-              
               <TextField
                 required
                 fullWidth
@@ -126,16 +129,17 @@ const Login = () => {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                sx={{ mb: 4 }}
+                margin="normal"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <LockIcon color="action" />
+                      <LockIcon color="primary" />
                     </InputAdornment>
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
+                        aria-label="toggle password visibility"
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
                       >
@@ -144,46 +148,44 @@ const Login = () => {
                     </InputAdornment>
                   ),
                 }}
+                sx={{ mb: 3 }}
               />
-              
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                size="large"
+                color="primary"
                 disabled={loading}
-                sx={{ 
+                sx={{
+                  mt: 2,
                   mb: 3,
                   py: 1.5,
-                  fontSize: '1.1rem',
-                  fontWeight: 'bold'
+                  position: 'relative',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 8px 16px rgba(102, 126, 234, 0.25)',
+                  },
+                  transition: 'all 0.3s ease',
                 }}
               >
-                {loading ? 'Sedang Masuk...' : 'Masuk'}
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'Masuk'}
               </Button>
-              
+
               <Divider sx={{ my: 3 }}>
                 <Typography variant="body2" color="text.secondary">
-                  atau
+                  Belum punya akun?
                 </Typography>
               </Divider>
-              
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="body2" color="text.secondary">
-                  Belum punya akun?{' '}
-                  <Link 
-                    component={RouterLink} 
-                    to="/register" 
-                    sx={{ 
-                      fontWeight: 'bold',
-                      textDecoration: 'none',
-                      '&:hover': { textDecoration: 'underline' }
-                    }}
-                  >
-                    Daftar di sini
-                  </Link>
-                </Typography>
-              </Box>
+
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
+                onClick={() => navigate('/register')}
+                sx={{ mt: 1, py: 1.5 }}
+              >
+                Daftar Sekarang
+              </Button>
             </Box>
           </CardContent>
         </Card>
