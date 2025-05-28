@@ -20,65 +20,63 @@ const adminRoutes = require('./routes/admin');
 // Initialize express app
 const app = express();
 
-// Security middleware
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" } // Tambahkan ini untuk mengizinkan resource cross-origin
+// ✅ CORS Middleware – Fix utama di sini
+app.use(cors({
+  origin: 'http://localhost:3000', // asal frontend React
+  credentials: true
 }));
 
-// Rate limiting
+// ✅ Tangani preflight request OPTIONS (wajib untuk credentials)
+app.options('*', cors());
+
+// ✅ Keamanan tambahan
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" } // penting jika file diakses cross-origin
+}));
+
+// ✅ Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 100,
   message: 'Too many requests from this IP, please try again later'
 });
 app.use('/api/', limiter);
 
-// Logging middleware
+// ✅ Logging
 app.use(morgan('dev'));
 
-// Compression middleware
+// ✅ Kompresi response
 app.use(compression());
 
-// CORS middleware
-// ...
-
-// Body parser middleware
+// ✅ Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Ensure uploads directory exists
+// ✅ Pastikan folder upload tersedia
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Serve uploaded files
-// Perbaikan konfigurasi CORS
-app.use(cors({
-  origin: true, // Izinkan semua origin dalam development
-  credentials: true // Izinkan credentials
-}));
-
-// Pastikan path uploads sudah benar
+// ✅ Serve file static (gambar yang di-upload)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
+// ✅ Routing utama
 app.use('/api/auth', authRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Default API route
-// Default API route
+// ✅ Default API route
 app.get('/api', (req, res) => {
   res.json({ message: 'CitizenReport API is running' });
 });
 
-// Default route
+// ✅ Halaman root biasa
 app.get('/', (req, res) => {
   res.send('CitizenReport API is running');
 });
 
-// Error handling middleware
+// ✅ Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
@@ -87,17 +85,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to database and start server
+// ✅ Koneksi DB dan jalankan server
 const PORT = process.env.PORT || 5001;
-
-// Sync database and start server
 sequelize.sync({ alter: process.env.NODE_ENV === 'development' })
   .then(() => {
-    console.log('Database connected');
+    console.log('✅ Database connected');
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`✅ Server running at http://localhost:${PORT}`);
     });
   })
   .catch(err => {
-    console.error('Failed to connect to database:', err);
+    console.error('❌ Failed to connect to database:', err);
   });
