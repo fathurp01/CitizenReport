@@ -9,6 +9,10 @@ node_modules/
 # production build
 /frontend/build
 
+# Ignore uploaded files, but keep the uploads folder
+/backend/uploads/*
+!/backend/uploads/.gitkeep
+
 # misc
 .DS_Store
 .env.local
