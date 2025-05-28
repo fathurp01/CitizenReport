@@ -141,7 +141,17 @@ const Dashboard = () => {
           </Grid>
           
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ height: '100%', bgcolor: 'warning.light' }}>
+            <Card 
+              className="fade-in" 
+              sx={{ 
+                height: '100%',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)'
+                }
+              }}
+            >
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <PendingIcon sx={{ fontSize: 40, color: 'warning.main', mr: 2 }} />

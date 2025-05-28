@@ -68,7 +68,14 @@ const Login = () => {
       }}
     >
       <Container maxWidth="sm">
-        <Card elevation={10} sx={{ borderRadius: 4, overflow: 'hidden' }}>
+        <Card 
+          elevation={10} 
+          sx={{ 
+            borderRadius: 4, 
+            overflow: 'hidden',
+            animation: 'fadeIn 0.5s ease-in-out' // Menggunakan animasi dari animations.css
+          }}
+        >
           <Box sx={{
             bgcolor: 'primary.main',
             color: 'white',
@@ -156,6 +163,7 @@ const Login = () => {
                 variant="contained"
                 color="primary"
                 disabled={loading}
+                className="pulse" // Menambahkan animasi pulse saat hover
                 sx={{
                   mt: 2,
                   mb: 3,

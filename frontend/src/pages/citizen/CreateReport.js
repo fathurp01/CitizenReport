@@ -21,6 +21,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FormSkeleton } from '../../components/common/SkeletonLoader';
 
 const categories = [
   { value: 'road_damage', label: 'Road Damage' },
@@ -38,9 +39,9 @@ const CreateReport = () => {
     address: '',
     rt: '',
     rw: '',
-    images: [] // Array of File
+    images: []
   });
-  const [previewUrls, setPreviewUrls] = useState([]); // URL.createObjectURL
+  const [previewUrls, setPreviewUrls] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [openPreview, setOpenPreview] = useState(false);
   const [errors, setErrors] = useState({});
@@ -50,10 +51,7 @@ const CreateReport = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData({ ...formData, [name]: value });
     if (errors[name]) {
       setErrors({ ...errors, [name]: '' });
     }
@@ -65,7 +63,6 @@ const CreateReport = () => {
       const urls = files.map(file => URL.createObjectURL(file));
       setFormData({ ...formData, images: files });
       setPreviewUrls(urls);
-
       if (errors.images) {
         setErrors({ ...errors, images: '' });
       }
@@ -90,7 +87,6 @@ const CreateReport = () => {
     if (!formData.rt) newErrors.rt = 'RT is required';
     if (!formData.rw) newErrors.rw = 'RW is required';
     if (formData.images.length === 0) newErrors.images = 'At least one image is required';
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -124,106 +120,59 @@ const CreateReport = () => {
     }
   };
 
+  if (loading) return <FormSkeleton />;
+
   return (
     <Container maxWidth="md">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Typography variant="h4" component="h1" align="center" gutterBottom>
+        <Typography variant="h4" align="center" gutterBottom>
           Create New Report
         </Typography>
 
-        {submitError && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {submitError}
-          </Alert>
-        )}
+        {submitError && <Alert severity="error" sx={{ mb: 2 }}>{submitError}</Alert>}
 
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
-                required fullWidth id="title" label="Title" name="title"
-                value={formData.title} onChange={handleChange}
-                error={!!errors.title} helperText={errors.title}
-              />
+              <TextField required fullWidth label="Title" name="title" value={formData.title} onChange={handleChange} error={!!errors.title} helperText={errors.title} />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required fullWidth id="description" label="Description"
-                name="description" multiline rows={4}
-                value={formData.description} onChange={handleChange}
-                error={!!errors.description} helperText={errors.description}
-              />
+              <TextField required fullWidth label="Description" name="description" multiline rows={4} value={formData.description} onChange={handleChange} error={!!errors.description} helperText={errors.description} />
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth required error={!!errors.category}>
-                <InputLabel id="category-label">Category</InputLabel>
-                <Select
-                  labelId="category-label" id="category" name="category"
-                  value={formData.category} label="Category"
-                  onChange={handleChange}
-                >
-                  {categories.map((c) => (
-                    <MenuItem key={c.value} value={c.value}>{c.label}</MenuItem>
-                  ))}
+                <InputLabel>Category</InputLabel>
+                <Select name="category" value={formData.category} onChange={handleChange} label="Category">
+                  {categories.map((c) => <MenuItem key={c.value} value={c.value}>{c.label}</MenuItem>)}
                 </Select>
-                {errors.category && (
-                  <Typography variant="caption" color="error">{errors.category}</Typography>
-                )}
+                {errors.category && <Typography variant="caption" color="error">{errors.category}</Typography>}
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required fullWidth id="address" label="Address" name="address"
-                value={formData.address} onChange={handleChange}
-                error={!!errors.address} helperText={errors.address}
-              />
+              <TextField required fullWidth label="Address" name="address" value={formData.address} onChange={handleChange} error={!!errors.address} helperText={errors.address} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                required fullWidth id="rt" label="RT" name="rt"
-                value={formData.rt} onChange={handleChange}
-                error={!!errors.rt} helperText={errors.rt}
-              />
+              <TextField required fullWidth label="RT" name="rt" value={formData.rt} onChange={handleChange} error={!!errors.rt} helperText={errors.rt} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                required fullWidth id="rw" label="RW" name="rw"
-                value={formData.rw} onChange={handleChange}
-                error={!!errors.rw} helperText={errors.rw}
-              />
+              <TextField required fullWidth label="RW" name="rw" value={formData.rw} onChange={handleChange} error={!!errors.rw} helperText={errors.rw} />
             </Grid>
             <Grid item xs={12}>
               <Button variant="contained" component="label" fullWidth sx={{ mb: 1 }}>
                 Upload Images
                 <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} />
               </Button>
-              {formData.images.length > 0 && (
-                <Typography variant="body2">
-                  {formData.images.length} image{formData.images.length > 1 && 's'} selected
-                </Typography>
-              )}
-              {errors.images && (
-                <Typography variant="caption" color="error">{errors.images}</Typography>
-              )}
+              {formData.images.length > 0 && <Typography variant="body2">{formData.images.length} image{formData.images.length > 1 && 's'} selected</Typography>}
+              {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
             </Grid>
 
-            {/* Thumbnail Image Preview */}
             {previewUrls.length > 0 && (
               <Grid item xs={12}>
                 <Grid container spacing={2}>
                   {previewUrls.map((url, index) => (
                     <Grid item xs={6} sm={4} md={3} key={index}>
-                      <Card
-                        onClick={() => handleOpenPreview(url)}
-                        sx={{ cursor: 'pointer', '&:hover': { boxShadow: 3, transform: 'scale(1.02)' } }}
-                      >
-                        <CardMedia
-                          component="img"
-                          height="120"
-                          image={url}
-                          alt={`Preview ${index + 1}`}
-                          sx={{ objectFit: 'cover' }}
-                        />
+                      <Card onClick={() => handleOpenPreview(url)} sx={{ cursor: 'pointer', '&:hover': { boxShadow: 3, transform: 'scale(1.02)' } }}>
+                        <CardMedia component="img" height="120" image={url} alt={`Preview ${index + 1}`} sx={{ objectFit: 'cover' }} />
                       </Card>
                     </Grid>
                   ))}
@@ -232,43 +181,23 @@ const CreateReport = () => {
             )}
           </Grid>
 
-          <Button
-            type="submit" fullWidth variant="contained" disabled={loading}
-            sx={{ mt: 3, mb: 2 }}
-          >
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             {loading ? <CircularProgress size={24} /> : 'Submit Report'}
           </Button>
         </Box>
       </Paper>
 
-      {/* Modal Image Preview */}
-      <Modal
-        open={openPreview}
-        onClose={handleClosePreview}
-        aria-labelledby="image-preview-modal"
-      >
+      <Modal open={openPreview} onClose={handleClosePreview}>
         <Box sx={{
-          position: 'absolute',
-          top: '50%', left: '50%',
+          position: 'absolute', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
           maxWidth: '90vw', maxHeight: '90vh',
-          bgcolor: 'background.paper',
-          boxShadow: 24, p: 1, outline: 'none'
+          bgcolor: 'background.paper', boxShadow: 24, p: 1, outline: 'none'
         }}>
-          <IconButton
-            sx={{
-              position: 'absolute', right: 8, top: 8,
-              bgcolor: 'rgba(255,255,255,0.7)'
-            }}
-            onClick={handleClosePreview}
-          >
+          <IconButton sx={{ position: 'absolute', right: 8, top: 8, bgcolor: 'rgba(255,255,255,0.7)' }} onClick={handleClosePreview}>
             <CloseIcon />
           </IconButton>
-          <img
-            src={previewImage}
-            alt="Preview"
-            style={{ maxWidth: '100%', maxHeight: '85vh', display: 'block' }}
-          />
+          <img src={previewImage} alt="Preview" style={{ maxWidth: '100%', maxHeight: '85vh', display: 'block' }} />
         </Box>
       </Modal>
     </Container>

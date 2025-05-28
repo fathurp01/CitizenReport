@@ -124,6 +124,21 @@ app.get('/', (req, res) => {
           border-radius: 20px;
           margin-top: 20px;
         }
+        .link-button {
+          display: inline-block;
+          background-color: rgba(255, 255, 255, 0.2);
+          color: white;
+          text-decoration: none;
+          padding: 10px 20px;
+          border-radius: 8px;
+          font-weight: 500;
+          margin: 10px;
+          transition: all 0.3s ease;
+        }
+        .link-button:hover {
+          background-color: rgba(255, 255, 255, 0.3);
+          transform: translateY(-2px);
+        }
       </style>
     </head>
     <body>
@@ -132,6 +147,10 @@ app.get('/', (req, res) => {
         <p>Backend server for the CitizenReport application</p>
         <p>Version: 1.0.0</p>
         <div class="status">Online</div>
+        <div class="links">
+          <a href="/api-docs" class="link-button">API Documentation</a>
+          <a href="/api" class="link-button">API Status</a>
+        </div>
       </div>
     </body>
     </html>
@@ -160,3 +179,8 @@ sequelize.sync({ alter: process.env.NODE_ENV === 'development' })
   .catch(err => {
     console.error('\x1b[31m%s\x1b[0m', '❌ Failed to connect to database:', err);
   });
+
+// Serve API documentation
+app.get('/api-docs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'api-docs.html'));
+});

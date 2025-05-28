@@ -109,40 +109,91 @@ const Layout = () => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AppBar position="static">
+      <AppBar 
+        position="static" 
+        elevation={0}
+        sx={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          borderRadius: { xs: 0, sm: '0 0 16px 16px' },
+          mb: 3
+        }}
+      >
         <Toolbar>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}
+            sx={{ 
+              mr: 2,
+              '&:hover': {
+                transform: 'rotate(180deg)',
+                transition: 'transform 0.3s ease-in-out'
+              } 
+            }}
             onClick={toggleDrawer(true)}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography 
+            variant="h6" 
+            component="div" 
+            sx={{ 
+              flexGrow: 1,
+              fontWeight: 'bold',
+              letterSpacing: '0.5px'
+            }}
+          >
             CitizenReport
           </Typography>
-          <Button color="inherit" onClick={logout}>
+          <Button 
+            color="inherit" 
+            onClick={logout}
+            startIcon={<LogoutIcon />}
+            sx={{
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              }
+            }}
+          >
             Logout
           </Button>
         </Toolbar>
       </AppBar>
+      
       <Drawer
         anchor="left"
         open={drawerOpen}
         onClose={toggleDrawer(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: '0 16px 16px 0',
+            boxShadow: '4px 0 10px rgba(0, 0, 0, 0.1)'
+          }
+        }}
       >
         {drawer}
       </Drawer>
       <Container component="main" sx={{ flexGrow: 1, py: 3 }}>
         <Outlet />
       </Container>
-      <Box component="footer" sx={{ py: 3, bgcolor: 'background.paper', mt: 'auto' }}>
+      <Box 
+        component="footer" 
+        sx={{ 
+          py: 3, 
+          bgcolor: 'background.paper', 
+          mt: 'auto',
+          borderTop: '1px solid',
+          borderColor: 'divider',
+          boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.05)'
+        }}
+      >
         <Container maxWidth="lg">
           <Typography variant="body2" color="text.secondary" align="center">
             © {new Date().getFullYear()} CitizenReport. All rights reserved.
+          </Typography>
+          <Typography variant="caption" color="text.secondary" align="center" display="block" sx={{ mt: 1 }}>
+            Dibuat dengan ❤️ untuk masyarakat
           </Typography>
         </Container>
       </Box>

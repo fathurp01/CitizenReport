@@ -11,8 +11,7 @@ import {
   Toolbar,
   useTheme,
   useMediaQuery,
-  Paper,
-  Chip
+  Paper
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ReportIcon from '@mui/icons-material/Report';
@@ -30,22 +29,22 @@ const LandingPage = () => {
     {
       icon: <ReportIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
       title: 'Laporan Mudah',
-      description: 'Laporkan masalah infrastruktur dengan mudah melalui platform digital yang user-friendly.'
+      description: 'Laporkan masalah infrastruktur secara digital dan cepat.'
     },
     {
       icon: <SpeedIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
       title: 'Respon Cepat',
-      description: 'Tim desa akan merespon laporan Anda dengan cepat dan memberikan update status secara real-time.'
+      description: 'Tindak lanjut langsung oleh petugas desa.'
     },
     {
       icon: <PeopleIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
       title: 'Transparansi',
-      description: 'Pantau progress penanganan laporan Anda dengan sistem tracking yang transparan.'
+      description: 'Pantau status dan progres laporan Anda.'
     },
     {
       icon: <SecurityIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Aman & Terpercaya',
-      description: 'Data Anda aman dengan sistem keamanan berlapis dan verifikasi identitas.'
+      title: 'Keamanan',
+      description: 'Data Anda aman dan terlindungi.'
     }
   ];
 
@@ -54,21 +53,13 @@ const LandingPage = () => {
       {/* Header */}
       <AppBar position="static" elevation={0} sx={{ bgcolor: 'white', color: 'text.primary' }}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold', color: 'primary.main' }}>
+          <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', color: 'primary.main' }}>
             CitizenReport
           </Typography>
-          <Button 
-            color="primary" 
-            onClick={() => navigate('/login')}
-            sx={{ mr: 1 }}
-          >
+          <Button color="primary" onClick={() => navigate('/login')} sx={{ mr: 1 }}>
             Masuk
           </Button>
-          <Button 
-            variant="contained" 
-            color="primary"
-            onClick={() => navigate('/register')}
-          >
+          <Button variant="contained" color="primary" onClick={() => navigate('/register')}>
             Daftar
           </Button>
         </Toolbar>
@@ -79,37 +70,39 @@ const LandingPage = () => {
         sx={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white',
-          py: { xs: 8, md: 12 },
-          position: 'relative',
-          overflow: 'hidden'
+          py: { xs: 8, md: 12 }
         }}
       >
         <Container maxWidth="lg">
           <Grid container spacing={4} alignItems="center">
             <Grid item xs={12} md={6}>
-              <Typography 
-                variant={isMobile ? 'h3' : 'h2'} 
-                component="h1" 
-                gutterBottom
-                sx={{ fontWeight: 'bold', mb: 3 }}
+              <Typography
+                variant={isMobile ? 'h3' : 'h2'}
+                component="h1"
+                sx={{ fontWeight: 700, mb: 2, animation: 'fadeIn 1s ease-out' }}
               >
-                Laporkan Masalah Desa Anda
+                Laporkan Masalah di Lingkungan Anda
               </Typography>
-              <Typography 
-                variant="h6" 
-                paragraph 
-                sx={{ mb: 4, opacity: 0.9, lineHeight: 1.6 }}
+              <Typography
+                variant="h5"
+                color="white"
+                sx={{
+                  mb: 4,
+                  opacity: 0.9,
+                  maxWidth: 600,
+                  animation: 'slideInUp 1s ease-out',
+                  lineHeight: 1.6
+                }}
               >
-                Platform digital untuk melaporkan masalah infrastruktur desa. 
-                Bersama-sama kita wujudkan desa yang lebih baik melalui partisipasi aktif warga.
+                Platform pelaporan masalah lingkungan yang mudah dan cepat
               </Typography>
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
                   size="large"
                   onClick={() => navigate('/register')}
-                  sx={{ 
-                    bgcolor: 'white', 
+                  sx={{
+                    bgcolor: 'white',
                     color: 'primary.main',
                     '&:hover': { bgcolor: 'grey.100' },
                     px: 4,
@@ -119,12 +112,12 @@ const LandingPage = () => {
                 >
                   Mulai Laporan
                 </Button>
-                <Button 
-                  variant="outlined" 
+                <Button
+                  variant="outlined"
                   size="large"
                   onClick={() => navigate('/login')}
-                  sx={{ 
-                    borderColor: 'white', 
+                  sx={{
+                    borderColor: 'white',
                     color: 'white',
                     '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.1)' },
                     px: 4,
@@ -136,21 +129,13 @@ const LandingPage = () => {
               </Box>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: { xs: 300, md: 400 }
-                }}
-              >
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: { xs: 300, md: 400 } }}>
                 <Paper
                   elevation={10}
                   sx={{
                     p: 4,
                     borderRadius: 4,
                     bgcolor: 'rgba(255,255,255,0.95)',
-                    backdropFilter: 'blur(10px)',
                     maxWidth: 400,
                     width: '100%'
                   }}
@@ -174,31 +159,20 @@ const LandingPage = () => {
       {/* Features Section */}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Typography 
-          variant="h3" 
+          variant="h4" 
           component="h2" 
           align="center" 
-          gutterBottom
-          sx={{ fontWeight: 'bold', mb: 2 }}
+          gutterBottom 
+          sx={{ fontWeight: 'bold', mb: 4 }}
         >
-          Mengapa Pilih CitizenReport?
+          Fitur Unggulan
         </Typography>
-        <Typography 
-          variant="h6" 
-          align="center" 
-          color="text.secondary" 
-          paragraph
-          sx={{ mb: 6, maxWidth: 600, mx: 'auto' }}
-        >
-          Platform yang dirancang khusus untuk memudahkan warga dalam melaporkan 
-          dan memantau penanganan masalah infrastruktur desa.
-        </Typography>
-        
         <Grid container spacing={4}>
           {features.map((feature, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card 
-                sx={{ 
-                  height: '100%',
+              <Card
+                elevation={3}
+                sx={{
                   textAlign: 'center',
                   p: 3,
                   transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
@@ -209,9 +183,7 @@ const LandingPage = () => {
                 }}
               >
                 <CardContent>
-                  <Box sx={{ mb: 2 }}>
-                    {feature.icon}
-                  </Box>
+                  <Box sx={{ mb: 2 }}>{feature.icon}</Box>
                   <Typography variant="h6" component="h3" gutterBottom sx={{ fontWeight: 'bold' }}>
                     {feature.title}
                   </Typography>
@@ -224,116 +196,6 @@ const LandingPage = () => {
           ))}
         </Grid>
       </Container>
-
-      {/* Statistics Section */}
-      <Box sx={{ bgcolor: 'grey.50', py: 8 }}>
-        <Container maxWidth="lg">
-          <Typography 
-            variant="h4" 
-            component="h2" 
-            align="center" 
-            gutterBottom
-            sx={{ fontWeight: 'bold', mb: 6 }}
-          >
-            Dampak Nyata untuk Desa
-          </Typography>
-          <Grid container spacing={4}>
-            <Grid item xs={12} sm={4}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="h2" component="div" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                  500+
-                </Typography>
-                <Typography variant="h6" color="text.secondary">
-                  Laporan Terselesaikan
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="h2" component="div" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                  1000+
-                </Typography>
-                <Typography variant="h6" color="text.secondary">
-                  Warga Terdaftar
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="h2" component="div" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                  24 Jam
-                </Typography>
-                <Typography variant="h6" color="text.secondary">
-                  Rata-rata Respon
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-
-      {/* CTA Section */}
-      <Box sx={{ bgcolor: 'primary.main', color: 'white', py: 8 }}>
-        <Container maxWidth="md">
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-              Siap Berkontribusi untuk Desa?
-            </Typography>
-            <Typography variant="h6" paragraph sx={{ mb: 4, opacity: 0.9 }}>
-              Bergabunglah dengan ribuan warga lainnya yang telah mempercayai CitizenReport 
-              untuk melaporkan dan memantau masalah infrastruktur desa.
-            </Typography>
-            <Button 
-              variant="contained" 
-              size="large"
-              onClick={() => navigate('/register')}
-              sx={{ 
-                bgcolor: 'white', 
-                color: 'primary.main',
-                '&:hover': { bgcolor: 'grey.100' },
-                px: 6,
-                py: 2,
-                fontSize: '1.1rem'
-              }}
-            >
-              Daftar Sekarang
-            </Button>
-          </Box>
-        </Container>
-      </Box>
-
-      {/* Footer */}
-      <Box sx={{ bgcolor: 'grey.900', color: 'white', py: 4 }}>
-        <Container maxWidth="lg">
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                CitizenReport
-              </Typography>
-              <Typography variant="body2" color="grey.400">
-                Platform digital untuk melaporkan masalah infrastruktur desa. 
-                Bersama membangun desa yang lebih baik.
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" gutterBottom>
-                Kontak
-              </Typography>
-              <Typography variant="body2" color="grey.400">
-                Email: info@citizenreport.id
-              </Typography>
-              <Typography variant="body2" color="grey.400">
-                Telepon: (021) 1234-5678
-              </Typography>
-            </Grid>
-          </Grid>
-          <Box sx={{ borderTop: 1, borderColor: 'grey.800', mt: 4, pt: 4, textAlign: 'center' }}>
-            <Typography variant="body2" color="grey.400">
-              © 2024 CitizenReport. All rights reserved.
-            </Typography>
-          </Box>
-        </Container>
-      </Box>
     </Box>
   );
 };
