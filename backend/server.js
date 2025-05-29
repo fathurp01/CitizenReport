@@ -184,3 +184,15 @@ sequelize.sync({ alter: process.env.NODE_ENV === 'development' })
 app.get('/api-docs', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'api-docs.html'));
 });
+
+// ini untuk article yah
+const Article = require('./models/article');
+
+sequelize.sync({ alter: true }) // atau { force: true } jika kamu ingin drop ulang
+  .then(() => {
+    console.log('DB Synced!');
+  })
+  .catch(err => console.error('DB Sync Error:', err));
+
+const articleRoutes = require('./routes/articleRoutes');
+app.use('/api/articles', articleRoutes);
