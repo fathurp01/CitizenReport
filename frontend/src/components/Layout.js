@@ -22,6 +22,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import ReportIcon from '@mui/icons-material/Report';
 import PeopleIcon from '@mui/icons-material/People';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ArticleIcon from '@mui/icons-material/Article';
 import { useAuth } from '../context/AuthContext';
 
 const Layout = () => {
@@ -45,16 +46,19 @@ const Layout = () => {
     if (user.role === 'admin') {
       return [
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin/dashboard' },
-        { text: 'User Management', icon: <PeopleIcon />, path: '/admin/users' }
+        { text: 'User Management', icon: <PeopleIcon />, path: '/admin/users' },
+        { text: 'Article Management', icon: <ArticleIcon />, path: '/admin/articles' }
       ];
     } else if (user.role === 'village_staff') {
       return [
-        { text: 'Dashboard', icon: <DashboardIcon />, path: '/staff/dashboard' }
+        { text: 'Dashboard', icon: <DashboardIcon />, path: '/staff/dashboard' },
+        { text: 'Articles', icon: <ArticleIcon />, path: '/staff/articles' }
       ];
     } else {
       return [
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/citizen/dashboard' },
-        { text: 'Create Report', icon: <ReportIcon />, path: '/citizen/create-report' }
+        { text: 'Create Report', icon: <ReportIcon />, path: '/citizen/create-report' },
+        { text: 'Articles', icon: <ArticleIcon />, path: '/citizen/articles' }
       ];
     }
   };
