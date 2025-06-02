@@ -14,7 +14,16 @@ code {
 
 /* Tambahkan custom styles di bawah ini */
 :root {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Tema Serius dan Profesional (Biru Netral) */
+  --primary: #1E3A8A;    /* Biru tua - untuk header/nav */
+  --secondary: #3B82F6;  /* Biru muda - untuk tombol/aksi penting */
+  --accent: #10B981;     /* Hijau - indikasi status berhasil */
+  --error: #EF4444;      /* Merah - untuk laporan gagal */
+  --background: #F9FAFB; /* Abu terang - background */
+  --text: #1F2937;       /* Abu gelap - text */
+  
+  /* Gradients dan efek yang sudah ada, disesuaikan dengan warna baru */
+  --primary-gradient: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
   --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
@@ -24,11 +33,24 @@ code {
   --transition-normal: all 0.3s ease;
 }
 
+/* Styling dasar */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background);
+  color: var(--text);
+}
+
 /* Card styles */
 .enhanced-card {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   transition: var(--transition-normal);
+  background-color: white;
 }
 
 .enhanced-card:hover {
@@ -61,8 +83,8 @@ code {
 }
 
 .enhanced-form-control:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
 
 /* Table styles */
@@ -75,7 +97,8 @@ code {
 }
 
 .enhanced-table th {
-  background-color: #f8fafc;
+  background-color: var(--primary);
+  color: white;
   font-weight: 600;
   text-align: left;
   padding: 12px 16px;
@@ -109,26 +132,39 @@ code {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-/* Styling untuk form */
-.form-container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-/* Styling untuk tabel */
-.table-container {
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 /* Styling untuk status chip */
 .status-chip {
   font-weight: 600;
   padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status-success {
+  background-color: var(--accent);
+  color: white;
+}
+
+.status-error {
+  background-color: var(--error);
+  color: white;
+}
+
+.status-pending {
+  background-color: var(--secondary);
+  color: white;
+}
+
+/* Styling untuk App-header di App.css */
+.App-header {
+  background-color: var(--primary);
+  color: white;
+}
+
+.App-link {
+  color: var(--secondary);
 }
