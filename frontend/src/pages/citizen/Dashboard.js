@@ -8,9 +8,13 @@ import {
   CardContent, 
   Button,
   Chip,
-  CircularProgress
+  CircularProgress,
+  Fade,
+  Paper
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import AddIcon from '@mui/icons-material/Add';
+import ReportIcon from '@mui/icons-material/Report';
 import axios from 'axios';
 
 const Dashboard = () => {
@@ -66,68 +70,215 @@ const Dashboard = () => {
   };
 
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ mt: 4, mb: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-          <Typography variant="h4">My Reports</Typography>
-          <Button variant="contained" onClick={() => navigate('/citizen/create-report')}>
-            Create New Report
-          </Button>
-        </Box>
+    <Box 
+      sx={{ 
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        py: 4
+      }}
+    >
+      <Container maxWidth="lg">
+        <Fade in timeout={800}>
+          <Box>
+            {/* Header */}
+            <Box textAlign="center" mb={5}>
+              <Typography 
+                variant="h3" 
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'white',
+                  mb: 2,
+                  textShadow: '0 2px 10px rgba(0,0,0,0.3)'
+                }}
+              >
+                Dashboard Warga
+              </Typography>
+              <Typography 
+                variant="h6" 
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  maxWidth: '600px',
+                  margin: '0 auto',
+                  fontSize: '1.1rem'
+                }}
+              >
+                Kelola laporan Anda dan pantau perkembangan penanganan masalah
+              </Typography>
+            </Box>
 
-        {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-            <CircularProgress />
-          </Box>
-        ) : error ? (
-          <Typography color="error" align="center">{error}</Typography>
-        ) : reports.length === 0 ? (
-          <Box sx={{ textAlign: 'center', my: 4 }}>
-            <Typography variant="h6">You haven't submitted any reports yet.</Typography>
-            <Button variant="contained" onClick={() => navigate('/citizen/create-report')} sx={{ mt: 2 }}>
-              Submit Your First Report
-            </Button>
-          </Box>
-        ) : (
-          <Grid container spacing={3}>
-            {reports.map((report) => (
-              <Grid item xs={12} md={6} key={report.id}>
-                <Card
-                  sx={{
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      boxShadow: 6
-                    }
-                  }}
-                  onClick={() => viewReport(report.id)}
-                >
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                      <Typography variant="h6">{report.title}</Typography>
-                      <Chip label={getStatusLabel(report.status)} color={getStatusColor(report.status)} size="small" />
-                    </Box>
-                    <Typography variant="body2" color="text.secondary" paragraph>
-                      {report.description.length > 100
-                        ? `${report.description.substring(0, 100)}...`
-                        : report.description}
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                      <Typography variant="body2" color="text.secondary">Category: {report.category}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {new Date(report.createdAt).toLocaleDateString()}
+            {/* Create Report Button */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<AddIcon />}
+                onClick={() => navigate('/citizen/create-report')}
+                sx={{
+                  py: 2,
+                  px: 4,
+                  borderRadius: '16px',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  color: '#667eea',
+                  fontWeight: 'bold',
+                  fontSize: '1.1rem',
+                  textTransform: 'none',
+                  boxShadow: '0 8px 32px rgba(255, 255, 255, 0.3)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 1)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 40px rgba(255, 255, 255, 0.4)'
+                  }
+                }}
+              >
+                Buat Laporan Baru
+              </Button>
+            </Box>
+
+            {/* Reports Grid */}
+            {loading ? (
+              <Box display="flex" justifyContent="center" mt={4}>
+                <CircularProgress sx={{ color: 'white' }} size={60} />
+              </Box>
+            ) : error ? (
+              <Paper 
+                sx={{ 
+                  p: 4,
+                  textAlign: 'center',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255, 255, 255, 0.3)'
+                }}
+              >
+                <Typography color="error" variant="h6">
+                  {error}
+                </Typography>
+              </Paper>
+            ) : (
+              <Grid container spacing={3}>
+                {reports.length === 0 ? (
+                  <Grid item xs={12}>
+                    <Paper 
+                      sx={{ 
+                        p: 6,
+                        textAlign: 'center',
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(20px)',
+                        borderRadius: '20px',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        boxShadow: '0 8px 32px rgba(102, 126, 234, 0.15)'
+                      }}
+                    >
+                      <ReportIcon sx={{ fontSize: 64, color: '#667eea', mb: 2 }} />
+                      <Typography 
+                        variant="h5" 
+                        sx={{ 
+                          color: '#667eea',
+                          fontWeight: 'bold',
+                          mb: 1
+                        }}
+                      >
+                        Belum Ada Laporan
                       </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
+                      <Typography 
+                        variant="body1" 
+                        sx={{ color: 'text.secondary', mb: 3 }}
+                      >
+                        Mulai buat laporan pertama Anda untuk melaporkan masalah di lingkungan
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={() => navigate('/citizen/create-report')}
+                        sx={{
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          borderRadius: '12px',
+                          px: 3,
+                          py: 1.5,
+                          textTransform: 'none',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Buat Laporan
+                      </Button>
+                    </Paper>
+                  </Grid>
+                ) : (
+                  reports.map((report) => (
+                    <Grid item xs={12} sm={6} md={4} key={report._id}>
+                      <Card
+                        sx={{
+                          background: 'rgba(255, 255, 255, 0.95)',
+                          backdropFilter: 'blur(20px)',
+                          borderRadius: '16px',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
+                          boxShadow: '0 8px 32px rgba(102, 126, 234, 0.15)',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease',
+                          height: '100%',
+                          '&:hover': {
+                            transform: 'translateY(-8px)',
+                            boxShadow: '0 16px 48px rgba(102, 126, 234, 0.25)'
+                          }
+                        }}
+                        onClick={() => viewReport(report._id)}
+                      >
+                        <CardContent sx={{ p: 3 }}>
+                          <Typography 
+                            variant="h6" 
+                            sx={{ 
+                              color: '#667eea',
+                              fontWeight: 'bold',
+                              mb: 2
+                            }}
+                          >
+                            {report.title}
+                          </Typography>
+                          
+                          <Chip
+                            label={getStatusLabel(report.status)}
+                            color={getStatusColor(report.status)}
+                            size="small"
+                            sx={{ mb: 2 }}
+                          />
+                          
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: 'text.secondary',
+                              mb: 2,
+                              display: '-webkit-box',
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              lineHeight: 1.6
+                            }}
+                          >
+                            {report.description}
+                          </Typography>
+                          
+                          <Typography 
+                            variant="caption" 
+                            sx={{ 
+                              color: 'text.disabled',
+                              fontSize: '0.85rem'
+                            }}
+                          >
+                            {report.category} • {new Date(report.createdAt).toLocaleDateString('id-ID')}
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))
+                )}
               </Grid>
-            ))}
-          </Grid>
-        )}
-      </Box>
-    </Container>
+            )}
+          </Box>
+        </Fade>
+      </Container>
+    </Box>
   );
 };
 

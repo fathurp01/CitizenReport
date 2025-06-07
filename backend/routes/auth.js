@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
-const { register, login, getCurrentUser } = require('../controllers/authController');
+const { register, login, getCurrentUser, updateProfile } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
+const upload = require('../middleware/upload'); // Perbaikan: hapus destructuring
 
 // Register route with validation
 router.post(
@@ -31,5 +32,13 @@ router.post(
 
 // Get current user route
 router.get('/me', protect, getCurrentUser);
+
+// Update profile route
+router.put('/profile', protect, upload.single('profilePicture'), [
+  check('name').optional().not().isEmpty().withMessage('Name cannot be empty'),
+  check('email').optional().isEmail().withMessage('Please include a valid email'),
+  check('phone').optional().not().isEmpty().withMessage('Phone cannot be empty'),
+  check('address').optional().not().isEmpty().withMessage('Address cannot be empty')
+], updateProfile);
 
 module.exports = router;
