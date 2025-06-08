@@ -11,11 +11,14 @@ import {
   List, 
   ListItem, 
   ListItemIcon, 
-  ListItemText, 
+  ListItemText,   
   Divider,
   Container,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Menu,
+  MenuItem,
+  Avatar
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -23,10 +26,16 @@ import ReportIcon from '@mui/icons-material/Report';
 import PeopleIcon from '@mui/icons-material/People';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArticleIcon from '@mui/icons-material/Article';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useAuth } from '../context/AuthContext';
+import { Person } from '@mui/icons-material';
 
 const Layout = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -42,23 +51,46 @@ const Layout = () => {
     setDrawerOpen(open);
   };
 
+  const handleProfileMenuOpen = (event) => {
+    setProfileMenuAnchor(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setProfileMenuAnchor(null);
+  };
+
+  const handleEditProfile = () => {
+    navigate('/profile');
+    handleProfileMenuClose();
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleProfileMenuClose();
+  };
+
   const getMenuItems = () => {
-    if (user.role === 'admin') {
+    const baseItems = [];
+    
+    if (user?.role === 'admin') {
       return [
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin/dashboard' },
-        { text: 'User Management', icon: <PeopleIcon />, path: '/admin/users' },
-        { text: 'Article Management', icon: <ArticleIcon />, path: '/admin/articles' }
+        { text: 'Kelola Pengguna', icon: <PeopleIcon />, path: '/admin/users' },
+        { text: 'Kelola Artikel', icon: <ArticleIcon />, path: '/admin/articles' },
+        ...baseItems
       ];
-    } else if (user.role === 'village_staff') {
+    } else if (user?.role === 'village_staff') {
       return [
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/staff/dashboard' },
-        { text: 'Articles', icon: <ArticleIcon />, path: '/staff/articles' }
+        { text: 'Kelola Artikel', icon: <ArticleIcon />, path: '/staff/articles' },
+        ...baseItems
       ];
     } else {
       return [
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/citizen/dashboard' },
-        { text: 'Create Report', icon: <ReportIcon />, path: '/citizen/create-report' },
-        { text: 'Articles', icon: <ArticleIcon />, path: '/citizen/articles' }
+        { text: 'Buat Laporan', icon: <AddIcon />, path: '/citizen/create-report' },
+        { text: 'Artikel', icon: <ArticleIcon />, path: '/citizen/articles' },
+        ...baseItems
       ];
     }
   };
@@ -103,6 +135,10 @@ const Layout = () => {
       </List>
       <Divider />
       <List>
+        <ListItem button onClick={() => handleNavigation('/profile')}>
+          <ListItemIcon><Person /></ListItemIcon>
+          <ListItemText primary="Edit Profile" />
+        </ListItem>
         <ListItem button onClick={logout}>
           <ListItemIcon><LogoutIcon /></ListItemIcon>
           <ListItemText primary="Logout" />
@@ -118,8 +154,9 @@ const Layout = () => {
         elevation={0}
         sx={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          borderRadius: { xs: 0, sm: '0 0 16px 16px' },
-          mb: 3
+          borderRadius: 0,
+          mb: 0,
+          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)'
         }}
       >
         <Toolbar>
@@ -150,18 +187,75 @@ const Layout = () => {
           >
             CitizenReport
           </Typography>
+          
+          {/* Profile Dropdown Button */}
           <Button 
             color="inherit" 
-            onClick={logout}
-            startIcon={<LogoutIcon />}
+            onClick={handleProfileMenuOpen}
+            startIcon={
+              <Avatar 
+                sx={{ width: 32, height: 32 }}
+                src={user?.profilePicture}
+              >
+                {user?.fullName?.charAt(0) || user?.name?.charAt(0) || 'U'}
+              </Avatar>
+            }
+            endIcon={<ArrowDropDownIcon />}
             sx={{
               '&:hover': {
                 backgroundColor: 'rgba(255, 255, 255, 0.1)'
-              }
+              },
+              textTransform: 'none',
+              borderRadius: '20px',
+              px: 2
             }}
           >
-            Logout
+            Profile
           </Button>
+          
+          {/* Profile Dropdown Menu */}
+          <Menu
+            anchorEl={profileMenuAnchor}
+            open={Boolean(profileMenuAnchor)}
+            onClose={handleProfileMenuClose}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                borderRadius: '12px',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+                minWidth: '180px'
+              }
+            }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          >
+            <MenuItem 
+              onClick={handleEditProfile}
+              sx={{
+                py: 1.5,
+                '&:hover': {
+                  backgroundColor: 'rgba(102, 126, 234, 0.08)'
+                }
+              }}
+            >
+              <EditIcon sx={{ mr: 2, fontSize: 20 }} />
+              Edit Profile
+            </MenuItem>
+            <Divider />
+            <MenuItem 
+              onClick={handleLogout}
+              sx={{
+                py: 1.5,
+                color: 'error.main',
+                '&:hover': {
+                  backgroundColor: 'rgba(244, 67, 54, 0.08)'
+                }
+              }}
+            >
+              <LogoutIcon sx={{ mr: 2, fontSize: 20 }} />
+              Logout
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
       

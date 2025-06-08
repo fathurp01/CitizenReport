@@ -1,6 +1,9 @@
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const { validationResult } = require('express-validator');
+const path = require('path');
+const fs = require('fs');
 
 // Generate JWT token
 const generateToken = (id) => {
@@ -39,8 +42,10 @@ exports.register = async (req, res) => {
       token,
       user: {
         id: user.id,
+        name: user.fullName,
         fullName: user.fullName,
         email: user.email,
+        phone: user.phoneNumber,
         phoneNumber: user.phoneNumber,
         address: user.address,
         rt: user.rt,
@@ -88,8 +93,10 @@ exports.login = async (req, res) => {
       token,
       user: {
         id: user.id,
+        name: user.fullName,
         fullName: user.fullName,
         email: user.email,
+        phone: user.phoneNumber,
         phoneNumber: user.phoneNumber,
         address: user.address,
         rt: user.rt,
@@ -111,9 +118,97 @@ exports.getCurrentUser = async (req, res) => {
     const user = await User.findByPk(req.user.id, {
       attributes: { exclude: ['password'] }
     });
-    res.json(user);
+    
+    // Format response untuk konsistensi
+    const formattedUser = {
+      id: user.id,
+      name: user.fullName,
+      fullName: user.fullName,
+      email: user.email,
+      phone: user.phoneNumber,
+      phoneNumber: user.phoneNumber,
+      address: user.address,
+      rt: user.rt,
+      rw: user.rw,
+      role: user.role,
+      profilePicture: user.profilePicture ? `/uploads/${user.profilePicture}` : null
+    };
+    
+    res.json(formattedUser);
   } catch (error) {
     console.error('Get current user error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, email, phone, address } = req.body;
+    const userId = req.user.id;
+
+    // Find user
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if email is already taken by another user
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Email already in use' });
+      }
+    }
+
+    // Update user data
+    const updateData = {
+      fullName: name || user.fullName,
+      email: email || user.email,
+      phoneNumber: phone || user.phoneNumber,
+      address: address || user.address
+    };
+
+    // Handle profile picture upload
+    if (req.file) {
+      // Delete old profile picture if exists
+      if (user.profilePicture) {
+        const oldImagePath = path.join(__dirname, '..', 'uploads', user.profilePicture);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+      updateData.profilePicture = req.file.filename;
+    }
+
+    // Update user in database
+    await user.update(updateData);
+
+    // Return updated user data
+    const updatedUser = await User.findByPk(userId, {
+      attributes: { exclude: ['password'] }
+    });
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: {
+        id: updatedUser.id,
+        name: updatedUser.fullName,
+        fullName: updatedUser.fullName,
+        email: updatedUser.email,
+        phone: updatedUser.phoneNumber,
+        phoneNumber: updatedUser.phoneNumber,
+        address: updatedUser.address,
+        rt: updatedUser.rt,
+        rw: updatedUser.rw,
+        role: updatedUser.role,
+        profilePicture: updatedUser.profilePicture ? `/uploads/${updatedUser.profilePicture}` : null
+      }
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
