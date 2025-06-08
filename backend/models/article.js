@@ -16,7 +16,7 @@ const Article = sequelize.define('Article', {
   },
   image: {
     type: DataTypes.STRING,
-    allowNull: true // Menyimpan nama file gambar
+    allowNull: true 
   },
   status: {
   type: DataTypes.ENUM('pending', 'approved', 'rejected'),
@@ -24,4 +24,5 @@ const Article = sequelize.define('Article', {
 }
 });
 
+//perubahan
 module.exports = Article;
