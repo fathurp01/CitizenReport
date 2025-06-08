@@ -24,5 +24,8 @@ const Article = sequelize.define('Article', {
 }
 });
 
+//
+//
+//
 //perubahan
 module.exports = Article;
