@@ -174,7 +174,7 @@ const Login = () => {
                 }
               }}
             >
-              Kembali ke Beranda
+              Kembali
             </Button>
 
             {error && (

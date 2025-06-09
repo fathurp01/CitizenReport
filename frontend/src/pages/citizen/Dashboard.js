@@ -51,7 +51,7 @@ const Dashboard = () => {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching reports:', err);
-        setError(`Failed to load reports: ${err.response?.data?.message || err.message}`);
+        setError(`Gagal memuat laporan: ${err.response?.data?.message || err.message}`);
         setLoading(false);
       }
     };
@@ -72,12 +72,12 @@ const Dashboard = () => {
 
   const getStatusLabel = (status) => {
     switch (status) {
-      case 'pending': return 'Pending';
-      case 'received': return 'Received';
-      case 'in_progress': return 'In Progress';
-      case 'completed': return 'Completed';
-      case 'rejected': return 'Rejected';
-      default: return 'Unknown';
+      case 'pending': return 'Menunggu';
+      case 'received': return 'Diterima';
+      case 'in_progress': return 'Dalam Proses';
+      case 'completed': return 'Selesai';
+      case 'rejected': return 'Ditolak';
+      default: return 'Tidak Diketahui';
     }
   };
 
@@ -136,10 +136,10 @@ const Dashboard = () => {
                   mb: 1
                 }}
               >
-                My Reports
+                Laporan Saya
               </Typography>
               <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400 }}>
-                Manage and track your submitted reports
+                Kelola dan lacak laporan yang telah Anda kirimkan
               </Typography>
             </Box>
             <Button 
@@ -164,7 +164,7 @@ const Dashboard = () => {
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
               }}
             >
-              Create New Report
+              Buat Laporan Baru
             </Button>
           </Box>
         </Paper>
@@ -174,10 +174,10 @@ const Dashboard = () => {
           <Fade in timeout={800}>
             <Grid container spacing={3} sx={{ mb: 4 }}>
               {[
-                { label: 'Total Reports', value: stats.total, color: '#667eea', icon: <ArticleIcon /> },
-                { label: 'Pending', value: stats.pending, color: '#ffa726', icon: <ScheduleIcon /> },
-                { label: 'In Progress', value: stats.in_progress, color: '#42a5f5', icon: <TrendingUpIcon /> },
-                { label: 'Completed', value: stats.completed, color: '#66bb6a', icon: <CheckCircleIcon /> }
+                { label: 'Total Laporan', value: stats.total, color: '#667eea', icon: <ArticleIcon /> },
+                { label: 'Menunggu', value: stats.pending, color: '#ffa726', icon: <ScheduleIcon /> },
+                { label: 'Dalam Proses', value: stats.in_progress, color: '#42a5f5', icon: <TrendingUpIcon /> },
+                { label: 'Selesai', value: stats.completed, color: '#66bb6a', icon: <CheckCircleIcon /> }
               ].map((stat, index) => (
                 <Grid item xs={6} md={3} key={stat.label}>
                   <Card
@@ -242,7 +242,7 @@ const Dashboard = () => {
                   }}
                 />
                 <Typography variant="h6" color="text.secondary">
-                  Loading your reports...
+                  Memuat laporan Anda...
                 </Typography>
               </Box>
             </Box>
@@ -260,7 +260,7 @@ const Dashboard = () => {
                 <ErrorIcon sx={{ fontSize: 40 }} />
               </Avatar>
               <Typography variant="h6" color="error" sx={{ mb: 2 }}>
-                Something went wrong
+                Terjadi kesalahan
               </Typography>
               <Typography color="text.secondary">
                 {error}
@@ -280,10 +280,10 @@ const Dashboard = () => {
                 <ArticleIcon sx={{ fontSize: 50 }} />
               </Avatar>
               <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
-                No reports yet
+                Belum ada laporan
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 4, maxWidth: 400, mx: 'auto' }}>
-                You haven't submitted any reports yet. Start by creating your first report to track issues in your community.
+                Anda belum mengirimkan laporan apapun. Mulailah dengan membuat laporan pertama Anda untuk melacak masalah di komunitas Anda.
               </Typography>
               <Button 
                 variant="contained" 
@@ -307,7 +307,7 @@ const Dashboard = () => {
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
               >
-                Submit Your First Report
+                Kirim Laporan Pertama Anda
               </Button>
             </Box>
           ) : (
@@ -390,7 +390,7 @@ const Dashboard = () => {
                                   letterSpacing: 0.5
                                 }}
                               >
-                                Category
+                                Kategori
                               </Typography>
                               <Typography variant="body2" sx={{ fontWeight: 500 }}>
                                 {report.category}
@@ -407,10 +407,10 @@ const Dashboard = () => {
                                   letterSpacing: 0.5
                                 }}
                               >
-                                Created
+                                Dibuat
                               </Typography>
                               <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                                {new Date(report.createdAt).toLocaleDateString()}
+                                {new Date(report.createdAt).toLocaleDateString('id-ID')}
                               </Typography>
                             </Box>
                           </Box>

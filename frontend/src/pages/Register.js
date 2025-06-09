@@ -24,6 +24,10 @@ import HomeIcon from '@mui/icons-material/Home';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -34,7 +38,11 @@ const Register = () => {
     phoneNumber: '',
     address: '',
     rt: '',
-    rw: ''
+    rw: '',
+    // Tambahkan field opsional
+    gender: '',
+    birthDate: '',
+    occupation: ''
   });
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -192,7 +200,7 @@ const Register = () => {
                 }
               }}
             >
-              Kembali ke Beranda
+              Kembali
             </Button>
 
             {formError && (
@@ -479,6 +487,98 @@ const Register = () => {
                         </InputAdornment>
                       ),
                     }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          borderColor: 'rgba(0, 0, 0, 0.23)',
+                          transition: 'all 0.3s ease',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(102, 126, 234, 0.5)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#667eea',
+                          borderWidth: '2px',
+                        },
+                      },
+                    }}
+                  />
+                </Grid>
+
+                {/* Tambahkan field gender (opsional) */}
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="gender-label">Jenis Kelamin</InputLabel>
+                    <Select
+                      labelId="gender-label"
+                      id="gender"
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      label="Jenis Kelamin"
+                      sx={{ 
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': {
+                            borderColor: 'rgba(0, 0, 0, 0.23)',
+                            transition: 'all 0.3s ease',
+                          },
+                          '&:hover fieldset': {
+                            borderColor: 'rgba(102, 126, 234, 0.5)',
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: '#667eea',
+                            borderWidth: '2px',
+                          },
+                        },
+                      }}
+                    >
+                      <MenuItem value=""><em>Pilih</em></MenuItem>
+                      <MenuItem value="male">Laki-laki</MenuItem>
+                      <MenuItem value="female">Perempuan</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                {/* Tambahkan field birthDate (opsional) */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    id="birthDate"
+                    label="Tanggal Lahir "
+                    name="birthDate"
+                    type="date"
+                    value={formData.birthDate}
+                    onChange={handleChange}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          borderColor: 'rgba(0, 0, 0, 0.23)',
+                          transition: 'all 0.3s ease',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(102, 126, 234, 0.5)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#667eea',
+                          borderWidth: '2px',
+                        },
+                      },
+                    }}
+                  />
+                </Grid>
+
+                {/* Tambahkan field occupation (opsional) */}
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    id="occupation"
+                    label="Pekerjaan"
+                    name="occupation"
+                    value={formData.occupation}
+                    onChange={handleChange}
                     sx={{ 
                       '& .MuiOutlinedInput-root': {
                         '& fieldset': {
