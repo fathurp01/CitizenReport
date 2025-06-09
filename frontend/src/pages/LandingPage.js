@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -11,7 +11,15 @@ import {
   Toolbar,
   useTheme,
   useMediaQuery,
-  Paper
+  Paper,
+  Avatar,
+  Divider,
+  Stack,
+  Chip,
+  Fade,
+  Slide,
+  Zoom,
+  Grow
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ReportIcon from '@mui/icons-material/Report';
@@ -19,461 +27,856 @@ import PeopleIcon from '@mui/icons-material/People';
 import SpeedIcon from '@mui/icons-material/Speed';
 import SecurityIcon from '@mui/icons-material/Security';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import StarIcon from '@mui/icons-material/Star';
+import QuoteIcon from '@mui/icons-material/FormatQuote';
+import { keyframes } from '@mui/system';
+
+// Animasi keyframes
+const float = keyframes`
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+`;
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+`;
+
+const slideInLeft = keyframes`
+  0% { transform: translateX(-100px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+`;
+
+const slideInRight = keyframes`
+  0% { transform: translateX(100px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+`;
+
+const fadeInUp = keyframes`
+  0% { transform: translateY(50px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+`;
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [isVisible, setIsVisible] = useState(false);
+  const [animateStats, setAnimateStats] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+    const timer = setTimeout(() => setAnimateStats(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const features = [
     {
-      icon: <ReportIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      icon: <ReportIcon sx={{ fontSize: { xs: 64, md: 80 }, color: '#6366f1' }} />,
       title: 'Laporan Mudah',
-      description: 'Laporkan masalah infrastruktur secara digital dan cepat.'
+      description: 'Laporkan masalah infrastruktur secara digital dan cepat dengan interface yang user-friendly.'
     },
     {
-      icon: <SpeedIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      icon: <SpeedIcon sx={{ fontSize: { xs: 64, md: 80 }, color: '#6366f1' }} />,
       title: 'Respon Cepat',
-      description: 'Tindak lanjut langsung oleh petugas desa.'
+      description: 'Sistem notifikasi real-time memastikan tindak lanjut langsung oleh petugas desa.'
     },
     {
-      icon: <PeopleIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      icon: <PeopleIcon sx={{ fontSize: { xs: 64, md: 80 }, color: '#6366f1' }} />,
       title: 'Transparansi',
-      description: 'Pantau status dan progres laporan Anda.'
+      description: 'Pantau status dan progres laporan Anda dengan dashboard yang transparan dan informatif.'
     },
     {
-      icon: <SecurityIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      icon: <SecurityIcon sx={{ fontSize: { xs: 64, md: 80 }, color: '#6366f1' }} />,
       title: 'Keamanan',
-      description: 'Data Anda aman dan terlindungi.'
+      description: 'Data Anda dilindungi dengan enkripsi tingkat enterprise dan sistem backup otomatis.'
     }
   ];
 
-  return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-      {/* Header */}
-      <AppBar 
-        position="static" 
-        elevation={0} 
-        sx={{ 
-          bgcolor: 'white', 
-          color: 'text.primary',
-          borderBottom: '1px solid rgba(0,0,0,0.08)'
-        }}
-      >
-        <Toolbar sx={{ py: 1 }}>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              flexGrow: 1, 
-              fontWeight: 'bold', 
-              color: 'primary.main',
-              fontSize: '1.3rem'
-            }}
-          >
-            CitizenReport
-          </Typography>
-          <Button 
-            color="primary" 
-            onClick={() => navigate('/login')} 
-            sx={{ 
-              mr: 2,
-              px: 3,
-              py: 1,
-              borderRadius: '12px',
-              fontWeight: 'bold',
-              border: '2px solid',
-              borderColor: 'primary.main',
-              transition: 'all 0.3s ease',
-              fontSize: '0.9rem',
-              position: 'relative',
-              overflow: 'hidden',
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                background: 'rgba(30, 58, 138, 0.1)',
-                transform: 'translateX(-100%)',
-                transition: 'transform 0.3s ease'
-              },
-              '&:hover': {
-                backgroundColor: 'rgba(30, 58, 138, 0.08)',
-                transform: 'translateY(-2px)',
-                boxShadow: '0 6px 16px rgba(30, 58, 138, 0.2)'
-              },
-              '&:hover::before': {
-                transform: 'translateX(100%)'
-              }
-            }}
-          >
-            Masuk
-          </Button>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={() => navigate('/register')} 
-            sx={{ 
-              px: 3,
-              py: 1,
-              borderRadius: '12px',
-              fontWeight: 'bold',
-              fontSize: '0.9rem',
-              boxShadow: '0 4px 12px rgba(30, 58, 138, 0.3)',
-              background: 'linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%)',
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)',
-                transform: 'translateY(-2px)',
-                boxShadow: '0 8px 20px rgba(30, 58, 138, 0.4)'
-              }
-            }}
-          >
-            Daftar
-          </Button>
-        </Toolbar>
-      </AppBar>
+  const stats = [
+    { number: '2,500+', label: 'Laporan Terselesaikan', icon: <CheckCircleIcon sx={{ fontSize: 40 }} /> },
+    { number: '98%', label: 'Tingkat Kepuasan', icon: <TrendingUpIcon sx={{ fontSize: 40 }} /> },
+    { number: '24/7', label: 'Dukungan Pelanggan', icon: <SupportAgentIcon sx={{ fontSize: 40 }} /> },
+    { number: '100%', label: 'Data Terlindungi', icon: <VerifiedUserIcon sx={{ fontSize: 40 }} /> }
+  ];
 
-      {/* Hero Section */}
+  const testimonials = [
+    {
+      name: 'Budi Santoso',
+      role: 'Warga RT 05',
+      avatar: 'BS',
+      rating: 5,
+      comment: 'Platform yang sangat membantu! Laporan saya tentang jalan rusak ditindaklanjuti dengan cepat dan transparan.'
+    },
+    {
+      name: 'Siti Nurhaliza',
+      role: 'Ketua RW 03',
+      avatar: 'SN',
+      rating: 5,
+      comment: 'Interface yang mudah digunakan dan sistem tracking yang excellent. Sangat membantu koordinasi dengan warga.'
+    },
+    {
+      name: 'Ahmad Wijaya',
+      role: 'Warga RT 02',
+      avatar: 'AW',
+      rating: 5,
+      comment: 'Respon time yang luar biasa cepat. Masalah sampah di lingkungan kami teratasi dalam 2 hari!'
+    }
+  ];
+
+  const benefits = [
+    'Pelaporan 24/7 tanpa batas waktu',
+    'Tracking real-time status laporan',
+    'Notifikasi otomatis via email & SMS',
+    'Dashboard analytics untuk petugas',
+    'Sistem backup data otomatis',
+    'Support multi-platform (Web & Mobile)'
+  ];
+
+  return (
+    <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa' }}>
+      {/* Header dengan animasi slide down */}
+      <Slide direction="down" in={isVisible} timeout={800}>
+        <AppBar 
+          position="static" 
+          elevation={0} 
+          sx={{ 
+            bgcolor: 'white', 
+            color: '#1f2937',
+            borderBottom: '1px solid #e5e7eb'
+          }}
+        >
+          <Toolbar sx={{ py: 2 }}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                flexGrow: 1, 
+                fontWeight: 700, 
+                color: '#6366f1',
+                fontSize: '1.5rem',
+                letterSpacing: '-0.025em'
+              }}
+            >
+              CitizenReport
+            </Typography>
+            <Button 
+              onClick={() => navigate('/login')} 
+              sx={{ 
+                mr: 3,
+                px: 4,
+                py: 1.5,
+                borderRadius: '12px',
+                fontWeight: 600,
+                color: '#6366f1',
+                fontSize: '0.95rem',
+                textTransform: 'none',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  backgroundColor: '#f8fafc',
+                  transform: 'translateY(-2px) scale(1.02)'
+                }
+              }}
+            >
+              Masuk
+            </Button>
+            <Button 
+              variant="contained" 
+              onClick={() => navigate('/register')} 
+              sx={{ 
+                px: 4,
+                py: 1.5,
+                borderRadius: '12px',
+                fontWeight: 600,
+                fontSize: '0.95rem',
+                textTransform: 'none',
+                bgcolor: '#6366f1',
+                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.3)',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  bgcolor: '#5855eb',
+                  transform: 'translateY(-3px) scale(1.02)',
+                  boxShadow: '0 12px 30px rgba(99, 102, 241, 0.4)'
+                }
+              }}
+            >
+              Daftar Gratis
+            </Button>
+          </Toolbar>
+        </AppBar>
+      </Slide>
+
+      {/* Hero Section dengan animasi yang diperbaiki */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
           color: 'white',
-          py: { xs: 10, md: 14 },
+          py: { xs: 12, md: 20 },
           position: 'relative',
-          overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-            zIndex: 1
-          }
+          overflow: 'hidden'
         }}
       >
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
-          <Grid container spacing={6} alignItems="center">
+        <Container maxWidth="lg">
+          <Grid container spacing={8} alignItems="center">
             <Grid item xs={12} md={6}>
-              <Typography
-                variant={isMobile ? 'h3' : 'h2'}
-                component="h1"
-                sx={{ 
-                  fontWeight: 700, 
-                  mb: 3, 
-                  animation: 'fadeIn 1s ease-out',
-                  lineHeight: 1.2
-                }}
-              >
-                Laporkan Masalah di Lingkungan Anda
-              </Typography>
-              <Typography
-                variant="h5"
-                color="white"
-                sx={{
-                  mb: 5,
-                  opacity: 0.95,
-                  maxWidth: 600,
-                  animation: 'slideInUp 1s ease-out',
-                  lineHeight: 1.6,
-                  fontWeight: 400
-                }}
-              >
-                Platform pelaporan masalah lingkungan yang mudah dan cepat
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => navigate('/citizen/create-report')}
-                  sx={{
-                    borderColor: '#764ba2',
-                    color: 'white',
-                    fontWeight: 'bold',
-                    borderRadius: '8px',
-                    px: 4,
-                    py: 1.5,
-                    position: 'relative',
-                    overflow: 'hidden',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    transition: 'all 0.3s ease',
-                    boxShadow: '0 4px 10px rgba(118, 75, 162, 0.3)',
-                    zIndex: 1, // Memastikan teks tetap di atas
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      top: 0,
-                      left: '-100%',
-                      width: '100%',
-                      height: '100%',
-                      background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-                      transition: 'transform 0.4s ease',
-                      zIndex: -1 // Memastikan pseudo-element berada di bawah teks
-                    },
-                    '&:hover': {
-                      transform: 'translateY(-3px)',
-                      boxShadow: '0 6px 15px rgba(118, 75, 162, 0.4)'
-                    },
-                    '&:hover::before': {
-                      transform: 'translateX(100%)'
-                    },
-                    '& .MuiButton-endIcon': {
-                      position: 'relative',
-                      zIndex: 1, // Memastikan ikon tetap di atas
-                      transition: 'transform 0.3s ease'
-                    },
-                    '&:hover .MuiButton-endIcon': {
-                      transform: 'translateX(4px)'
-                    }
-                  }}
-                  endIcon={<ArrowForwardIcon />}
-                >
-                  Mulai Laporan
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  onClick={() => navigate('/login')}
-                  sx={{
-                    borderColor: 'white',
-                    borderWidth: '2px',
-                    color: 'white',
-                    fontWeight: 'bold',
-                    borderRadius: '8px',
-                    px: 4,
-                    py: 1.5,
-                    // Menghapus mt untuk menghindari margin top pada layar kecil
-                    // Menghapus ml untuk konsistensi dengan gap
-                    transition: 'all 0.3s ease',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      background: 'rgba(255,255,255,0.1)',
-                      transform: 'translateX(-100%)',
-                      transition: 'transform 0.3s ease',
-                      zIndex: -1 // Memastikan pseudo-element berada di bawah teks
-                    },
-                    '&:hover': { 
-                      borderColor: 'white', 
-                      bgcolor: 'rgba(255,255,255,0.15)',
-                      transform: 'translateY(-3px)',
-                      boxShadow: '0 4px 12px rgba(255,255,255,0.2)'
-                    },
-                    '&:hover::before': {
-                      transform: 'translateX(100%)'
-                    }
-                  }}
-                >
-                  Sudah Punya Akun?
-                </Button>
-              </Box>
+              <Fade in={isVisible} timeout={1000}>
+                <Box sx={{ animation: `${slideInLeft} 1s ease-out` }}>
+                  <Chip 
+                    label="🚀 Platform Terpercaya #1 di Indonesia" 
+                    sx={{ 
+                      mb: 4, 
+                      bgcolor: 'rgba(255,255,255,0.2)', 
+                      color: 'white',
+                      fontWeight: 600,
+                      borderRadius: '20px',
+                      px: 3,
+                      py: 1,
+                      fontSize: '1rem',
+                      animation: `${pulse} 2s infinite`
+                    }} 
+                  />
+                  <Typography
+                    variant={isMobile ? 'h3' : 'h2'}
+                    component="h1"
+                    sx={{ 
+                      fontWeight: 800, 
+                      mb: 4, 
+                      lineHeight: 1.1,
+                      letterSpacing: '-0.025em',
+                      fontSize: { xs: '2.5rem', md: '3.5rem' }
+                    }}
+                  >
+                    Laporkan Masalah di Lingkungan Anda dengan Mudah
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      mb: 6,
+                      opacity: 0.9,
+                      lineHeight: 1.6,
+                      fontWeight: 400,
+                      fontSize: { xs: '1.1rem', md: '1.3rem' }
+                    }}
+                  >
+                    Platform digital terdepan untuk pelaporan masalah infrastruktur dengan sistem tracking real-time dan respon cepat dari petugas desa.
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 3, flexWrap: { xs: 'wrap', md: 'nowrap' }, mb: 4 }}>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      onClick={() => navigate('/citizen/create-report')}
+                      sx={{
+                        bgcolor: 'white',
+                        color: '#6366f1',
+                        fontWeight: 600,
+                        borderRadius: '12px',
+                        px: 6,
+                        py: 2.5,
+                        fontSize: '1.1rem',
+                        textTransform: 'none',
+                        boxShadow: '0 4px 14px rgba(255, 255, 255, 0.3)',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          bgcolor: '#f8fafc',
+                          transform: 'translateY(-3px) scale(1.05)',
+                          boxShadow: '0 12px 30px rgba(255, 255, 255, 0.4)'
+                        }
+                      }}
+                      endIcon={<ArrowForwardIcon sx={{ fontSize: 24 }} />}
+                    >
+                      Mulai Laporan Sekarang
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      onClick={() => navigate('/login')}
+                      sx={{
+                        borderColor: 'white',
+                        borderWidth: '2px',
+                        color: 'white',
+                        fontWeight: 600,
+                        borderRadius: '12px',
+                        px: 6,
+                        py: 2.5,
+                        fontSize: '1.1rem',
+                        textTransform: 'none',
+                        transition: 'all 0.3s ease',
+                        '&:hover': { 
+                          borderColor: 'white', 
+                          bgcolor: 'rgba(255,255,255,0.1)',
+                          transform: 'translateY(-3px) scale(1.05)'
+                        }
+                      }}
+                    >
+                      Lihat Demo
+                    </Button>
+                  </Box>
+                  <Typography variant="body1" sx={{ opacity: 0.8, fontSize: '1rem' }}>
+                    ✅ Gratis selamanya • ✅ Tanpa iklan • ✅ Data aman terlindungi
+                  </Typography>
+                </Box>
+              </Fade>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                height: { xs: 350, md: 450 } 
-              }}>                
-                <Paper
-                  elevation={20}
-                  sx={{
-                    p: 5,
-                    borderRadius: '20px',
-                    bgcolor: 'rgba(255,255,255,0.98)',
-                    maxWidth: 420,
-                    width: '100%',
-                    backdropFilter: 'blur(10px)',
-                    transition: 'all 0.4s ease',
-                    position: 'relative',
-                    zIndex: 1,
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      inset: '-3px',
-                      background: 'linear-gradient(90deg, #667eea, #764ba2, #667eea, #764ba2)',
-                      backgroundSize: '400% 400%',
-                      zIndex: -1,
-                      borderRadius: '23px',
-                      opacity: 0,
-                      transition: 'opacity 0.4s ease',
-                      animation: 'none'
-                    },
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'white',
-                      borderRadius: '20px',
-                      zIndex: -1
-                    },
-                    '&:hover': {
-                      transform: 'translateY(-5px)',
-                      boxShadow: '0 25px 50px rgba(118, 75, 162, 0.25)'
-                    },
-                    '&:hover::before': {
-                      opacity: 1,
-                      animation: 'gradientBorder 3s linear infinite'
-                    },
-                    '@keyframes gradientBorder': {
-                      '0%': {
-                        backgroundPosition: '0% 50%'
-                      },
-                      '50%': {
-                        backgroundPosition: '100% 50%'
-                      },
-                      '100%': {
-                        backgroundPosition: '0% 50%'
+              <Zoom in={isVisible} timeout={1200}>
+                <Box sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center', 
+                  height: { xs: 400, md: 500 },
+                  animation: `${slideInRight} 1s ease-out`
+                }}>                
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      p: { xs: 4, md: 8 },
+                      borderRadius: '32px',
+                      bgcolor: 'rgba(255,255,255,0.95)',
+                      maxWidth: 450,
+                      width: '100%',
+                      backdropFilter: 'blur(20px)',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      transition: 'all 0.4s ease',
+                      animation: `${float} 6s ease-in-out infinite`,
+                      '&:hover': {
+                        transform: 'translateY(-12px) scale(1.02)',
+                        boxShadow: '0 30px 60px rgba(0,0,0,0.2)'
                       }
-                    }
-                  }}
-                >
-                  <Box sx={{ 
-                    textAlign: 'center', 
-                    color: 'text.primary',
-                    position: 'relative',
-                    zIndex: 2
-                  }}>
-                    <ReportIcon sx={{ 
-                      fontSize: 70, 
-                      color: 'primary.main', 
-                      mb: 3,
-                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
-                      transition: 'transform 0.3s ease',
-                      '.MuiPaper-root:hover &': {
-                        transform: 'scale(1.1)'
-                      }
-                    }} />
-                    <Typography variant="h6" gutterBottom sx={{ 
-                      fontWeight: 'bold',
-                      mb: 2,
-                      fontSize: '1.3rem'
+                    }}
+                  >
+                    <Box sx={{ 
+                      textAlign: 'center', 
+                      color: '#1f2937'
                     }}>
-                      Laporan Real-time
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary" sx={{
-                      lineHeight: 1.6,
-                      fontSize: '1rem'
-                    }}>
-                      Pantau status laporan Anda secara real-time dan dapatkan notifikasi update terbaru.
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Box>
+                      <ReportIcon sx={{ 
+                        fontSize: { xs: 100, md: 120 }, 
+                        color: '#6366f1', 
+                        mb: 4,
+                        animation: `${pulse} 3s infinite`
+                      }} />
+                      <Typography variant="h4" gutterBottom sx={{ 
+                        fontWeight: 700,
+                        mb: 3,
+                        color: '#1f2937',
+                        fontSize: { xs: '1.5rem', md: '2rem' }
+                      }}>
+                        Dashboard Real-time
+                      </Typography>
+                      <Typography variant="body1" color="text.secondary" sx={{
+                        lineHeight: 1.6,
+                        fontSize: { xs: '1rem', md: '1.2rem' },
+                        mb: 4
+                      }}>
+                        Pantau status laporan Anda secara real-time dengan notifikasi instant.
+                      </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mb: 2 }}>
+                        {[1,2,3,4,5].map((star) => (
+                          <StarIcon key={star} sx={{ color: '#fbbf24', fontSize: 28 }} />
+                        ))}
+                      </Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                        Rating 4.9/5 dari 2,500+ pengguna
+                      </Typography>
+                    </Box>
+                  </Paper>
+                </Box>
+              </Zoom>
             </Grid>
           </Grid>
         </Container>
       </Box>
 
-      {/* Features Section */}
+      {/* Stats Section dengan animasi counter */}
       <Container maxWidth="lg" sx={{ py: 10 }}>
-        <Typography 
-          variant="h4" 
-          component="h2" 
-          align="center" 
-          gutterBottom 
-          sx={{ 
-            fontWeight: 'bold', 
-            mb: 6,
-            fontSize: { xs: '2rem', md: '2.5rem' },
-            color: 'text.primary'
-          }}
-        >
-          Fitur Unggulan
-        </Typography>
         <Grid container spacing={4}>
-          {features.map((feature, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card
-                elevation={4}
-                sx={{
+          {stats.map((stat, index) => (
+            <Grid item xs={6} md={3} key={index}>
+              <Grow in={animateStats} timeout={1000 + index * 200}>
+                <Box sx={{ 
                   textAlign: 'center',
-                  p: 4,
-                  height: '280px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  borderRadius: '16px',
-                  border: '1px solid rgba(0,0,0,0.08)',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: '50%',
-                    width: '100%',
-                    height: '4px',
-                    background: 'linear-gradient(90deg, transparent 0%, #667eea 25%, #764ba2 50%, #667eea 75%, transparent 100%)',
-                    transform: 'translateX(-50%) scaleX(0)',
-                    transition: 'transform 0.3s ease'
-                  },
+                  transition: 'all 0.3s ease',
                   '&:hover': {
-                    transform: 'translateY(-10px)',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                    borderColor: 'rgba(102, 126, 234, 0.3)'
-                  },
-                  '&:hover::before': {
-                    transform: 'translateX(-50%) scaleX(1)'
+                    transform: 'translateY(-8px) scale(1.05)'
                   }
-                }}
-              >
-                <CardContent sx={{ 
-                  flexGrow: 1, 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  p: 0
                 }}>
                   <Box sx={{ 
+                    display: 'inline-flex',
+                    p: 3,
+                    borderRadius: '20px',
+                    bgcolor: '#f1f5f9',
+                    color: '#6366f1',
                     mb: 3,
-                    transition: 'transform 0.3s ease',
-                    '.MuiCard-root:hover &': {
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      bgcolor: '#6366f1',
+                      color: 'white',
                       transform: 'scale(1.1)'
                     }
                   }}>
-                    {feature.icon}
+                    {stat.icon}
                   </Box>
-                  <Typography 
-                    variant="h6" 
-                    component="h3" 
-                    gutterBottom 
-                    sx={{ 
-                      fontWeight: 'bold',
-                      mb: 2,
-                      fontSize: '1.2rem',
-                      color: 'text.primary'
-                    }}
-                  >
-                    {feature.title}
+                  <Typography variant="h3" sx={{ 
+                    fontWeight: 800, 
+                    color: '#1f2937', 
+                    mb: 2,
+                    fontSize: { xs: '2rem', md: '2.5rem' }
+                  }}>
+                    {stat.number}
                   </Typography>
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary"
-                    sx={{
-                      lineHeight: 1.6,
-                      fontSize: '0.95rem',
-                      textAlign: 'center'
-                    }}
-                  >
-                    {feature.description}
+                  <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem' }}>
+                    {stat.label}
                   </Typography>
-                </CardContent>
-              </Card>
+                </Box>
+              </Grow>
             </Grid>
           ))}
         </Grid>
       </Container>
+
+      {/* Features Section dengan animasi stagger */}
+      <Box sx={{ bgcolor: 'white', py: 15 }}>
+        <Container maxWidth="lg">
+          <Fade in={isVisible} timeout={1500}>
+            <Box sx={{ textAlign: 'center', mb: 10 }}>
+              <Typography 
+                variant="h3" 
+                component="h2" 
+                sx={{ 
+                  fontWeight: 800, 
+                  mb: 4,
+                  color: '#1f2937',
+                  letterSpacing: '-0.025em',
+                  fontSize: { xs: '2rem', md: '3rem' }
+                }}
+              >
+                Fitur Unggulan Platform
+              </Typography>
+              <Typography variant="h6" color="text.secondary" sx={{ 
+                maxWidth: 600, 
+                mx: 'auto',
+                fontSize: { xs: '1.1rem', md: '1.3rem' }
+              }}>
+                Solusi lengkap untuk pelaporan masalah lingkungan dengan teknologi terdepan
+              </Typography>
+            </Box>
+          </Fade>
+          <Grid container spacing={4}>
+            {features.map((feature, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Grow in={isVisible} timeout={1500 + index * 300}>
+                  <Card
+                    elevation={0}
+                    sx={{
+                      textAlign: 'center',
+                      p: { xs: 3, md: 5 },
+                      height: { xs: '350px', md: '400px' },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      borderRadius: '24px',
+                      border: '1px solid #e5e7eb',
+                      bgcolor: 'white',
+                      transition: 'all 0.4s ease',
+                      animation: `${fadeInUp} 1s ease-out ${index * 0.2}s both`,
+                      '&:hover': {
+                        transform: 'translateY(-12px) scale(1.02)',
+                        boxShadow: '0 25px 50px rgba(99, 102, 241, 0.15)',
+                        borderColor: '#6366f1'
+                      }
+                    }}
+                  >
+                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                      <Box sx={{ 
+                        mb: 3,
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          transform: 'scale(1.1) rotate(5deg)'
+                        }
+                      }}>
+                        {feature.icon}
+                      </Box>
+                      <Typography variant="h5" gutterBottom sx={{ 
+                        fontWeight: 700, 
+                        color: '#1f2937',
+                        mb: 3,
+                        fontSize: { xs: '1.3rem', md: '1.5rem' }
+                      }}>
+                        {feature.title}
+                      </Typography>
+                      <Typography variant="body1" color="text.secondary" sx={{ 
+                        lineHeight: 1.6,
+                        fontSize: { xs: '0.95rem', md: '1.1rem' }
+                      }}>
+                        {feature.description}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grow>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* ... existing code ... */}
+      
+      {/* Testimonials Section */}
+      <Container maxWidth="lg" sx={{ py: 12 }}>
+        <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <Typography 
+            variant="h3" 
+            component="h2" 
+            sx={{ 
+              fontWeight: 800, 
+              mb: 3,
+              color: '#1f2937',
+              fontSize: { xs: '2rem', md: '3rem' }
+            }}
+          >
+            Apa Kata Pengguna Kami
+          </Typography>
+          <Typography variant="h6" color="text.secondary" sx={{ 
+            maxWidth: 600, 
+            mx: 'auto',
+            fontSize: { xs: '1.1rem', md: '1.3rem' }
+          }}>
+            Testimoni nyata dari ribuan pengguna yang telah merasakan manfaatnya
+          </Typography>
+        </Box>
+        <Grid container spacing={4}>
+          {testimonials.map((testimonial, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <Grow in={isVisible} timeout={2000 + index * 200}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    p: 4,
+                    height: '280px',
+                    borderRadius: '20px',
+                    border: '1px solid #e5e7eb',
+                    position: 'relative',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+                    }
+                  }}
+                >
+                  <QuoteIcon sx={{ 
+                    position: 'absolute', 
+                    top: 16, 
+                    right: 16, 
+                    color: '#6366f1', 
+                    opacity: 0.3,
+                    fontSize: 40
+                  }} />
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    <Avatar sx={{ 
+                      bgcolor: '#6366f1', 
+                      mr: 2, 
+                      width: 56, 
+                      height: 56,
+                      fontSize: '1.2rem',
+                      fontWeight: 600
+                    }}>
+                      {testimonial.avatar}
+                    </Avatar>
+                    <Box>
+                      <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
+                        {testimonial.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {testimonial.role}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box sx={{ display: 'flex', mb: 2 }}>
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <StarIcon key={i} sx={{ color: '#fbbf24', fontSize: 20 }} />
+                    ))}
+                  </Box>
+                  <Typography variant="body1" sx={{ 
+                    lineHeight: 1.6, 
+                    fontStyle: 'italic',
+                    fontSize: '1rem'
+                  }}>
+                    "{testimonial.comment}"
+                  </Typography>
+                </Card>
+              </Grow>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      {/* Benefits Section */}
+      <Box sx={{ bgcolor: '#f8fafc', py: 12 }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={8} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <Typography 
+                variant="h3" 
+                sx={{ 
+                  fontWeight: 800, 
+                  mb: 4,
+                  color: '#1f2937',
+                  fontSize: { xs: '2rem', md: '2.5rem' }
+                }}
+              >
+                Mengapa Memilih CitizenReport?
+              </Typography>
+              <Typography variant="h6" color="text.secondary" sx={{ 
+                mb: 4,
+                fontSize: { xs: '1.1rem', md: '1.2rem' }
+              }}>
+                Platform terlengkap dengan fitur-fitur canggih untuk kemudahan pelaporan
+              </Typography>
+              <Stack spacing={2}>
+                {benefits.map((benefit, index) => (
+                  <Fade in={isVisible} timeout={2500 + index * 100} key={index}>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateX(10px)'
+                      }
+                    }}>
+                      <CheckCircleIcon sx={{ 
+                        color: '#10b981', 
+                        mr: 2, 
+                        fontSize: 28
+                      }} />
+                      <Typography variant="body1" sx={{ 
+                        fontWeight: 500,
+                        fontSize: '1.1rem'
+                      }}>
+                        {benefit}
+                      </Typography>
+                    </Box>
+                  </Fade>
+                ))}
+              </Stack>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Zoom in={isVisible} timeout={2000}>
+                <Box sx={{ 
+                  textAlign: 'center',
+                  animation: `${float} 8s ease-in-out infinite`
+                }}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      p: 6,
+                      borderRadius: '24px',
+                      bgcolor: 'white',
+                      border: '1px solid #e5e7eb',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'scale(1.05)',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+                      }
+                    }}
+                  >
+                    <SecurityIcon sx={{ 
+                      fontSize: 100, 
+                      color: '#6366f1', 
+                      mb: 3,
+                      animation: `${pulse} 4s infinite`
+                    }} />
+                    <Typography variant="h5" sx={{ 
+                      fontWeight: 700, 
+                      mb: 2,
+                      fontSize: { xs: '1.3rem', md: '1.5rem' }
+                    }}>
+                      Keamanan Terjamin
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary" sx={{
+                      fontSize: '1.1rem'
+                    }}>
+                      Data Anda dilindungi dengan teknologi enkripsi tingkat militer
+                    </Typography>
+                  </Paper>
+                </Box>
+              </Zoom>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* CTA Section */}
+      <Box sx={{ 
+        bgcolor: '#6366f1', 
+        color: 'white', 
+        py: 12,
+        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)'
+      }}>
+        <Container maxWidth="lg">
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography 
+              variant="h3" 
+              sx={{ 
+                fontWeight: 800, 
+                mb: 3,
+                fontSize: { xs: '2rem', md: '3rem' }
+              }}
+            >
+              Siap Memulai Pelaporan?
+            </Typography>
+            <Typography variant="h6" sx={{ 
+              mb: 6, 
+              opacity: 0.9,
+              fontSize: { xs: '1.1rem', md: '1.3rem' }
+            }}>
+              Bergabunglah dengan ribuan warga yang telah merasakan kemudahan CitizenReport
+            </Typography>
+            <Stack 
+              direction={{ xs: 'column', sm: 'row' }} 
+              spacing={3} 
+              justifyContent="center"
+            >
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => navigate('/register')}
+                sx={{
+                  bgcolor: 'white',
+                  color: '#6366f1',
+                  fontWeight: 600,
+                  px: 8,
+                  py: 2.5,
+                  borderRadius: '12px',
+                  fontSize: '1.2rem',
+                  textTransform: 'none',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    bgcolor: '#f8fafc',
+                    transform: 'translateY(-3px) scale(1.05)'
+                  }
+                }}
+              >
+                Mulai Gratis
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                sx={{
+                  borderColor: 'white',
+                  color: 'white',
+                  fontWeight: 600,
+                  px: 8,
+                  py: 2.5,
+                  borderRadius: '12px',
+                  fontSize: '1.2rem',
+                  textTransform: 'none',
+                  borderWidth: '2px',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    borderColor: 'white',
+                    bgcolor: 'rgba(255,255,255,0.1)',
+                    transform: 'translateY(-3px) scale(1.05)'
+                  }
+                }}
+              >
+                Hubungi Kami
+              </Button>
+            </Stack>
+          </Box>
+        </Container>
+      </Box>
+
+      {/* Footer */}
+      <Box sx={{ bgcolor: '#1f2937', color: 'white', py: 8 }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={4}>
+              <Typography variant="h6" sx={{ fontWeight: 700, mb: 3, color: '#6366f1' }}>
+                CitizenReport
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 3, opacity: 0.8, lineHeight: 1.6 }}>
+                Platform digital terpercaya untuk pelaporan masalah infrastruktur dengan sistem tracking real-time.
+              </Typography>
+              <Typography variant="body2" sx={{ opacity: 0.6 }}>
+                © 2024 CitizenReport. All rights reserved.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+                Platform
+              </Typography>
+              <Stack spacing={1}>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Fitur
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Harga
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Demo
+                </Typography>
+              </Stack>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+                Dukungan
+              </Typography>
+              <Stack spacing={1}>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Bantuan
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Kontak
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  FAQ
+                </Typography>
+              </Stack>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+                Perusahaan
+              </Typography>
+              <Stack spacing={1}>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Tentang
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Blog
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Karir
+                </Typography>
+              </Stack>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+                Legal
+              </Typography>
+              <Stack spacing={1}>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Privasi
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Syarat
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.8, cursor: 'pointer', '&:hover': { opacity: 1 } }}>
+                  Cookies
+                </Typography>
+              </Stack>
+            </Grid>
+          </Grid>
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.1)' }} />
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="body2" sx={{ opacity: 0.6 }}>
+              Dibuat dengan ❤️ untuk masyarakat Indonesia
+            </Typography>
+          </Box>
+        </Container>
+      </Box>
     </Box>
   );
 };
