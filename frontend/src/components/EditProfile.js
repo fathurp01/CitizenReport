@@ -20,7 +20,8 @@ import {
   MenuItem,
   Chip,
   Backdrop,
-  CircularProgress
+  CircularProgress,
+  Stack
 } from '@mui/material';
 import {
   Person,
@@ -35,19 +36,24 @@ import {
   VisibilityOff,
   Lock,
   VpnKey,
-  Home,
   Badge,
-  Work
+  Work,
+  CalendarToday,
+  Wc
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 
 const EditProfile = () => {
   const { user, updateProfile } = useAuth();
+  
+  // States
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPasswords, setShowPasswords] = useState({
+    current: false,
+    new: false,
+    confirm: false
+  });
   const [avatarPreview, setAvatarPreview] = useState(null);
   
   const [formData, setFormData] = useState({
@@ -75,9 +81,10 @@ const EditProfile = () => {
 
   const [errors, setErrors] = useState({});
 
+  // Initialize form data when user data loads
   useEffect(() => {
     if (user) {
-      setFormData({
+      const userData = {
         fullName: user.fullName || '',
         email: user.email || '',
         phone: user.phone || '',
@@ -86,68 +93,72 @@ const EditProfile = () => {
         gender: user.gender || '',
         occupation: user.occupation || '',
         avatar: user.avatar || null
-      });
+      };
+      setFormData(userData);
       setAvatarPreview(user.avatar);
     }
   }, [user]);
 
+  // Event Handlers
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
     
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
-    setPasswords(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setPasswords(prev => ({ ...prev, [name]: value }));
 
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        showNotification('Ukuran file maksimal 2MB', 'error');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        showNotification('File harus berupa gambar', 'error');
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setAvatarPreview(reader.result);
-        setFormData(prev => ({
-          ...prev,
-          avatar: file
-        }));
+        setFormData(prev => ({ ...prev, avatar: file }));
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const togglePasswordVisibility = (field) => {
+    setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }));
+  };
+
+  // Validation Functions
   const validateForm = () => {
     const newErrors = {};
 
     if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Nama lengkap harus diisi';
+      newErrors.fullName = 'Nama lengkap wajib diisi';
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email harus diisi';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email wajib diisi';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Format email tidak valid';
     }
 
@@ -163,7 +174,7 @@ const EditProfile = () => {
 
     if (passwords.newPassword) {
       if (!passwords.currentPassword) {
-        newErrors.currentPassword = 'Password lama harus diisi';
+        newErrors.currentPassword = 'Password lama wajib diisi';
       }
 
       if (passwords.newPassword.length < 6) {
@@ -173,11 +184,48 @@ const EditProfile = () => {
       if (passwords.newPassword !== passwords.confirmPassword) {
         newErrors.confirmPassword = 'Konfirmasi password tidak cocok';
       }
+
+      if (passwords.currentPassword === passwords.newPassword) {
+        newErrors.newPassword = 'Password baru harus berbeda dari password lama';
+      }
     }
 
     return newErrors;
   };
 
+  // Utility Functions
+  const showNotification = (message, severity = 'success') => {
+    setNotification({ open: true, message, severity });
+  };
+
+  const resetForm = () => {
+    if (user) {
+      setFormData({
+        fullName: user.fullName || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        address: user.address || '',
+        birthDate: user.birthDate || '',
+        gender: user.gender || '',
+        occupation: user.occupation || '',
+        avatar: user.avatar || null
+      });
+      setAvatarPreview(user.avatar);
+    }
+    setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    setErrors({});
+  };
+
+  const getRoleConfig = () => {
+    const configs = {
+      admin: { label: 'Administrator', color: 'error', icon: Badge },
+      village_staff: { label: 'Pegawai Desa', color: 'primary', icon: Badge },
+      default: { label: 'Warga', color: 'success', icon: Badge }
+    };
+    return configs[user?.role] || configs.default;
+  };
+
+  // Main Actions
   const handleSave = async () => {
     const formErrors = validateForm();
     const passwordErrors = validatePasswordChange();
@@ -196,7 +244,7 @@ const EditProfile = () => {
       
       const updateData = { ...formData };
       
-      // If password change is requested
+      // Include password if changing
       if (passwords.newPassword) {
         updateData.password = passwords.newPassword;
       }
@@ -204,81 +252,37 @@ const EditProfile = () => {
       await updateProfile(updateData);
       
       setIsEditing(false);
-      setPasswords({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      });
+      setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      showNotification('Profil berhasil diperbarui!');
       
-      setNotification({
-        open: true,
-        message: 'Profil berhasil diperbarui!',
-        severity: 'success'
-      });
     } catch (error) {
-      setNotification({
-        open: true,
-        message: 'Gagal memperbarui profil. Silakan coba lagi.',
-        severity: 'error'
-      });
+      console.error('Profile update error:', error);
+      showNotification('Gagal memperbarui profil. Silakan coba lagi.', 'error');
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancel = () => {
-    setFormData({
-      fullName: user.fullName || '',
-      email: user.email || '',
-      phone: user.phone || '',
-      address: user.address || '',
-      birthDate: user.birthDate || '',
-      gender: user.gender || '',
-      occupation: user.occupation || '',
-      avatar: user.avatar || null
-    });
-    setAvatarPreview(user.avatar);
-    setPasswords({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    });
-    setErrors({});
+    resetForm();
     setIsEditing(false);
   };
 
-  const getRoleDisplayName = () => {
-    switch(user?.role) {
-      case 'village_staff': return 'Pegawai Desa';
-      case 'admin': return 'Administrator';
-      default: return 'Warga';
-    }
-  };
-
-  const getRoleColor = () => {
-    switch(user?.role) {
-      case 'admin': return 'error';
-      case 'village_staff': return 'primary';
-      default: return 'success';
-    }
-  };
-
   const handleCloseNotification = () => {
-    setNotification(prev => ({
-      ...prev,
-      open: false
-    }));
+    setNotification(prev => ({ ...prev, open: false }));
   };
+
+  const roleConfig = getRoleConfig();
 
   return (
-    <Box sx={{ maxWidth: 1000, mx: 'auto', p: 3 }}>
-      {/* Header */}
+    <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 3 } }}>
+      {/* Header Section */}
       <Paper
         elevation={0}
         sx={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white',
-          p: 4,
+          p: { xs: 3, md: 4 },
           borderRadius: 3,
           mb: 3,
           position: 'relative',
@@ -295,12 +299,12 @@ const EditProfile = () => {
         }}
       >
         <Box sx={{ position: 'relative', zIndex: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <Badge sx={{ mr: 2, fontSize: '2rem' }} />
+          <Stack direction="row" alignItems="center" spacing={2} mb={2}>
+            <Badge sx={{ fontSize: '2rem' }} />
             <Typography variant="h4" component="h1" fontWeight="bold">
-              Edit Profil
+              Edit Profile
             </Typography>
-          </Box>
+          </Stack>
           <Typography variant="h6" sx={{ opacity: 0.9 }}>
             Kelola informasi profil dan keamanan akun Anda
           </Typography>
@@ -308,44 +312,73 @@ const EditProfile = () => {
       </Paper>
 
       <Grid container spacing={3}>
-        {/* Profile Information Card */}
-        <Grid item xs={12} md={8}>
+        {/* Main Profile Card */}
+        <Grid item xs={12} lg={8}>
           <Card elevation={2} sx={{ borderRadius: 3 }}>
-            <CardContent sx={{ p: 4 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h5" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Person sx={{ mr: 1, color: 'primary.main' }} />
-                  Informasi Pribadi
-                </Typography>
+            <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+              {/* Card Header */}
+              <Stack 
+                direction={{ xs: 'column', sm: 'row' }} 
+                justifyContent="space-between" 
+                alignItems={{ xs: 'stretch', sm: 'center' }}
+                spacing={2}
+                mb={3}
+              >
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <Person sx={{ color: 'primary.main' }} />
+                  <Typography variant="h5" fontWeight="bold">
+                    Informasi Pribadi
+                  </Typography>
+                </Stack>
                 <Button
                   variant={isEditing ? "outlined" : "contained"}
-                  color={isEditing ? "secondary" : "primary"}
+                  color="primary"
                   startIcon={isEditing ? <Cancel /> : <Edit />}
                   onClick={() => isEditing ? handleCancel() : setIsEditing(true)}
                   disabled={loading}
+                  size="medium"
+                  sx={{
+                    background: isEditing ? 'transparent' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    borderColor: isEditing ? '#667eea' : 'transparent',
+                    color: isEditing ? '#667eea' : 'white',
+                    '&:hover': {
+                      background: isEditing ? 'rgba(102, 126, 234, 0.08)' : 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                      borderColor: isEditing ? '#5a6fd8' : 'transparent',
+                    },
+                    '&:disabled': {
+                      background: isEditing ? 'transparent' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      opacity: 0.6
+                    }
+                  }}
                 >
                   {isEditing ? 'Batal' : 'Edit Profil'}
                 </Button>
-              </Box>
+              </Stack>
 
               <Divider sx={{ mb: 3 }} />
 
               {/* Avatar Section */}
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
+              <Stack 
+                direction={{ xs: 'column', sm: 'row' }} 
+                alignItems="center" 
+                spacing={3} 
+                mb={4}
+              >
                 <Avatar
                   src={avatarPreview}
                   sx={{ 
-                    width: 100, 
-                    height: 100, 
-                    mr: 3,
+                    width: { xs: 80, sm: 100 }, 
+                    height: { xs: 80, sm: 100 },
                     border: '4px solid',
-                    borderColor: 'primary.light'
+                    borderColor: 'primary.light',
+                    fontSize: '2rem'
                   }}
                 >
                   {formData.fullName ? formData.fullName.charAt(0).toUpperCase() : 'U'}
                 </Avatar>
+                
                 {isEditing && (
-                  <Box>
+                  <Stack spacing={1}>
                     <input
                       accept="image/*"
                       style={{ display: 'none' }}
@@ -363,12 +396,12 @@ const EditProfile = () => {
                         Ubah Foto
                       </Button>
                     </label>
-                    <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
+                    <Typography variant="caption" color="text.secondary" textAlign="center">
                       Max 2MB, JPG/PNG
                     </Typography>
-                  </Box>
+                  </Stack>
                 )}
-              </Box>
+              </Stack>
 
               {/* Form Fields */}
               <Grid container spacing={3}>
@@ -442,8 +475,13 @@ const EditProfile = () => {
                     value={formData.birthDate}
                     onChange={handleInputChange}
                     disabled={!isEditing}
-                    InputLabelProps={{
-                      shrink: true,
+                    InputLabelProps={{ shrink: true }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <CalendarToday color="action" />
+                        </InputAdornment>
+                      ),
                     }}
                   />
                 </Grid>
@@ -456,6 +494,11 @@ const EditProfile = () => {
                       name="gender"
                       value={formData.gender}
                       onChange={handleInputChange}
+                      startAdornment={
+                        <InputAdornment position="start">
+                          <Wc color="action" />
+                        </InputAdornment>
+                      }
                     >
                       <MenuItem value="male">Laki-laki</MenuItem>
                       <MenuItem value="female">Perempuan</MenuItem>
@@ -502,9 +545,14 @@ const EditProfile = () => {
                 </Grid>
               </Grid>
 
-              {/* Save Button */}
+              {/* Action Buttons */}
               {isEditing && (
-                <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                <Stack 
+                  direction="row" 
+                  spacing={2} 
+                  justifyContent="flex-end" 
+                  mt={4}
+                >
                   <Button
                     variant="outlined"
                     onClick={handleCancel}
@@ -521,137 +569,140 @@ const EditProfile = () => {
                   >
                     Simpan Perubahan
                   </Button>
-                </Box>
+                </Stack>
               )}
             </CardContent>
           </Card>
         </Grid>
 
         {/* Sidebar */}
-        <Grid item xs={12} md={4}>
-          {/* Role Card */}
-          <Card elevation={2} sx={{ borderRadius: 3, mb: 3 }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                Status Akun
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography variant="body2" color="text.secondary">
-                  Role:
-                </Typography>
-                <Chip
-                  label={getRoleDisplayName()}
-                  color={getRoleColor()}
-                  size="small"
-                  icon={<Badge />}
-                />
-              </Box>
-            </CardContent>
-          </Card>
+        <Grid item xs={12} lg={4}>
+          <Stack spacing={3}>
+            {/* Role Status Card */}
+            <Card elevation={2} sx={{ borderRadius: 3 }}>
+              <CardContent>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <Typography variant="body1" fontWeight="medium" color="text.primary">
+                    Status:
+                  </Typography>
+                  <Chip
+                    label={roleConfig.label}
+                    color={roleConfig.color}
+                    size="medium"
+                    icon={<roleConfig.icon />}
+                    sx={{
+                      fontWeight: 'bold',
+                      '& .MuiChip-icon': {
+                        fontSize: '1.1rem'
+                      }
+                    }}
+                  />
+                </Stack>
+              </CardContent>
+            </Card>
 
-          {/* Password Change Card */}
-          <Card elevation={2} sx={{ borderRadius: 3 }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                <Lock sx={{ mr: 1, color: 'primary.main' }} />
-                Ubah Password
-              </Typography>
-              
-              <Box sx={{ mb: 2 }}>
-                <TextField
-                  fullWidth
-                  label="Password Lama"
-                  name="currentPassword"
-                  type={showPassword ? 'text' : 'password'}
-                  value={passwords.currentPassword}
-                  onChange={handlePasswordChange}
-                  error={!!errors.currentPassword}
-                  helperText={errors.currentPassword}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <VpnKey color="action" />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>
+            {/* Password Change Card */}
+            <Card elevation={2} sx={{ borderRadius: 3 }}>
+              <CardContent>
+                <Stack direction="row" alignItems="center" spacing={1} mb={3}>
+                  <Lock sx={{ color: 'primary.main' }} />
+                  <Typography variant="h6" fontWeight="bold">
+                    Ubah Password
+                  </Typography>
+                </Stack>
+                
+                <Stack spacing={2}>
+                  <TextField
+                    fullWidth
+                    label="Password Lama"
+                    name="currentPassword"
+                    type={showPasswords.current ? 'text' : 'password'}
+                    value={passwords.currentPassword}
+                    onChange={handlePasswordChange}
+                    error={!!errors.currentPassword}
+                    helperText={errors.currentPassword}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <VpnKey color="action" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => togglePasswordVisibility('current')}
+                            edge="end"
+                          >
+                            {showPasswords.current ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
 
-              <Box sx={{ mb: 2 }}>
-                <TextField
-                  fullWidth
-                  label="Password Baru"
-                  name="newPassword"
-                  type={showNewPassword ? 'text' : 'password'}
-                  value={passwords.newPassword}
-                  onChange={handlePasswordChange}
-                  error={!!errors.newPassword}
-                  helperText={errors.newPassword}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Lock color="action" />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowNewPassword(!showNewPassword)}
-                          edge="end"
-                        >
-                          {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>
+                  <TextField
+                    fullWidth
+                    label="Password Baru"
+                    name="newPassword"
+                    type={showPasswords.new ? 'text' : 'password'}
+                    value={passwords.newPassword}
+                    onChange={handlePasswordChange}
+                    error={!!errors.newPassword}
+                    helperText={errors.newPassword}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock color="action" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => togglePasswordVisibility('new')}
+                            edge="end"
+                          >
+                            {showPasswords.new ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
 
-              <Box sx={{ mb: 3 }}>
-                <TextField
-                  fullWidth
-                  label="Konfirmasi Password Baru"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  value={passwords.confirmPassword}
-                  onChange={handlePasswordChange}
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Lock color="action" />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          edge="end"
-                        >
-                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>
+                  <TextField
+                    fullWidth
+                    label="Konfirmasi Password Baru"
+                    name="confirmPassword"
+                    type={showPasswords.confirm ? 'text' : 'password'}
+                    value={passwords.confirmPassword}
+                    onChange={handlePasswordChange}
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock color="action" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => togglePasswordVisibility('confirm')}
+                            edge="end"
+                          >
+                            {showPasswords.confirm ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
 
-              <Alert severity="info" sx={{ mb: 2 }}>
-                Password baru minimal 6 karakter dan berbeda dari password lama.
-              </Alert>
-            </CardContent>
-          </Card>
+                  <Alert severity="info" sx={{ mt: 1 }}>
+                    Password baru minimal 6 karakter dan harus berbeda dari password lama.
+                  </Alert>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Stack>
         </Grid>
       </Grid>
 
@@ -674,6 +725,8 @@ const EditProfile = () => {
           onClose={handleCloseNotification} 
           severity={notification.severity}
           sx={{ width: '100%' }}
+          elevation={6}
+          variant="filled"
         >
           {notification.message}
         </Alert>

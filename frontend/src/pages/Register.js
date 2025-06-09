@@ -114,24 +114,21 @@ const Register = () => {
       setIsSubmitting(false);
     }
   };
-
   return (
     <Box
       sx={{
-        height: '100vh',
+        minHeight: '100vh',
         width: '100vw',
         overflow: 'auto',
-        overscrollBehavior: 'none',
-        position: 'fixed',
-        top: 0,
-        left: 0,
+        position: 'relative',
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #6366f1 50%, #8b5cf6 75%, #a855f7 100%)',
         backgroundSize: '400% 400%',
         animation: `${gradientShift} 15s ease infinite`,
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
-        py: 2,
+        py: 3,
+        px: 2,
         '&::before': {
           content: '""',
           position: 'absolute',
@@ -148,7 +145,12 @@ const Register = () => {
         }
       }}
     >
-      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 2 }}>
+      <Container maxWidth="sm" sx={{ 
+        position: 'relative', 
+        zIndex: 2,
+        width: '100%',
+        my: 2
+      }}>
         <Zoom in={isVisible} timeout={1000}>
           <Card 
             elevation={0}
@@ -227,7 +229,7 @@ const Register = () => {
               <Fade in={formVisible} timeout={800}>
                 <Button
                   startIcon={<ArrowBackIcon />}
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/')}
                   sx={{
                     mb: 2,
                     color: '#6366f1',
@@ -241,7 +243,7 @@ const Register = () => {
                     }
                   }}
                 >
-                  Kembali ke Login
+                  Kembali ke Beranda
                 </Button>
               </Fade>
 

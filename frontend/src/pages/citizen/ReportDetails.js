@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
-  Container,
   Paper,
   Grid,
   Divider,
@@ -129,9 +128,10 @@ const ReportDetails = () => {
 
   if (loading) {
     return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'grey.50' }}>
-          <Stack spacing={3}>
+      <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 3 } }}>
+        <Card elevation={2} sx={{ borderRadius: 3 }}>
+          <Box sx={{ p: { xs: 3, md: 4 } }}>
+            <Stack spacing={3}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Skeleton variant="text" width={200} height={40} />
               <Skeleton variant="rounded" width={100} height={32} />
@@ -162,55 +162,60 @@ const ReportDetails = () => {
               ))}
             </Grid>
           </Stack>
-        </Paper>
-      </Container>
+        </Box>
+      </Card>
+    </Box>
     );
   }
 
   if (error) {
     return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'error.50' }}>
-          <Alert 
-            severity="error" 
-            sx={{ 
-              borderRadius: 2,
-              '& .MuiAlert-message': { fontSize: '1rem' }
-            }}
-            action={
-              <Button 
-                color="inherit" 
-                size="small" 
-                onClick={handleRetry}
-                variant="outlined"
-                sx={{ borderRadius: 2 }}
-              >
-                Coba Lagi
-              </Button>
-            }
-          >
-            {error}
-          </Alert>
-        </Paper>
-      </Container>
+      <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 3 } }}>
+        <Card elevation={2} sx={{ borderRadius: 3 }}>
+          <Box sx={{ p: { xs: 3, md: 4 } }}>
+            <Alert 
+              severity="error" 
+              sx={{ 
+                borderRadius: 2,
+                '& .MuiAlert-message': { fontSize: '1rem' }
+              }}
+              action={
+                <Button 
+                  color="inherit" 
+                  size="small" 
+                  onClick={handleRetry}
+                  variant="outlined"
+                  sx={{ borderRadius: 2 }}
+                >
+                  Coba Lagi
+                </Button>
+              }
+            >
+              {error}
+            </Alert>
+          </Box>
+        </Card>
+      </Box>
     );
   }
 
   if (!report) {
     return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'warning.50' }}>
-          <Alert severity="warning" sx={{ borderRadius: 2, fontSize: '1rem' }}>
-            Data laporan tidak ditemukan.
-          </Alert>
-        </Paper>
-      </Container>
+      <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 3 } }}>
+        <Card elevation={2} sx={{ borderRadius: 3 }}>
+          <Box sx={{ p: { xs: 3, md: 4 } }}>
+            <Alert severity="warning" sx={{ borderRadius: 2, fontSize: '1rem' }}>
+              Data laporan tidak ditemukan.
+            </Alert>
+          </Box>
+        </Card>
+      </Box>
     );
   }
 
   return (
     <>
-      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+      <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 3 } }}>
         {/* Header with Back Button */}
         <Box sx={{ mb: 3 }}>
           <Button
@@ -224,19 +229,19 @@ const ReportDetails = () => {
             }}
             variant="outlined"
           >
-            Kembali ke Laporan
+            Kembali
           </Button>
         </Box>
 
         <Fade in={true} timeout={800}>
-          <Paper 
-            elevation={0} 
-            sx={{ 
-              p: 4, 
+          <Paper
+            elevation={0}
+            sx={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              p: { xs: 3, md: 4 },
               borderRadius: 3,
-              bgcolor: 'background.paper',
-              border: '1px solid',
-              borderColor: 'grey.200',
+              mb: 3,
               position: 'relative',
               overflow: 'hidden',
               '&::before': {
@@ -245,45 +250,49 @@ const ReportDetails = () => {
                 top: 0,
                 left: 0,
                 right: 0,
-                height: 4,
-                bgcolor: 'primary.main',
-                borderRadius: '12px 12px 0 0'
+                bottom: 0,
+                background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="white" fill-opacity="0.1"%3E%3Cpath d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/svg%3E")',
               }
             }}
           >
-            {/* Header Section */}
-            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 3 }}>
-              <Box>
-                <Typography 
-                  variant="h4" 
-                  gutterBottom 
+            <Box sx={{ position: 'relative', zIndex: 1 }}>
+              {/* Header Section */}
+              <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 2 }}>
+                <Box>
+                  <Typography 
+                    variant="h4"
+                    component="h1"
+                    fontWeight="bold"
+                    sx={{ mb: 1, lineHeight: 1.2 }}
+                  >
+                    {report.title}
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.875rem' }}>
+                    ID Laporan: #{report.id || 'N/A'}
+                  </Typography>
+                </Box>
+                <Chip
+                  label={getStatusLabel(report.status)}
+                  color={getStatusColor(report.status)}
                   sx={{ 
-                    fontWeight: 700,
-                    color: 'text.primary',
-                    lineHeight: 1.2
+                    fontWeight: 600,
+                    fontSize: '0.875rem',
+                    px: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    bgcolor: 'rgba(255, 255, 255, 0.2)',
+                    color: 'white',
+                    border: '1px solid rgba(255, 255, 255, 0.3)'
                   }}
-                >
-                  {report.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
-                  ID Laporan: #{report.id || 'N/A'}
-                </Typography>
-              </Box>
-              <Chip
-                label={getStatusLabel(report.status)}
-                color={getStatusColor(report.status)}
-                sx={{ 
-                  fontWeight: 600,
-                  fontSize: '0.875rem',
-                  px: 2,
-                  py: 1,
-                  borderRadius: 2
-                }}
-              />
-            </Stack>
+                />
+              </Stack>
+            </Box>
+          </Paper>
+        </Fade>
 
-            <Divider sx={{ my: 3 }} />
-
+        {/* Main Content Card */}
+        <Card elevation={2} sx={{ borderRadius: 3 }}>
+          <Box sx={{ p: { xs: 3, md: 4 } }}>
             {/* Info Grid */}
             <Grid container spacing={4}>
               <Grid item xs={12} sm={6}>
@@ -364,8 +373,7 @@ const ReportDetails = () => {
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
                 Deskripsi
               </Typography>
-              <Paper 
-                elevation={0} 
+              <Box 
                 sx={{ 
                   p: 3, 
                   bgcolor: 'grey.50', 
@@ -377,7 +385,7 @@ const ReportDetails = () => {
                 <Typography variant="body1" sx={{ lineHeight: 1.7, color: 'text.primary' }}>
                   {report.description}
                 </Typography>
-              </Paper>
+              </Box>
             </Box>
 
             {/* Images Section */}
@@ -390,6 +398,7 @@ const ReportDetails = () => {
                   {report.images.map((image, index) => (
                     <Grid item xs={12} sm={6} md={4} key={index}>
                       <Card
+                        elevation={2}
                         sx={{
                           cursor: 'pointer',
                           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -442,9 +451,9 @@ const ReportDetails = () => {
                 </Grid>
               </Box>
             )}
-          </Paper>
-        </Fade>
-      </Container>
+          </Box>
+        </Card>
+      </Box>
 
       {/* Enhanced Image Preview Modal */}
       <Modal

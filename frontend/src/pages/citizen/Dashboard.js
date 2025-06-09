@@ -106,39 +106,40 @@ const Dashboard = () => {
   const stats = getStatusStats();
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      py: 4
-    }}>
-      <Container maxWidth="lg">
-        {/* Header Section */}
-        <Paper 
-          elevation={0}
-          sx={{ 
-            p: 4, 
-            mb: 4, 
-            borderRadius: 3,
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)'
-          }}
-        >
+    <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 3 } }}>
+      {/* Header Section */}
+      <Paper
+        elevation={0}
+        sx={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          p: { xs: 3, md: 4 },
+          borderRadius: 3,
+          mb: 3,
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="white" fill-opacity="0.1"%3E%3Cpath d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/svg%3E")',
+          }
+        }}        >
+        <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box>
               <Typography 
-                variant="h3" 
-                sx={{ 
-                  fontWeight: 700,
-                  background: 'linear-gradient(45deg, #667eea, #764ba2)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  mb: 1
-                }}
+                variant="h4"
+                component="h1"
+                fontWeight="bold"
+                sx={{ mb: 1 }}
               >
                 Laporan Saya
               </Typography>
-              <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400 }}>
+              <Typography variant="h6" sx={{ opacity: 0.9 }}>
                 Kelola dan lacak laporan yang telah Anda kirimkan
               </Typography>
             </Box>
@@ -154,12 +155,14 @@ const Dashboard = () => {
                 textTransform: 'none',
                 fontSize: '1rem',
                 fontWeight: 600,
-                background: 'linear-gradient(45deg, #667eea, #764ba2)',
-                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)',
+                background: 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                 '&:hover': {
-                  background: 'linear-gradient(45deg, #5a6fd8, #6a42a0)',
+                  background: 'rgba(255, 255, 255, 0.3)',
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 12px 40px rgba(102, 126, 234, 0.4)',
+                  boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
                 },
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
               }}
@@ -167,7 +170,8 @@ const Dashboard = () => {
               Buat Laporan Baru
             </Button>
           </Box>
-        </Paper>
+        </Box>
+      </Paper>
 
         {/* Stats Cards */}
         {!loading && !error && reports.length > 0 && (
@@ -181,10 +185,8 @@ const Dashboard = () => {
               ].map((stat, index) => (
                 <Grid item xs={6} md={3} key={stat.label}>
                   <Card
+                    elevation={2}
                     sx={{
-                      background: 'rgba(255, 255, 255, 0.95)',
-                      backdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
                       borderRadius: 3,
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                       '&:hover': {
@@ -222,12 +224,9 @@ const Dashboard = () => {
 
         {/* Content Section */}
         <Paper 
-          elevation={0}
+          elevation={2}
           sx={{ 
             borderRadius: 3,
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
             overflow: 'hidden'
           }}
         >
@@ -317,20 +316,17 @@ const Dashboard = () => {
                   <Grid item xs={12} md={6} key={report.id}>
                     <Fade in timeout={600 + (index * 100)}>
                       <Card
+                        elevation={2}
                         sx={{
                           height: '100%',
                           display: 'flex',
                           flexDirection: 'column',
                           cursor: 'pointer',
                           borderRadius: 3,
-                          border: '1px solid rgba(255, 255, 255, 0.1)',
-                          background: 'rgba(255, 255, 255, 0.8)',
-                          backdropFilter: 'blur(10px)',
                           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                           '&:hover': {
                             transform: 'translateY(-8px)',
                             boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                            background: 'rgba(255, 255, 255, 0.95)',
                           }
                         }}
                         onClick={() => viewReport(report.id)}
@@ -440,9 +436,8 @@ const Dashboard = () => {
             </Box>
           )}
         </Paper>
-      </Container>
-    </Box>
-  );
-};
+      </Box>
+    );
+  };
 
 export default Dashboard;

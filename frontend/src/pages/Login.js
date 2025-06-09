@@ -29,16 +29,11 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SecurityIcon from '@mui/icons-material/Security';
 import { keyframes } from '@mui/system';
 
-// Enhanced Animations (removed star and main card animations)
+// Enhanced Animations (removed unused slideInUp)
 const pulse = keyframes`
   0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
   50% { transform: scale(1.08) rotate(180deg); box-shadow: 0 0 0 20px rgba(99, 102, 241, 0); }
   100% { transform: scale(1) rotate(360deg); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-`;
-
-const slideInUp = keyframes`
-  0% { transform: translateY(40px) scale(0.95); opacity: 0; }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
 `;
 
 const gradientShift = keyframes`
@@ -124,7 +119,17 @@ const Login = () => {
         }
       }}
     >
-      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 2, height: '100vh', display: 'flex', alignItems: 'center' }}>
+      <Container 
+        maxWidth="sm" 
+        sx={{ 
+          position: 'relative', 
+          zIndex: 2, 
+          height: '100vh', 
+          display: 'flex', 
+          alignItems: 'center',
+          py: 2 // Add padding for mobile
+        }}
+      >
         <Zoom in={isVisible} timeout={1000}>
           <Card 
             elevation={0}
@@ -143,6 +148,8 @@ const Login = () => {
                 inset 0 1px 0 rgba(255, 255, 255, 0.6)
               `,
               transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              display: 'flex',
+              flexDirection: 'column',
               '&:hover': {
                 transform: 'translateY(-4px) scale(1.01)',
                 boxShadow: `
@@ -163,6 +170,7 @@ const Login = () => {
                 textAlign: 'center',
                 position: 'relative',
                 overflow: 'hidden',
+                flexShrink: 0, // Prevent header from shrinking
                 '&::before': {
                   content: '""',
                   position: 'absolute',
@@ -205,277 +213,300 @@ const Login = () => {
               </Box>
             </Slide>
 
-            <CardContent sx={{ px: 4, py: 3, height: 'calc(100% - 120px)', overflow: 'auto' }}>
-              {/* Compact Back Button */}
-              <Fade in={formVisible} timeout={600}>
-                <Button
-                  startIcon={<ArrowBackIcon />}
-                  onClick={() => navigate('/')}
-                  size="small"
-                  sx={{ 
-                    mb: 2, 
-                    color: 'text.secondary',
-                    fontSize: '0.9rem',
-                    fontWeight: 500,
-                    borderRadius: '12px',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    '&:hover': {
-                      transform: 'translateX(-4px)',
-                      color: '#6366f1',
-                      backgroundColor: 'rgba(99, 102, 241, 0.08)'
-                    }
-                  }}
-                >
-                  Kembali ke Beranda
-                </Button>
-              </Fade>
-
-              {/* Compact Error Alert */}
-              {error && (
-                <Grow in={!!error} timeout={500}>
-                  <Alert 
-                    severity="error" 
+            {/* Scrollable Content Area */}
+            <Box sx={{ 
+              flex: 1, 
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <CardContent sx={{ 
+                px: 4, 
+                py: 3, 
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: 0 // Important for proper scrolling
+              }}>
+                {/* Compact Back Button */}
+                <Fade in={formVisible} timeout={600}>
+                  <Button
+                    startIcon={<ArrowBackIcon />}
+                    onClick={() => navigate('/')}
+                    size="small"
                     sx={{ 
                       mb: 2, 
-                      borderRadius: '12px',
+                      color: 'text.secondary',
                       fontSize: '0.9rem',
-                      py: 0.5
-                    }}
-                  >
-                    {error}
-                  </Alert>
-                </Grow>
-              )}
-
-              {/* Compact Login Form */}
-              <Fade in={formVisible} timeout={1000}>
-                <Box component="form" onSubmit={handleSubmit} noValidate>
-                  <TextField
-                    required
-                    fullWidth
-                    id="email"
-                    label="Alamat Email"
-                    name="email"
-                    autoComplete="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    size="medium"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <EmailIcon sx={{ color: '#6366f1', fontSize: 22 }} />
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ 
-                      mb: 2,
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '14px',
-                        fontSize: '1rem',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        '& fieldset': {
-                          borderColor: 'rgba(99, 102, 241, 0.25)',
-                          borderWidth: '2px',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'rgba(99, 102, 241, 0.5)',
-                          transform: 'scale(1.005)'
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#6366f1',
-                          boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.12)'
-                        },
-                      },
-                      '& .MuiInputLabel-root.Mui-focused': {
-                        color: '#6366f1'
-                      }
-                    }}
-                  />
-                  
-                  <TextField
-                    required
-                    fullWidth
-                    name="password"
-                    label="Kata Sandi"
-                    type={showPassword ? 'text' : 'password'}
-                    id="password"
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    size="medium"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockIcon sx={{ color: '#6366f1', fontSize: 22 }} />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                            size="small"
-                            sx={{
-                              transition: 'all 0.3s ease',
-                              '&:hover': {
-                                color: '#6366f1',
-                                transform: 'scale(1.1)'
-                              }
-                            }}
-                          >
-                            {showPassword ? 
-                              <VisibilityOffIcon sx={{ fontSize: 22 }} /> : 
-                              <VisibilityIcon sx={{ fontSize: 22 }} />
-                            }
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ 
-                      mb: 3,
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '14px',
-                        fontSize: '1rem',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        '& fieldset': {
-                          borderColor: 'rgba(99, 102, 241, 0.25)',
-                          borderWidth: '2px',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'rgba(99, 102, 241, 0.5)',
-                          transform: 'scale(1.005)'
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#6366f1',
-                          boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.12)'
-                        },
-                      },
-                      '& .MuiInputLabel-root.Mui-focused': {
-                        color: '#6366f1'
-                      }
-                    }}
-                  />
-                  
-                  {/* Enhanced Login Button */}
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    disabled={loading}
-                    startIcon={loading ? null : <LoginIcon />}
-                    sx={{
-                      mb: 2,
-                      py: 1.8,
-                      fontSize: '1.1rem',
-                      fontWeight: 600,
-                      borderRadius: '14px',
-                      position: 'relative',
-                      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
-                      backgroundSize: '200% 200%',
-                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                      boxShadow: '0 8px 32px rgba(99, 102, 241, 0.35)',
-                      overflow: 'hidden',
-                      textTransform: 'none',
-                      '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: '-100%',
-                        width: '100%',
-                        height: '100%',
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
-                        transition: 'all 0.7s ease',
-                        zIndex: 1
-                      },
-                      '&:hover': {
-                        transform: 'translateY(-2px) scale(1.02)',
-                        boxShadow: '0 16px 48px rgba(99, 102, 241, 0.45)',
-                        backgroundPosition: 'right center'
-                      },
-                      '&:hover::before': {
-                        left: '100%'
-                      },
-                      '&:active': {
-                        transform: 'translateY(0) scale(0.98)'
-                      },
-                      '&:disabled': {
-                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
-                        opacity: 0.7
-                      }
-                    }}
-                  >
-                    {loading ? (
-                      <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} />
-                    ) : null}
-                    {loading ? 'Memproses...' : 'Masuk ke Akun'}
-                  </Button>
-
-                  {/* Compact Divider */}
-                  <Divider sx={{ 
-                    my: 2,
-                    '&::before, &::after': {
-                      borderColor: 'rgba(99, 102, 241, 0.2)'
-                    }
-                  }}>
-                    <Typography variant="body2" color="text.secondary" sx={{
-                      px: 2,
                       fontWeight: 500,
-                      fontSize: '0.9rem'
-                    }}>
-                      Belum punya akun?
-                    </Typography>
-                  </Divider>
-
-                  {/* Enhanced Register Button */}
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    onClick={() => navigate('/register')}
-                    startIcon={<PersonAddIcon />}
-                    sx={{ 
-                      py: 1.8,
-                      fontSize: '1rem',
-                      fontWeight: 600,
-                      borderRadius: '14px',
-                      borderWidth: '2px',
-                      borderColor: 'rgba(99, 102, 241, 0.4)',
-                      color: '#6366f1',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                      textTransform: 'none',
-                      '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)',
-                        transform: 'scaleX(0)',
-                        transformOrigin: 'left',
-                        transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                        zIndex: -1
-                      },
-                      '&:hover': { 
-                        borderColor: '#6366f1',
-                        transform: 'translateY(-1px) scale(1.01)',
-                        boxShadow: '0 8px 32px rgba(99, 102, 241, 0.25)'
-                      },
-                      '&:hover::before': {
-                        transform: 'scaleX(1)'
-                      },
-                      '&:active': {
-                        transform: 'translateY(0) scale(0.98)'
+                      borderRadius: '12px',
+                      alignSelf: 'flex-start',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      '&:hover': {
+                        transform: 'translateX(-4px)',
+                        color: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.08)'
                       }
                     }}
                   >
-                    Daftar Akun Baru
+                    Kembali ke Beranda
                   </Button>
-                </Box>
-              </Fade>
-            </CardContent>
+                </Fade>
+
+                {/* Compact Error Alert */}
+                {error && (
+                  <Grow in={!!error} timeout={500}>
+                    <Alert 
+                      severity="error" 
+                      sx={{ 
+                        mb: 2, 
+                        borderRadius: '12px',
+                        fontSize: '0.9rem',
+                        py: 0.5
+                      }}
+                    >
+                      {error}
+                    </Alert>
+                  </Grow>
+                )}
+
+                {/* Login Form with proper spacing */}
+                <Fade in={formVisible} timeout={1000}>
+                  <Box 
+                    component="form" 
+                    onSubmit={handleSubmit} 
+                    noValidate
+                    sx={{ 
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 2,
+                      flex: 1
+                    }}
+                  >
+                    <TextField
+                      required
+                      fullWidth
+                      id="email"
+                      label="Alamat Email"
+                      name="email"
+                      autoComplete="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      size="medium"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <EmailIcon sx={{ color: '#6366f1', fontSize: 22 }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{ 
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '14px',
+                          fontSize: '1rem',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                          '& fieldset': {
+                            borderColor: 'rgba(99, 102, 241, 0.25)',
+                            borderWidth: '2px',
+                          },
+                          '&:hover fieldset': {
+                            borderColor: 'rgba(99, 102, 241, 0.5)',
+                            transform: 'scale(1.005)'
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: '#6366f1',
+                            boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.12)'
+                          },
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                          color: '#6366f1'
+                        }
+                      }}
+                    />
+                    
+                    <TextField
+                      required
+                      fullWidth
+                      name="password"
+                      label="Kata Sandi"
+                      type={showPassword ? 'text' : 'password'}
+                      id="password"
+                      autoComplete="current-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      size="medium"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <LockIcon sx={{ color: '#6366f1', fontSize: 22 }} />
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={() => setShowPassword(!showPassword)}
+                              edge="end"
+                              size="small"
+                              sx={{
+                                transition: 'all 0.3s ease',
+                                '&:hover': {
+                                  color: '#6366f1',
+                                  transform: 'scale(1.1)'
+                                }                              
+                              }}>
+                              {showPassword ? 
+                                <VisibilityOffIcon sx={{ fontSize: 22 }} /> : 
+                                <VisibilityIcon sx={{ fontSize: 22 }} />
+                              }
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{ 
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '14px',
+                          fontSize: '1rem',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                          '& fieldset': {
+                            borderColor: 'rgba(99, 102, 241, 0.25)',
+                            borderWidth: '2px',
+                          },
+                          '&:hover fieldset': {
+                            borderColor: 'rgba(99, 102, 241, 0.5)',
+                            transform: 'scale(1.005)'
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: '#6366f1',
+                            boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.12)'
+                          },
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                          color: '#6366f1'
+                        }
+                      }}
+                    />
+                    
+                    {/* Enhanced Login Button */}
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      disabled={loading}
+                      startIcon={loading ? null : <LoginIcon />}
+                      sx={{
+                        py: 1.8,
+                        fontSize: '1.1rem',
+                        fontWeight: 600,
+                        borderRadius: '14px',
+                        position: 'relative',
+                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+                        backgroundSize: '200% 200%',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        boxShadow: '0 8px 32px rgba(99, 102, 241, 0.35)',
+                        overflow: 'hidden',
+                        textTransform: 'none',
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: '-100%',
+                          width: '100%',
+                          height: '100%',
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                          transition: 'all 0.7s ease',
+                          zIndex: 1
+                        },
+                        '&:hover': {
+                          transform: 'translateY(-2px) scale(1.02)',
+                          boxShadow: '0 16px 48px rgba(99, 102, 241, 0.45)',
+                          backgroundPosition: 'right center'
+                        },
+                        '&:hover::before': {
+                          left: '100%'
+                        },
+                        '&:active': {
+                          transform: 'translateY(0) scale(0.98)'
+                        },
+                        '&:disabled': {
+                          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+                          opacity: 0.7
+                        }
+                      }}
+                    >
+                      {loading ? (
+                        <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} />
+                      ) : null}
+                      {loading ? 'Memproses...' : 'Masuk ke Akun'}
+                    </Button>
+
+                    {/* Compact Divider */}
+                    <Divider sx={{ 
+                      my: 1,
+                      '&::before, &::after': {
+                        borderColor: 'rgba(99, 102, 241, 0.2)'
+                      }
+                    }}>
+                      <Typography variant="body2" color="text.secondary" sx={{
+                        px: 2,
+                        fontWeight: 500,
+                        fontSize: '0.9rem'
+                      }}>
+                        Belum punya akun?
+                      </Typography>
+                    </Divider>
+
+                    {/* Enhanced Register Button - Now properly positioned */}
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      onClick={() => navigate('/register')}
+                      startIcon={<PersonAddIcon />}
+                      sx={{ 
+                        py: 1.8,
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        borderRadius: '14px',
+                        borderWidth: '2px',
+                        borderColor: 'rgba(99, 102, 241, 0.4)',
+                        color: '#6366f1',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        textTransform: 'none',
+                        marginBottom: 2, // Add bottom margin for safety
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)',
+                          transform: 'scaleX(0)',
+                          transformOrigin: 'left',
+                          transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                          zIndex: -1
+                        },
+                        '&:hover': { 
+                          borderColor: '#6366f1',
+                          transform: 'translateY(-1px) scale(1.01)',
+                          boxShadow: '0 8px 32px rgba(99, 102, 241, 0.25)'
+                        },
+                        '&:hover::before': {
+                          transform: 'scaleX(1)'
+                        },
+                        '&:active': {
+                          transform: 'translateY(0) scale(0.98)'
+                        }
+                      }}
+                    >
+                      Daftar Akun Baru
+                    </Button>
+                  </Box>
+                </Fade>
+              </CardContent>
+            </Box>
           </Card>
         </Zoom>
       </Container>

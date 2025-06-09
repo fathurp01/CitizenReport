@@ -190,7 +190,7 @@ const LandingPage = () => {
                 }
               }}
             >
-              Daftar Gratis
+              Daftar
             </Button>
           </Toolbar>
         </AppBar>
@@ -303,7 +303,7 @@ const LandingPage = () => {
                     </Button>
                   </Stack>
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                    ✅ Gratis selamanya • ✅ Tanpa iklan • ✅ Data aman terlindungi
+                  ✅ Respon Cepat • ✅ Data aman terlindungi
                   </Typography>
                 </Box>
               </Fade>

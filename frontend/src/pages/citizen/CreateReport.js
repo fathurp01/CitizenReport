@@ -5,7 +5,6 @@ import {
   TextField,
   Button,
   Paper,
-  Container,
   Grid,
   MenuItem,
   FormControl,
@@ -152,61 +151,62 @@ const CreateReport = () => {
   if (loading) return <FormSkeleton />;
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      py: 4
-    }}>
-      <Container maxWidth="md">
-        {/* Header */}
-        <Fade in timeout={800}>
-          <Paper 
-            elevation={0}
-            sx={{ 
-              p: 4, 
-              mb: 4, 
-              borderRadius: 3,
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              textAlign: 'center'
-            }}
-          >
+    <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 3 } }}>
+      {/* Header */}
+      <Fade in timeout={800}>
+        <Paper
+          elevation={0}
+          sx={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            p: { xs: 3, md: 4 },
+            borderRadius: 3,
+            mb: 3,
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="white" fill-opacity="0.1"%3E%3Cpath d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/svg%3E")',
+            }
+          }}
+        >
+          <Box sx={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
             <Avatar
               sx={{
-                bgcolor: 'primary.main',
+                bgcolor: 'rgba(255, 255, 255, 0.2)',
                 width: 80,
                 height: 80,
                 mx: 'auto',
                 mb: 3,
-                background: 'linear-gradient(45deg, #667eea, #764ba2)'
+                border: '2px solid rgba(255, 255, 255, 0.3)'
               }}
             >
               <DescriptionIcon sx={{ fontSize: 40 }} />
             </Avatar>
             <Typography 
-              variant="h3" 
-              sx={{ 
-                fontWeight: 700,
-                background: 'linear-gradient(45deg, #667eea, #764ba2)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                mb: 1
-              }}
+              variant="h4"
+              component="h1"
+              fontWeight="bold"
+              sx={{ mb: 1 }}
             >
               Buat Laporan Baru
             </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400, mb: 3 }}>
+            <Typography variant="h6" sx={{ opacity: 0.9, mb: 3 }}>
               Bantu tingkatkan komunitas Anda dengan melaporkan masalah
             </Typography>
             
             {/* Progress Bar */}
             <Box sx={{ mb: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{ opacity: 0.8 }}>
                   Kelengkapan Form
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{ opacity: 0.8 }}>
                   {getCompletionPercentage()}%
                 </Typography>
               </Box>
@@ -216,27 +216,25 @@ const CreateReport = () => {
                 sx={{
                   height: 8,
                   borderRadius: 4,
-                  backgroundColor: 'rgba(0,0,0,0.1)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
                   '& .MuiLinearProgress-bar': {
                     borderRadius: 4,
-                    background: 'linear-gradient(45deg, #667eea, #764ba2)'
+                    background: 'rgba(255, 255, 255, 0.8)'
                   }
                 }}
               />
             </Box>
-          </Paper>
-        </Fade>
+          </Box>
+        </Paper>
+      </Fade>
 
         {/* Form */}
         <Fade in timeout={1000}>
           <Paper 
-            elevation={0}
+            elevation={2}
             sx={{ 
-              p: 4, 
-              borderRadius: 3,
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.2)'
+              p: { xs: 3, md: 4 }, 
+              borderRadius: 3
             }}
           >
             {submitError && (
@@ -666,9 +664,8 @@ const CreateReport = () => {
             </Box>
           </Fade>
         </Modal>
-      </Container>
-    </Box>
-  );
-};
+      </Box>
+    );
+  };
 
 export default CreateReport;
