@@ -42,11 +42,11 @@ import axios from 'axios';
 import { FormSkeleton } from '../../components/common/SkeletonLoader';
 
 const categories = [
-  { value: 'road_damage', label: 'Road Damage', icon: '🛣️', color: '#f44336' },
-  { value: 'garbage', label: 'Garbage', icon: '🗑️', color: '#ff9800' },
-  { value: 'flood', label: 'Flood', icon: '🌊', color: '#2196f3' },
-  { value: 'street_light', label: 'Street Light', icon: '💡', color: '#ffeb3b' },
-  { value: 'other', label: 'Other', icon: '📝', color: '#9c27b0' }
+  { value: 'road_damage', label: 'Kerusakan Jalan', icon: '🛣️', color: '#f44336' },
+  { value: 'garbage', label: 'Sampah', icon: '🗑️', color: '#ff9800' },
+  { value: 'flood', label: 'Banjir', icon: '🌊', color: '#2196f3' },
+  { value: 'street_light', label: 'Lampu Jalan', icon: '💡', color: '#ffeb3b' },
+  { value: 'other', label: 'Lainnya', icon: '📝', color: '#9c27b0' }
 ];
 
 const CreateReport = () => {
@@ -98,13 +98,13 @@ const CreateReport = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.title) newErrors.title = 'Title is required';
-    if (!formData.description) newErrors.description = 'Description is required';
-    if (!formData.category) newErrors.category = 'Category is required';
-    if (!formData.address) newErrors.address = 'Address is required';
-    if (!formData.rt) newErrors.rt = 'RT is required';
-    if (!formData.rw) newErrors.rw = 'RW is required';
-    if (formData.images.length === 0) newErrors.images = 'At least one image is required';
+    if (!formData.title) newErrors.title = 'Judul harus diisi';
+    if (!formData.description) newErrors.description = 'Deskripsi harus diisi';
+    if (!formData.category) newErrors.category = 'Kategori harus dipilih';
+    if (!formData.address) newErrors.address = 'Alamat harus diisi';
+    if (!formData.rt) newErrors.rt = 'RT harus diisi';
+    if (!formData.rw) newErrors.rw = 'RW harus diisi';
+    if (formData.images.length === 0) newErrors.images = 'Minimal satu gambar diperlukan';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -132,7 +132,7 @@ const CreateReport = () => {
 
       navigate(`/citizen/reports/${response.data.id}`);
     } catch (err) {
-      setSubmitError(err.response?.data?.message || 'Failed to create report. Please try again.');
+      setSubmitError(err.response?.data?.message || 'Gagal membuat laporan. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
@@ -194,17 +194,17 @@ const CreateReport = () => {
                 mb: 1
               }}
             >
-              Create New Report
+              Buat Laporan Baru
             </Typography>
             <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400, mb: 3 }}>
-              Help improve your community by reporting issues
+              Bantu tingkatkan komunitas Anda dengan melaporkan masalah
             </Typography>
             
             {/* Progress Bar */}
             <Box sx={{ mb: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Form Completion
+                  Kelengkapan Form
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {getCompletionPercentage()}%
@@ -264,7 +264,7 @@ const CreateReport = () => {
                         <TitleIcon />
                       </Avatar>
                       <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                        Basic Information
+                        Informasi Dasar
                       </Typography>
                     </Stack>
                     <Divider />
@@ -275,7 +275,7 @@ const CreateReport = () => {
                   <TextField 
                     required 
                     fullWidth 
-                    label="Report Title" 
+                    label="Judul Laporan" 
                     name="title" 
                     value={formData.title} 
                     onChange={handleChange} 
@@ -299,7 +299,7 @@ const CreateReport = () => {
                   <TextField 
                     required 
                     fullWidth 
-                    label="Description" 
+                    label="Deskripsi" 
                     name="description" 
                     multiline 
                     rows={4} 
@@ -323,12 +323,12 @@ const CreateReport = () => {
 
                 <Grid item xs={12}>
                   <FormControl fullWidth required error={!!errors.category}>
-                    <InputLabel>Category</InputLabel>
+                    <InputLabel>Kategori</InputLabel>
                     <Select 
                       name="category" 
                       value={formData.category} 
                       onChange={handleChange} 
-                      label="Category"
+                      label="Kategori"
                       sx={{
                         borderRadius: 2,
                         '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -383,7 +383,7 @@ const CreateReport = () => {
                         <LocationIcon />
                       </Avatar>
                       <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                        Location Details
+                        Detail Lokasi
                       </Typography>
                     </Stack>
                     <Divider />
@@ -394,7 +394,7 @@ const CreateReport = () => {
                   <TextField 
                     required 
                     fullWidth 
-                    label="Address" 
+                    label="Alamat" 
                     name="address" 
                     value={formData.address} 
                     onChange={handleChange} 
@@ -470,7 +470,7 @@ const CreateReport = () => {
                         <ImageIcon />
                       </Avatar>
                       <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                        Supporting Images
+                        Gambar Pendukung
                       </Typography>
                     </Stack>
                     <Divider />
@@ -502,12 +502,12 @@ const CreateReport = () => {
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <CheckIcon />
                         <Typography variant="h6">
-                          {formData.images.length} image{formData.images.length > 1 ? 's' : ''} selected
+                          {formData.images.length} gambar terpilih
                         </Typography>
                       </Box>
                     ) : (
                       <Typography variant="h6">
-                        Click to Upload Images
+                        Klik untuk Upload Gambar
                       </Typography>
                     )}
                     <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} />
@@ -522,7 +522,7 @@ const CreateReport = () => {
                 {previewUrls.length > 0 && (
                   <Grid item xs={12}>
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                      Image Preview
+                      Pratinjau Gambar
                     </Typography>
                     <Grid container spacing={2}>
                       {previewUrls.map((url, index) => (
@@ -545,7 +545,7 @@ const CreateReport = () => {
                                 component="img" 
                                 height="120" 
                                 image={url} 
-                                alt={`Preview ${index + 1}`} 
+                                alt={`Pratinjau ${index + 1}`} 
                                 sx={{ objectFit: 'cover' }} 
                               />
                               <Box
@@ -610,10 +610,10 @@ const CreateReport = () => {
                   {loading ? (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <CircularProgress size={24} sx={{ color: 'white' }} />
-                      <Typography>Submitting...</Typography>
+                      <Typography>Mengirim...</Typography>
                     </Box>
                   ) : (
-                    'Submit Report'
+                    'Kirim Laporan'
                   )}
                 </Button>
               </Box>
@@ -655,7 +655,7 @@ const CreateReport = () => {
               </IconButton>
               <img 
                 src={previewImage} 
-                alt="Preview" 
+                alt="Pratinjau" 
                 style={{ 
                   maxWidth: '100%', 
                   maxHeight: '85vh', 
