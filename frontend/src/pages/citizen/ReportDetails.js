@@ -13,9 +13,22 @@ import {
   IconButton,
   CircularProgress,
   Button,
-  Chip
+  Chip,
+  Stack,
+  Avatar,
+  Skeleton,
+  Fade,
+  Backdrop
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import {
+  Close as CloseIcon,
+  LocationOn as LocationIcon,
+  Person as PersonIcon,
+  CalendarToday as CalendarIcon,
+  Category as CategoryIcon,
+  ArrowBack as ArrowBackIcon,
+  ZoomIn as ZoomInIcon
+} from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -116,165 +129,381 @@ const ReportDetails = () => {
 
   if (loading) {
     return (
-      <Container sx={{ mt: 4, textAlign: 'center' }}>
-        <CircularProgress />
-        <Typography variant="body2" sx={{ mt: 2 }}>
-          Loading report details...
-        </Typography>
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+        <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'grey.50' }}>
+          <Stack spacing={3}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Skeleton variant="text" width={200} height={40} />
+              <Skeleton variant="rounded" width={100} height={32} />
+            </Stack>
+            <Divider />
+            <Skeleton variant="text" width="60%" height={32} />
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <Skeleton variant="text" width="40%" height={20} />
+                <Skeleton variant="text" width="70%" height={24} />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Skeleton variant="text" width="40%" height={20} />
+                <Skeleton variant="text" width="60%" height={24} />
+              </Grid>
+            </Grid>
+            <Stack spacing={1}>
+              <Skeleton variant="text" width="30%" height={20} />
+              <Skeleton variant="text" width="100%" height={20} />
+              <Skeleton variant="text" width="90%" height={20} />
+              <Skeleton variant="text" width="80%" height={20} />
+            </Stack>
+            <Grid container spacing={2}>
+              {[1, 2, 3].map((item) => (
+                <Grid item xs={12} sm={6} md={4} key={item}>
+                  <Skeleton variant="rectangular" height={200} sx={{ borderRadius: 2 }} />
+                </Grid>
+              ))}
+            </Grid>
+          </Stack>
+        </Paper>
       </Container>
     );
   }
 
   if (error) {
     return (
-      <Container sx={{ mt: 4 }}>
-        <Alert severity="error" action={
-          <Button color="inherit" size="small" onClick={handleRetry}>
-            Retry
-          </Button>
-        }>
-          {error}
-        </Alert>
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+        <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'error.50' }}>
+          <Alert 
+            severity="error" 
+            sx={{ 
+              borderRadius: 2,
+              '& .MuiAlert-message': { fontSize: '1rem' }
+            }}
+            action={
+              <Button 
+                color="inherit" 
+                size="small" 
+                onClick={handleRetry}
+                variant="outlined"
+                sx={{ borderRadius: 2 }}
+              >
+                Retry
+              </Button>
+            }
+          >
+            {error}
+          </Alert>
+        </Paper>
       </Container>
     );
   }
 
   if (!report) {
     return (
-      <Container sx={{ mt: 4 }}>
-        <Alert severity="warning">No report data found.</Alert>
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+        <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'warning.50' }}>
+          <Alert severity="warning" sx={{ borderRadius: 2, fontSize: '1rem' }}>
+            No report data found.
+          </Alert>
+        </Paper>
       </Container>
     );
   }
 
   return (
     <>
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Paper elevation={3} sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h5" gutterBottom>
-              Report Details
-            </Typography>
-            <Chip
-              label={getStatusLabel(report.status)}
-              color={getStatusColor(report.status)}
-            />
-          </Box>
-          <Divider sx={{ my: 2 }} />
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+        {/* Header with Back Button */}
+        <Box sx={{ mb: 3 }}>
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate(-1)}
+            sx={{ 
+              mb: 2,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 500
+            }}
+            variant="outlined"
+          >
+            Back to Reports
+          </Button>
+        </Box>
 
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h6">{report.title}</Typography>
-            </Grid>
+        <Fade in={true} timeout={800}>
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 4, 
+              borderRadius: 3,
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: 'grey.200',
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 4,
+                bgcolor: 'primary.main',
+                borderRadius: '12px 12px 0 0'
+              }
+            }}
+          >
+            {/* Header Section */}
+            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 3 }}>
+              <Box>
+                <Typography 
+                  variant="h4" 
+                  gutterBottom 
+                  sx={{ 
+                    fontWeight: 700,
+                    color: 'text.primary',
+                    lineHeight: 1.2
+                  }}
+                >
+                  {report.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
+                  Report ID: #{report.id || 'N/A'}
+                </Typography>
+              </Box>
+              <Chip
+                label={getStatusLabel(report.status)}
+                color={getStatusColor(report.status)}
+                sx={{ 
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2
+                }}
+              />
+            </Stack>
 
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" color="text.secondary">Category</Typography>
-              <Typography variant="body1">{getCategoryLabel(report.category)}</Typography>
-            </Grid>
+            <Divider sx={{ my: 3 }} />
 
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" color="text.secondary">Reported On</Typography>
-              <Typography variant="body1">
-                {new Date(report.createdAt).toLocaleDateString()}
-              </Typography>
-            </Grid>
+            {/* Info Grid */}
+            <Grid container spacing={4}>
+              <Grid item xs={12} sm={6}>
+                <Stack spacing={3}>
+                  <Box>
+                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+                      <CategoryIcon sx={{ fontSize: 20, color: 'primary.main' }} />
+                      <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                        Category
+                      </Typography>
+                    </Stack>
+                    <Typography variant="body1" sx={{ fontWeight: 500, pl: 3.5 }}>
+                      {getCategoryLabel(report.category)}
+                    </Typography>
+                  </Box>
 
-            <Grid item xs={12}>
-              <Typography variant="subtitle2" color="text.secondary">Description</Typography>
-              <Typography variant="body1" paragraph>{report.description}</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant="subtitle2" color="text.secondary">Location</Typography>
-              <Typography variant="body1">{report.address}</Typography>
-              <Typography variant="body2">RT: {report.rt} / RW: {report.rw}</Typography>
-            </Grid>
-
-            {report.user && (
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" color="text.secondary">Reported By</Typography>
-                <Typography variant="body1">{report.user.fullName}</Typography>
+                  <Box>
+                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+                      <CalendarIcon sx={{ fontSize: 20, color: 'primary.main' }} />
+                      <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                        Reported On
+                      </Typography>
+                    </Stack>
+                    <Typography variant="body1" sx={{ fontWeight: 500, pl: 3.5 }}>
+                      {new Date(report.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </Typography>
+                  </Box>
+                </Stack>
               </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Stack spacing={3}>
+                  <Box>
+                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+                      <LocationIcon sx={{ fontSize: 20, color: 'primary.main' }} />
+                      <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                        Location
+                      </Typography>
+                    </Stack>
+                    <Typography variant="body1" sx={{ fontWeight: 500, pl: 3.5 }}>
+                      {report.address}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ pl: 3.5, mt: 0.5 }}>
+                      RT: {report.rt} / RW: {report.rw}
+                    </Typography>
+                  </Box>
+
+                  {report.user && (
+                    <Box>
+                      <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+                        <PersonIcon sx={{ fontSize: 20, color: 'primary.main' }} />
+                        <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                          Reported By
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" alignItems="center" spacing={2} sx={{ pl: 3.5 }}>
+                        <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                          {report.user.fullName.charAt(0).toUpperCase()}
+                        </Avatar>
+                        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                          {report.user.fullName}
+                        </Typography>
+                      </Stack>
+                    </Box>
+                  )}
+                </Stack>
+              </Grid>
+            </Grid>
+
+            {/* Description Section */}
+            <Box sx={{ mt: 4 }}>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
+                Description
+              </Typography>
+              <Paper 
+                elevation={0} 
+                sx={{ 
+                  p: 3, 
+                  bgcolor: 'grey.50', 
+                  borderRadius: 2,
+                  border: '1px solid',
+                  borderColor: 'grey.200'
+                }}
+              >
+                <Typography variant="body1" sx={{ lineHeight: 1.7, color: 'text.primary' }}>
+                  {report.description}
+                </Typography>
+              </Paper>
+            </Box>
+
+            {/* Images Section */}
+            {report?.images?.length > 0 && (
+              <Box sx={{ mt: 4 }}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+                  Attachments ({report.images.length} images)
+                </Typography>
+                <Grid container spacing={3}>
+                  {report.images.map((image, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                      <Card
+                        sx={{
+                          cursor: 'pointer',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                          borderRadius: 3,
+                          overflow: 'hidden',
+                          position: 'relative',
+                          '&:hover': {
+                            transform: 'translateY(-8px)',
+                            boxShadow: '0 12px 40px rgba(0,0,0,0.12)'
+                          },
+                          '&:hover .zoom-overlay': {
+                            opacity: 1
+                          }
+                        }}
+                        onClick={() => handleOpenPreview(image)}
+                      >
+                        <Box sx={{ position: 'relative' }}>
+                          <CardMedia
+                            component="img"
+                            height="220"
+                            image={getImageUrl(image)}
+                            alt={`Report image ${index + 1}`}
+                            sx={{ 
+                              objectFit: 'cover',
+                              transition: 'transform 0.3s ease'
+                            }}
+                          />
+                          <Box
+                            className="zoom-overlay"
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              bgcolor: 'rgba(0,0,0,0.4)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              opacity: 0,
+                              transition: 'opacity 0.3s ease'
+                            }}
+                          >
+                            <ZoomInIcon sx={{ color: 'white', fontSize: 32 }} />
+                          </Box>
+                        </Box>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
             )}
-          </Grid>
-
-          {report?.images?.length > 0 && (
-            <>
-              <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
-                Images
-              </Typography>
-              <Grid container spacing={2}>
-                {report.images.map((image, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
-                    <Card
-                      sx={{
-                        cursor: 'pointer',
-                        transition: 'transform 0.2s',
-                        '&:hover': {
-                          transform: 'scale(1.03)',
-                          boxShadow: 3
-                        }
-                      }}
-                      onClick={() => handleOpenPreview(image)}
-                    >
-                      <CardMedia
-                        component="img"
-                        height="200"
-                        image={getImageUrl(image)}
-                        alt={`Report image ${index + 1}`}
-                        sx={{ objectFit: 'cover' }}
-                      />
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            </>
-          )}
-        </Paper>
-
-        {/* Tombol kembali */}
-        <Button
-          variant="outlined"
-          onClick={() => navigate(-1)}
-          sx={{ mt: 2 }}
-        >
-          Kembali
-        </Button>
+          </Paper>
+        </Fade>
       </Container>
 
-      {/* Modal Preview Gambar */}
+      {/* Enhanced Image Preview Modal */}
       <Modal
         open={openPreview}
         onClose={handleClosePreview}
-        aria-labelledby="image-preview-modal"
-        aria-describedby="preview of report image"
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+          sx: { bgcolor: 'rgba(0, 0, 0, 0.8)' }
+        }}
       >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 1,
-            outline: 'none',
-          }}
-        >
-          <IconButton
-            sx={{ position: 'absolute', right: 8, top: 8, bgcolor: 'rgba(255,255,255,0.7)' }}
-            onClick={handleClosePreview}
+        <Fade in={openPreview}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              maxWidth: '95vw',
+              maxHeight: '95vh',
+              bgcolor: 'background.paper',
+              borderRadius: 3,
+              boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
+              p: 1,
+              outline: 'none',
+              overflow: 'hidden'
+            }}
           >
-            <CloseIcon />
-          </IconButton>
-          <img
-            src={previewImage}
-            alt="Preview"
-            style={{ maxWidth: '100%', maxHeight: '85vh', display: 'block' }}
-          />
-        </Box>
+            <IconButton
+              sx={{ 
+                position: 'absolute', 
+                right: 12, 
+                top: 12, 
+                bgcolor: 'rgba(255,255,255,0.9)',
+                backdropFilter: 'blur(10px)',
+                '&:hover': {
+                  bgcolor: 'rgba(255,255,255,1)',
+                  transform: 'scale(1.1)'
+                },
+                transition: 'all 0.2s ease',
+                zIndex: 1
+              }}
+              onClick={handleClosePreview}
+            >
+              <CloseIcon />
+            </IconButton>
+            <img
+              src={previewImage}
+              alt="Preview"
+              style={{ 
+                maxWidth: '100%', 
+                maxHeight: '90vh', 
+                display: 'block',
+                borderRadius: '12px'
+              }}
+            />
+          </Box>
+        </Fade>
       </Modal>
     </>
   );
