@@ -603,6 +603,115 @@ const Register = () => {
                         }}
                       />
                     </Grid>
+                    <Grid item xs={12} sm={6}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel id="gender-label">Jenis Kelamin</InputLabel>
+                      <Select
+                        labelId="gender-label"
+                        id="gender"
+                        name="gender"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        label="Jenis Kelamin"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '12px',
+                            fontSize: '0.9rem',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            '& fieldset': {
+                              borderColor: 'rgba(99, 102, 241, 0.25)',
+                              borderWidth: '2px',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: 'rgba(99, 102, 241, 0.5)',
+                              transform: 'scale(1.005)',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#6366f1',
+                              boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.12)',
+                            },
+                          },
+                          '& .MuiInputLabel-root.Mui-focused': {
+                            color: '#6366f1',
+                          },
+                        }}
+                      >
+                        <MenuItem value=""><em>Pilih</em></MenuItem>
+                        <MenuItem value="male">Laki-laki</MenuItem>
+                        <MenuItem value="female">Perempuan</MenuItem>
+                      </Select>
+                      </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        id="birthDate"
+                        label="Tanggal Lahir"
+                        name="birthDate"
+                        type="date"
+                        value={formData.birthDate}
+                        onChange={handleChange}
+                        size="small"
+                        InputLabelProps={{ shrink: true }}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '12px',
+                            fontSize: '0.9rem',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            '& fieldset': {
+                              borderColor: 'rgba(99, 102, 241, 0.25)',
+                              borderWidth: '2px',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: 'rgba(99, 102, 241, 0.5)',
+                              transform: 'scale(1.005)',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#6366f1',
+                              boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.12)',
+                            },
+                          },
+                          '& .MuiInputLabel-root.Mui-focused': {
+                            color: '#6366f1',
+                          },
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        id="occupation"
+                        label="Pekerjaan"
+                        name="occupation"
+                        value={formData.occupation}
+                        onChange={handleChange}
+                        size="small"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '12px',
+                            fontSize: '0.9rem',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            '& fieldset': {
+                              borderColor: 'rgba(99, 102, 241, 0.25)',
+                              borderWidth: '2px',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: 'rgba(99, 102, 241, 0.5)',
+                              transform: 'scale(1.005)',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#6366f1',
+                              boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.12)',
+                            },
+                          },
+                          '& .MuiInputLabel-root.Mui-focused': {
+                            color: '#6366f1',
+                          },
+                        }}
+                      />
+                    </Grid>
                   </Grid>
 
                   {/* Register Button */}
