@@ -54,20 +54,18 @@ function ArticleForm() {
   return (
     <Box sx={{ 
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      backgroundColor: '#f8f9fa',
       py: 4
     }}>
       <Container maxWidth="md">
         <Fade in={true} timeout={800}>
           <Paper 
-            elevation={0}
+            elevation={2}
             sx={{ 
               p: 4, 
-              borderRadius: 4,
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+              borderRadius: 2,
+              backgroundColor: '#ffffff',
+              border: '1px solid #e0e0e0'
             }}
           >
             {/* Header */}
@@ -79,12 +77,10 @@ function ArticleForm() {
               justifyContent: 'center'
             }}>
               <Avatar sx={{ 
-                bgcolor: 'transparent',
+                bgcolor: '#1565c0',
                 mr: 2, 
-                width: 64, 
-                height: 64,
-                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-                boxShadow: '0 8px 24px rgba(254, 107, 139, 0.3)'
+                width: 56, 
+                height: 56
               }}>
                 <ArticleIcon fontSize="large" />
               </Avatar>
@@ -93,23 +89,20 @@ function ArticleForm() {
                   variant="h4" 
                   component="h1"
                   sx={{ 
-                    fontWeight: 700,
-                    background: 'linear-gradient(45deg, #667eea, #764ba2)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
+                    fontWeight: 600,
+                    color: '#1a1a1a',
                     mb: 1
                   }}
                 >
                   Tambah Artikel
                 </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 400 }}>
+                <Typography variant="body1" color="#666666" sx={{ fontWeight: 400 }}>
                   Buat artikel baru dengan mudah dan cepat
                 </Typography>
               </Box>
             </Box>
 
-            <Divider sx={{ mb: 4, opacity: 0.3 }} />
+            <Divider sx={{ mb: 4, borderColor: '#e0e0e0' }} />
 
             {/* Form */}
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
@@ -122,28 +115,26 @@ function ArticleForm() {
                   onChange={(e) => setTitle(e.target.value)}
                   sx={{
                     '& .MuiOutlinedInput-root': {
-                      borderRadius: 3,
-                      background: 'rgba(255, 255, 255, 0.8)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        background: 'rgba(255, 255, 255, 1)',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                      backgroundColor: '#ffffff',
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1565c0',
                       },
-                      '&.Mui-focused': {
-                        background: 'rgba(255, 255, 255, 1)',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1565c0',
                       }
                     },
                     '& .MuiInputLabel-root': {
-                      fontWeight: 500
+                      fontWeight: 500,
+                      color: '#424242'
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: '#1565c0'
                     }
                   }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <TitleIcon sx={{ color: 'primary.main' }} />
+                        <TitleIcon sx={{ color: '#1565c0' }} />
                       </InputAdornment>
                     ),
                   }}
@@ -159,28 +150,26 @@ function ArticleForm() {
                   onChange={(e) => setAuthor(e.target.value)}
                   sx={{
                     '& .MuiOutlinedInput-root': {
-                      borderRadius: 3,
-                      background: 'rgba(255, 255, 255, 0.8)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        background: 'rgba(255, 255, 255, 1)',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                      backgroundColor: '#ffffff',
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1565c0',
                       },
-                      '&.Mui-focused': {
-                        background: 'rgba(255, 255, 255, 1)',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1565c0',
                       }
                     },
                     '& .MuiInputLabel-root': {
-                      fontWeight: 500
+                      fontWeight: 500,
+                      color: '#424242'
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: '#1565c0'
                     }
                   }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <PersonIcon sx={{ color: 'primary.main' }} />
+                        <PersonIcon sx={{ color: '#1565c0' }} />
                       </InputAdornment>
                     ),
                   }}
@@ -198,28 +187,26 @@ function ArticleForm() {
                   rows={6}
                   sx={{
                     '& .MuiOutlinedInput-root': {
-                      borderRadius: 3,
-                      background: 'rgba(255, 255, 255, 0.8)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        background: 'rgba(255, 255, 255, 1)',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                      backgroundColor: '#ffffff',
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1565c0',
                       },
-                      '&.Mui-focused': {
-                        background: 'rgba(255, 255, 255, 1)',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1565c0',
                       }
                     },
                     '& .MuiInputLabel-root': {
-                      fontWeight: 500
+                      fontWeight: 500,
+                      color: '#424242'
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: '#1565c0'
                     }
                   }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}>
-                        <CreateIcon sx={{ color: 'primary.main' }} />
+                        <CreateIcon sx={{ color: '#1565c0' }} />
                       </InputAdornment>
                     ),
                   }}
@@ -233,12 +220,12 @@ function ArticleForm() {
                   sx={{ 
                     mb: 2, 
                     fontWeight: 600,
-                    color: 'text.primary',
+                    color: '#424242',
                     display: 'flex',
                     alignItems: 'center'
                   }}
                 >
-                  <ImageIcon sx={{ mr: 1, color: 'primary.main' }} />
+                  <ImageIcon sx={{ mr: 1, color: '#1565c0' }} />
                   Gambar Artikel (Opsional)
                 </Typography>
                 
@@ -246,16 +233,15 @@ function ArticleForm() {
                   elevation={0}
                   sx={{
                     p: 3,
-                    borderRadius: 3,
-                    background: 'rgba(255, 255, 255, 0.6)',
-                    border: '2px dashed',
-                    borderColor: image ? 'success.main' : 'primary.main',
-                    transition: 'all 0.3s ease',
+                    backgroundColor: '#f5f5f5',
+                    border: '2px dashed #bdbdbd',
+                    borderColor: image ? '#4caf50' : '#bdbdbd',
+                    borderRadius: 1,
                     cursor: 'pointer',
+                    transition: 'all 0.3s ease',
                     '&:hover': {
-                      background: 'rgba(255, 255, 255, 0.8)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                      backgroundColor: '#eeeeee',
+                      borderColor: image ? '#4caf50' : '#1565c0'
                     }
                   }}
                 >
@@ -263,19 +249,20 @@ function ArticleForm() {
                     display: 'flex', 
                     flexDirection: 'column', 
                     alignItems: 'center',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    position: 'relative'
                   }}>
                     <CloudUploadIcon 
                       sx={{ 
                         fontSize: 48, 
-                        color: image ? 'success.main' : 'primary.main',
+                        color: image ? '#4caf50' : '#757575',
                         mb: 2
                       }} 
                     />
-                    <Typography variant="body1" sx={{ mb: 1, fontWeight: 500 }}>
+                    <Typography variant="body1" sx={{ mb: 1, fontWeight: 500, color: '#424242' }}>
                       {image ? `File terpilih: ${image.name}` : 'Klik untuk memilih gambar'}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="#757575">
                       Format: JPG, PNG, GIF (Max: 5MB)
                     </Typography>
                     <input
@@ -304,17 +291,12 @@ function ArticleForm() {
                   sx={{ 
                     px: 6,
                     py: 1.5,
-                    borderRadius: 3,
                     fontWeight: 600,
                     fontSize: '1.1rem',
                     textTransform: 'none',
-                    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-                    boxShadow: '0 8px 24px rgba(254, 107, 139, 0.3)',
-                    transition: 'all 0.3s ease',
+                    backgroundColor: '#1565c0',
                     '&:hover': {
-                      transform: 'translateY(-3px)',
-                      boxShadow: '0 12px 32px rgba(254, 107, 139, 0.4)',
-                      background: 'linear-gradient(45deg, #FE6B8B 20%, #FF8E53 80%)'
+                      backgroundColor: '#0d47a1'
                     }
                   }}
                 >

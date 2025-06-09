@@ -587,12 +587,16 @@ const ReportDetails = () => {
             textTransform: 'none',
             fontWeight: 600,
             borderWidth: 2,
+            color: 'blue',
+            borderColor: 'blue',
             '&:hover': {
-              borderWidth: 2
+              borderWidth: 2,
+              backgroundColor: 'rgba(0, 0, 255, 0.1)',
+              borderColor: 'darkblue'
             }
           }}
         >
-          Kembali ke Dashboard
+          Kembali ke Beranda
         </Button>
       </Box>
       

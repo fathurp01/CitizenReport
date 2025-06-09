@@ -173,31 +173,28 @@ const Dashboard = () => {
   return (
     <Box sx={{ 
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       py: 4
     }}>
       <Container maxWidth="lg">
         <Fade in={true} timeout={800}>
           <Box sx={{ mb: 4 }}>
-            {/* Modern Header */}
+            {/* Professional Header */}
             <Paper 
-              elevation={0}
+              elevation={2}
               sx={{ 
                 p: 4, 
-                borderRadius: 4,
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: 2,
+                backgroundColor: '#6366f1',
+                color: 'white',
                 mb: 3
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Avatar sx={{ 
-                  bgcolor: 'primary.main', 
+                  bgcolor: '#4f46e5', 
                   mr: 2, 
                   width: 56, 
-                  height: 56,
-                  background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+                  height: 56
                 }}>
                   <ReportIcon fontSize="large" />
                 </Avatar>
@@ -207,30 +204,25 @@ const Dashboard = () => {
                     component="h1" 
                     sx={{ 
                       fontWeight: 700,
-                      background: 'linear-gradient(45deg, #667eea, #764ba2)',
-                      backgroundClip: 'text',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
+                      color: 'white',
                       mb: 1
                     }}
                   >
                     Pengelolaan Laporan
                   </Typography>
-                  <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 400, color: 'rgba(255,255,255,0.9)' }}>
                     Kelola laporan dengan mudah dan efisien
                   </Typography>
                 </Box>
               </Box>
             </Paper>
 
-            {/* Modern Tabs */}
+            {/* Professional Tabs */}
             <Paper 
-              elevation={0}
+              elevation={2}
               sx={{ 
-                borderRadius: 3,
-                background: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: 2,
+                backgroundColor: '#f5f5f5',
                 mb: 3,
                 overflow: 'hidden'
               }}
@@ -246,14 +238,15 @@ const Dashboard = () => {
                     fontWeight: 600,
                     fontSize: '1rem',
                     minHeight: 64,
+                    color: '#424242',
                     '&.Mui-selected': {
-                      color: 'primary.main',
+                      color: '#6366f1',
                     }
                   },
                   '& .MuiTabs-indicator': {
                     height: 3,
                     borderRadius: '3px 3px 0 0',
-                    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+                    backgroundColor: '#6366f1'
                   }
                 }}
               >
@@ -265,16 +258,15 @@ const Dashboard = () => {
               </Tabs>
             </Paper>
             
-            {/* Modern Search and Filter */}
+            {/* Professional Search and Filter */}
             <Paper 
-              elevation={0}
+              elevation={2}
               sx={{ 
                 p: 3, 
-                borderRadius: 3,
-                background: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                mb: 3
+                borderRadius: 2,
+                backgroundColor: '#ffffff',
+                mb: 3,
+                border: '1px solid #e0e0e0'
               }}
             >
               <Grid container spacing={3}>
@@ -287,19 +279,19 @@ const Dashboard = () => {
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         borderRadius: 2,
-                        background: 'rgba(255, 255, 255, 0.8)',
+                        backgroundColor: '#fafafa',
                         '&:hover': {
-                          background: 'rgba(255, 255, 255, 1)',
+                          backgroundColor: '#f5f5f5',
                         },
                         '&.Mui-focused': {
-                          background: 'rgba(255, 255, 255, 1)',
+                          backgroundColor: '#ffffff',
                         }
                       }
                     }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <SearchIcon sx={{ color: 'primary.main' }} />
+                          <SearchIcon sx={{ color: '#757575' }} />
                         </InputAdornment>
                       ),
                     }}
@@ -316,12 +308,12 @@ const Dashboard = () => {
                       onChange={handleCategoryChange}
                       sx={{
                         borderRadius: 2,
-                        background: 'rgba(255, 255, 255, 0.8)',
+                        backgroundColor: '#fafafa',
                         '&:hover': {
-                          background: 'rgba(255, 255, 255, 1)',
+                          backgroundColor: '#f5f5f5',
                         },
                         '&.Mui-focused': {
-                          background: 'rgba(255, 255, 255, 1)',
+                          backgroundColor: '#ffffff',
                         }
                       }}
                     >
@@ -339,31 +331,29 @@ const Dashboard = () => {
 
             {loading ? (
               <Paper 
-                elevation={0}
+                elevation={2}
                 sx={{ 
                   p: 6, 
-                  borderRadius: 3,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  textAlign: 'center'
+                  borderRadius: 2,
+                  backgroundColor: '#ffffff',
+                  textAlign: 'center',
+                  border: '1px solid #e0e0e0'
                 }}
               >
-                <CircularProgress size={60} sx={{ color: 'primary.main', mb: 2 }} />
+                <CircularProgress size={60} sx={{ color: '#7B1FA2', mb: 2 }} />
                 <Typography variant="h6" color="text.secondary">
                   Memuat laporan...
                 </Typography>
               </Paper>
             ) : error ? (
               <Paper 
-                elevation={0}
+                elevation={2}
                 sx={{ 
                   p: 4, 
-                  borderRadius: 3,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  textAlign: 'center'
+                  borderRadius: 2,
+                  backgroundColor: '#ffffff',
+                  textAlign: 'center',
+                  border: '1px solid #f44336'
                 }}
               >
                 <Typography color="error" variant="h6">
@@ -372,14 +362,13 @@ const Dashboard = () => {
               </Paper>
             ) : filterReports().length === 0 ? (
               <Paper 
-                elevation={0}
+                elevation={2}
                 sx={{ 
                   p: 6, 
-                  borderRadius: 3,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  textAlign: 'center'
+                  borderRadius: 2,
+                  backgroundColor: '#ffffff',
+                  textAlign: 'center',
+                  border: '1px solid #e0e0e0'
                 }}
               >
                 <Typography variant="h4" sx={{ mb: 2, opacity: 0.7 }}>
@@ -399,21 +388,20 @@ const Dashboard = () => {
                       style={{ transformOrigin: '0 0 0' }}
                     >
                       <Card 
-                        elevation={0}
+                        elevation={2}
                         sx={{ 
                           height: '100%', 
                           display: 'flex', 
                           flexDirection: 'column',
                           cursor: 'pointer',
-                          borderRadius: 3,
-                          background: 'rgba(255, 255, 255, 0.95)',
-                          backdropFilter: 'blur(20px)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          borderRadius: 2,
+                          backgroundColor: '#ffffff',
+                          border: '1px solid #e0e0e0',
                           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                           '&:hover': {
-                            transform: 'translateY(-8px)',
-                            boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-                            background: 'rgba(255, 255, 255, 1)',
+                            transform: 'translateY(-4px)',
+                            boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+                            borderColor: '#7B1FA2',
                           }
                         }}
                         onClick={() => handleViewReport(report.id)}
@@ -423,12 +411,11 @@ const Dashboard = () => {
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
                             <Avatar sx={{ 
                               mr: 2, 
-                              bgcolor: 'transparent',
+                              bgcolor: '#f5f5f5',
                               fontSize: '1.5rem',
                               width: 48,
                               height: 48,
-                              border: '2px solid',
-                              borderColor: 'primary.main'
+                              border: '2px solid #e0e0e0'
                             }}>
                               {getCategoryIcon(report.category)}
                             </Avatar>
@@ -438,7 +425,7 @@ const Dashboard = () => {
                                 component="h2" 
                                 sx={{ 
                                   fontWeight: 600,
-                                  color: 'text.primary',
+                                  color: '#212121',
                                   lineHeight: 1.2,
                                   mb: 1
                                 }}
@@ -460,11 +447,11 @@ const Dashboard = () => {
                           {/* Description */}
                           <Typography 
                             variant="body2" 
-                            color="text.secondary" 
                             sx={{ 
                               mb: 3,
                               lineHeight: 1.6,
-                              fontSize: '0.95rem'
+                              fontSize: '0.95rem',
+                              color: '#424242'
                             }}
                           >
                             {report.description.length > 100 
@@ -478,26 +465,25 @@ const Dashboard = () => {
                             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                             gap: 2,
                             pt: 2,
-                            borderTop: '1px solid',
-                            borderColor: 'divider'
+                            borderTop: '1px solid #e0e0e0'
                           }}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <CategoryIcon sx={{ fontSize: 18, mr: 1, color: 'text.secondary' }} />
-                              <Typography variant="body2" color="text.secondary">
+                              <CategoryIcon sx={{ fontSize: 18, mr: 1, color: '#757575' }} />
+                              <Typography variant="body2" sx={{ color: '#616161' }}>
                                 {getCategoryLabel(report.category)}
                               </Typography>
                             </Box>
                             
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <CalendarTodayIcon sx={{ fontSize: 18, mr: 1, color: 'text.secondary' }} />
-                              <Typography variant="body2" color="text.secondary">
+                              <CalendarTodayIcon sx={{ fontSize: 18, mr: 1, color: '#757575' }} />
+                              <Typography variant="body2" sx={{ color: '#616161' }}>
                                 {new Date(report.createdAt).toLocaleDateString('id-ID')}
                               </Typography>
                             </Box>
                             
                             <Box sx={{ display: 'flex', alignItems: 'center', gridColumn: 'span 2' }}>
-                              <LocationOnIcon sx={{ fontSize: 18, mr: 1, color: 'text.secondary' }} />
-                              <Typography variant="body2" color="text.secondary">
+                              <LocationOnIcon sx={{ fontSize: 18, mr: 1, color: '#757575' }} />
+                              <Typography variant="body2" sx={{ color: '#616161' }}>
                                 RT {report.rt} / RW {report.rw}
                               </Typography>
                             </Box>
