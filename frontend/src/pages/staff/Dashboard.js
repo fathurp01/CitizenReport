@@ -147,259 +147,131 @@ const Dashboard = () => {
   };
 
   return (
-    <Box 
-      sx={{ 
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        py: 4
-      }}
-    >
-      <Container maxWidth="lg">
-        <Typography 
-          variant="h4" 
-          component="h1" 
-          gutterBottom
-          sx={{ 
-            color: 'white',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            mb: 4
-          }}
-        >
-          Dashboard Staff Desa
+    <Container maxWidth="lg">
+      <Box sx={{ mt: 4, mb: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Reports Management
         </Typography>
-
-        {/* Search and Filter Section */}
-        <Card 
-          sx={{ 
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: 3,
-            mb: 4,
-            position: 'relative',
-            overflow: 'hidden',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '3px',
-              background: 'linear-gradient(90deg, #667eea, #764ba2)',
-              zIndex: 2
-            }
-          }}
-        >
-          <CardContent>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  label="Cari laporan..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      '& fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.3)'
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.5)'
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: 'white'
-                      }
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: 'rgba(255, 255, 255, 0.7)'
-                    },
-                    '& .MuiOutlinedInput-input': {
-                      color: 'white'
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <FormControl fullWidth>
-                  <InputLabel sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>Status</InputLabel>
-                  <Select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    sx={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      color: 'white',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(255, 255, 255, 0.3)'
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(255, 255, 255, 0.5)'
-                      },
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'white'
-                      },
-                      '& .MuiSvgIcon-root': {
-                        color: 'white'
-                      }
-                    }}
-                  >
-                    <MenuItem value="all">Semua Status</MenuItem>
-                    <MenuItem value="pending">Pending</MenuItem>
-                    <MenuItem value="received">Diterima</MenuItem>
-                    <MenuItem value="in_progress">Dalam Proses</MenuItem>
-                    <MenuItem value="completed">Selesai</MenuItem>
-                    <MenuItem value="rejected">Ditolak</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-
-        {/* Tabs and Reports */}
-        <Card 
-          sx={{ 
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: 3,
-            position: 'relative',
-            overflow: 'hidden',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(45deg, #667eea, #764ba2, #667eea)',
-              backgroundSize: '200% 200%',
-              animation: 'gradientBorder 3s ease infinite',
-              zIndex: -1
-            },
-            '@keyframes gradientBorder': {
-              '0%': { backgroundPosition: '0% 50%' },
-              '50%': { backgroundPosition: '100% 50%' },
-              '100%': { backgroundPosition: '0% 50%' }
-            }
-          }}
-        >
+        
+        <Box sx={{ mb: 3 }}>
           <Tabs 
             value={tabValue} 
-            onChange={(e, newValue) => setTabValue(newValue)}
-            sx={{
-              borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-              '& .MuiTab-root': {
-                color: 'rgba(255, 255, 255, 0.7)',
-                fontWeight: 'bold'
-              },
-              '& .Mui-selected': {
-                color: 'white !important'
-              },
-              '& .MuiTabs-indicator': {
-                backgroundColor: 'white'
-              }
-            }}
+            onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
           >
-            <Tab label="Semua Laporan" />
-            <Tab label="Perlu Tindakan" />
+            <Tab label="All Reports" />
+            <Tab label="Pending" />
+            <Tab label="Received" />
+            <Tab label="In Progress" />
+            <Tab label="Completed" />
           </Tabs>
-          
-          <CardContent>
-            {loading ? (
-              <Box display="flex" justifyContent="center" mt={4}>
-                <CircularProgress sx={{ color: 'white' }} />
-              </Box>
-            ) : error ? (
-              <Typography color="error" align="center" sx={{ color: 'white', opacity: 0.8 }}>
-                {error}
-              </Typography>
-            ) : (
-              <Grid container spacing={3}>
-                {filteredReports.map((report) => (
-                  <Grid item xs={12} sm={6} md={4} key={report._id}>
-                    <Card
-                      sx={{
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        backdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.2)',
-                        borderRadius: 3,
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        '&::before': {
-                          content: '""',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          height: '3px',
-                          background: 'linear-gradient(90deg, #667eea, #764ba2)',
-                          transform: 'scaleX(0)',
-                          transformOrigin: 'left',
-                          transition: 'transform 0.3s ease',
-                          zIndex: 2
-                        },
-                        '&:hover': {
-                          transform: 'translateY(-5px)',
-                          boxShadow: '0 10px 30px rgba(118, 75, 162, 0.3)',
-                          background: 'rgba(255, 255, 255, 0.15)'
-                        },
-                        '&:hover::before': {
-                          transform: 'scaleX(1)'
-                        }
-                      }}
-                      onClick={() => navigate(`/staff/reports/${report._id}`)}
-                    >
-                      <CardContent>
-                        <Typography 
-                          variant="h6" 
-                          component="h2" 
-                          gutterBottom
-                          sx={{ color: 'white', fontWeight: 'bold' }}
-                        >
-                          {report.title}
-                        </Typography>
-                        
-                        <Chip
-                          label={report.status}
-                          color={getStatusColor(report.status)}
-                          size="small"
-                          sx={{ mb: 2 }}
-                        />
-                        
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            mb: 2,
-                            display: '-webkit-box',
-                            WebkitLineClamp: 3,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden'
-                          }}
-                        >
-                          {report.description}
-                        </Typography>
-                        
-                        <Typography 
-                          variant="caption" 
-                          sx={{ color: 'rgba(255, 255, 255, 0.6)' }}
-                        >
-                          Oleh: {report.user?.name} • {new Date(report.createdAt).toLocaleDateString('id-ID')}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
+        </Box>
+        
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              placeholder="Search reports..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <InputLabel id="category-filter-label">Filter by Category</InputLabel>
+              <Select
+                labelId="category-filter-label"
+                id="category-filter"
+                value={filterCategory}
+                label="Filter by Category"
+                onChange={handleCategoryChange}
+              >
+                <MenuItem value="">All Categories</MenuItem>
+                <MenuItem value="road_damage">Road Damage</MenuItem>
+                <MenuItem value="garbage">Garbage</MenuItem>
+                <MenuItem value="flood">Flood</MenuItem>
+                <MenuItem value="street_light">Street Light</MenuItem>
+                <MenuItem value="other">Other</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Typography color="error" align="center">
+            {error}
+          </Typography>
+        ) : filterReports().length === 0 ? (
+          <Box sx={{ textAlign: 'center', my: 4 }}>
+            <Typography variant="h6">
+              No reports found matching your criteria.
+            </Typography>
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {filterReports().map((report) => (
+              <Grid item xs={12} md={6} key={report.id}>
+                <Card 
+                  sx={{ 
+                    height: '100%', 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      boxShadow: 6
+                    }
+                  }}
+                  onClick={() => handleViewReport(report.id)}
+                >
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                      <Typography variant="h6" component="h2">
+                        {report.title}
+                      </Typography>
+                      <Chip 
+                        label={getStatusLabel(report.status)} 
+                        color={getStatusColor(report.status)} 
+                        size="small" 
+                      />
+                    </Box>
+                    <Typography variant="body2" color="text.secondary" paragraph>
+                      {report.description.length > 100 
+                        ? `${report.description.substring(0, 100)}...` 
+                        : report.description}
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Category: {getCategoryLabel(report.category)}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {new Date(report.createdAt).toLocaleDateString()}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Location: RT {report.rt} / RW {report.rw}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
               </Grid>
-            )}
-          </CardContent>
-        </Card>
-      </Container>
-    </Box>
+            ))}
+          </Grid>
+        )}
+      </Box>
+    </Container>
   );
 };
 

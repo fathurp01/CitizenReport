@@ -93,40 +93,18 @@ export const AuthProvider = ({ children }) => {
     navigate('/login');
   };
 
-  // Update profile method
-  const updateProfile = async (profileData) => {
-    try {
-      setError(null);
-      const response = await axios.put('/api/auth/profile', profileData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      
-      // Update user state with new data
-      setUser(response.data.user);
-      return response.data;
-    } catch (error) {
-      console.error('Profile update error:', error);
-      const errorMessage = error.response?.data?.message || 'Profile update failed';
-      setError(errorMessage);
-      throw error;
-    }
-  };
-  
-  const value = {
-    user,
-    loading,
-    error,
-    register,
-    login,
-    logout,
-    updateProfile,
-    setError
-  };
-  
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        error,
+        register,
+        login,
+        logout,
+        setError
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -24,7 +24,6 @@ import NotFound from './pages/NotFound';
 // Import components
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
-import Profile from './components/Profile';
 
 // Import context
 import { AuthProvider } from './context/AuthContext';
@@ -77,18 +76,6 @@ function App() {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="articles" element={<ArticleManagement />} />
-            </Route>
-
-            {/* Profile Route - Available for all authenticated users */}
-            <Route 
-              path="/profile" 
-              element={
-                <ProtectedRoute>
-                  <Layout />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Profile />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

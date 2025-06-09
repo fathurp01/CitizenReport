@@ -79,169 +79,139 @@ const Dashboard = () => {
   }
 
   return (
-    <Box 
-      sx={{ 
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        py: 4
-      }}
-    >
-      <Container maxWidth="lg">
-        <Typography 
-          variant="h4" 
-          component="h1" 
-          gutterBottom
-          sx={{ 
-            color: 'white',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            mb: 4
-          }}
-        >
-          Dashboard Admin
+    <Container maxWidth="lg">
+      <Box sx={{ mt: 4, mb: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Admin Dashboard
         </Typography>
-
-        {loading ? (
-          <Box display="flex" justifyContent="center" mt={4}>
-            <CircularProgress sx={{ color: 'white' }} />
-          </Box>
-        ) : error ? (
-          <Typography color="error" align="center" sx={{ color: 'white', opacity: 0.8 }}>
-            {error}
-          </Typography>
-        ) : (
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card 
-                sx={{ 
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: 3,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
-                    zIndex: 2
-                  }
-                }}
-              >
-                <CardContent sx={{ textAlign: 'center' }}>
-                  <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
-                    {stats.totalReports}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    Total Laporan
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            
-            <Grid item xs={12} sm={6} md={3}>
-              <Card 
-                sx={{ 
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: 3,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
-                    zIndex: 2
-                  }
-                }}
-              >
-                <CardContent sx={{ textAlign: 'center' }}>
-                  <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
-                    {stats.totalUsers}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    Total Pengguna
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            
-            <Grid item xs={12} sm={6} md={3}>
-              <Card 
-                sx={{ 
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: 3,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
-                    zIndex: 2
-                  }
-                }}
-              >
-                <CardContent sx={{ textAlign: 'center' }}>
-                  <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
-                    {stats.pendingReports}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    Laporan Pending
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            
-            <Grid item xs={12} sm={6} md={3}>
-              <Card 
-                sx={{ 
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: 3,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
-                    zIndex: 2
-                  }
-                }}
-              >
-                <CardContent sx={{ textAlign: 'center' }}>
-                  <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
-                    {stats.totalArticles}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    Total Artikel
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+        
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ height: '100%', bgcolor: 'primary.light' }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <PeopleIcon sx={{ fontSize: 40, color: 'primary.main', mr: 2 }} />
+                  <Box>
+                    <Typography variant="h4" component="div">
+                      {stats.totalUsers}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Total Users
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
           </Grid>
-        )}
-      </Container>
-    </Box>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ height: '100%', bgcolor: 'info.light' }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <ReportIcon sx={{ fontSize: 40, color: 'info.main', mr: 2 }} />
+                  <Box>
+                    <Typography variant="h4" component="div">
+                      {stats.totalReports}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Total Reports
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ height: '100%', bgcolor: 'success.light' }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <CheckCircleIcon sx={{ fontSize: 40, color: 'success.main', mr: 2 }} />
+                  <Box>
+                    <Typography variant="h4" component="div">
+                      {stats.completedReports}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Completed Reports
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Card 
+              className="fade-in" 
+              sx={{ 
+                height: '100%',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)'
+                }
+              }}
+            >
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <PendingIcon sx={{ fontSize: 40, color: 'warning.main', mr: 2 }} />
+                  <Box>
+                    <Typography variant="h4" component="div">
+                      {stats.pendingReports}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Pending Reports
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+        
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Reports by Category
+              </Typography>
+              {Object.entries(stats.reportsByCategory).map(([category, count]) => (
+                <Box key={category} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="body1">
+                    {getCategoryLabel(category)}
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold">
+                    {count}
+                  </Typography>
+                </Box>
+              ))}
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Recent Reports
+              </Typography>
+              {stats.recentReports.length === 0 ? (
+                <Typography variant="body1">No recent reports</Typography>
+              ) : (
+                stats.recentReports.map((report) => (
+                  <Box key={report._id} sx={{ mb: 2 }}>
+                    <Typography variant="body1" fontWeight="bold">
+                      {report.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {getCategoryLabel(report.category)} • {new Date(report.createdAt).toLocaleDateString()}
+                    </Typography>
+                  </Box>
+                ))
+              )}
+            </Paper>
+          </Grid>
+        </Grid>
+      </Box>
+    </Container>
   );
 };
 
