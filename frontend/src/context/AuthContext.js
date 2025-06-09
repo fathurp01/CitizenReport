@@ -93,6 +93,34 @@ export const AuthProvider = ({ children }) => {
     navigate('/login');
   };
 
+  // Update user profile
+  const updateProfile = async (profileData) => {
+    try {
+      setError(null);
+      const res = await axios.put('/api/profile', profileData);
+      
+      // Update user state with new data
+      setUser(prev => ({
+        ...prev,
+        fullName: profileData.fullName || prev.fullName,
+        email: profileData.email || prev.email,
+        phone: profileData.phone || prev.phone,
+        address: profileData.address || prev.address,
+        birthDate: profileData.birthDate || prev.birthDate,
+        gender: profileData.gender || prev.gender,
+        occupation: profileData.occupation || prev.occupation,
+        // Jika ada avatar baru, kita perlu menanganinya secara terpisah
+        // karena avatar adalah file, bukan string sederhana
+      }));
+      
+      return res.data;
+    } catch (err) {
+      console.error('Update profile error:', err);
+      setError(err.response?.data?.message || 'Failed to update profile');
+      throw err;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -102,6 +130,7 @@ export const AuthProvider = ({ children }) => {
         register,
         login,
         logout,
+        updateProfile,
         setError
       }}
     >

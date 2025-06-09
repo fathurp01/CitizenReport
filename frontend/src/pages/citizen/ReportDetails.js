@@ -45,23 +45,23 @@ const ReportDetails = () => {
 
   const getCategoryLabel = (category) => {
     switch (category) {
-      case 'road_damage': return 'Road Damage';
-      case 'garbage': return 'Garbage';
-      case 'flood': return 'Flood';
-      case 'street_light': return 'Street Light';
-      case 'other': return 'Other';
-      default: return 'Unknown';
+      case 'road_damage': return 'Kerusakan Jalan';
+      case 'garbage': return 'Sampah';
+      case 'flood': return 'Banjir';
+      case 'street_light': return 'Lampu Jalan';
+      case 'other': return 'Lainnya';
+      default: return 'Tidak Diketahui';
     }
   };
 
   const getStatusLabel = (status) => {
     switch (status) {
-      case 'pending': return 'Pending';
-      case 'received': return 'Received';
-      case 'in_progress': return 'In Progress';
-      case 'completed': return 'Completed';
-      case 'rejected': return 'Rejected';
-      default: return 'Unknown';
+      case 'pending': return 'Menunggu';
+      case 'received': return 'Diterima';
+      case 'in_progress': return 'Sedang Diproses';
+      case 'completed': return 'Selesai';
+      case 'rejected': return 'Ditolak';
+      default: return 'Tidak Diketahui';
     }
   };
 
@@ -99,7 +99,7 @@ const ReportDetails = () => {
       const res = await axios.get(`/api/reports/${id}`);
       setReport(res.data);
     } catch (err) {
-      setError(`Failed to fetch report data: ${err.response?.data?.message || err.message}`);
+      setError(`Gagal memuat data laporan: ${err.response?.data?.message || err.message}`);
     } finally {
       setLoading(false);
     }
@@ -109,7 +109,7 @@ const ReportDetails = () => {
     const fetchReport = async () => {
       try {
         if (!id || id === 'undefined') {
-          setError('Invalid report ID');
+          setError('ID laporan tidak valid');
           setLoading(false);
           return;
         }
@@ -118,7 +118,7 @@ const ReportDetails = () => {
         setReport(res.data);
         setError(null);
       } catch (err) {
-        setError(`Failed to fetch report data: ${err.response?.data?.message || err.message}`);
+        setError(`Gagal memuat data laporan: ${err.response?.data?.message || err.message}`);
       } finally {
         setLoading(false);
       }
@@ -185,7 +185,7 @@ const ReportDetails = () => {
                 variant="outlined"
                 sx={{ borderRadius: 2 }}
               >
-                Retry
+                Coba Lagi
               </Button>
             }
           >
@@ -201,7 +201,7 @@ const ReportDetails = () => {
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'warning.50' }}>
           <Alert severity="warning" sx={{ borderRadius: 2, fontSize: '1rem' }}>
-            No report data found.
+            Data laporan tidak ditemukan.
           </Alert>
         </Paper>
       </Container>
@@ -224,7 +224,7 @@ const ReportDetails = () => {
             }}
             variant="outlined"
           >
-            Back to Reports
+            Kembali ke Laporan
           </Button>
         </Box>
 
@@ -266,7 +266,7 @@ const ReportDetails = () => {
                   {report.title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
-                  Report ID: #{report.id || 'N/A'}
+                  ID Laporan: #{report.id || 'N/A'}
                 </Typography>
               </Box>
               <Chip
@@ -292,7 +292,7 @@ const ReportDetails = () => {
                     <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
                       <CategoryIcon sx={{ fontSize: 20, color: 'primary.main' }} />
                       <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                        Category
+                        Kategori
                       </Typography>
                     </Stack>
                     <Typography variant="body1" sx={{ fontWeight: 500, pl: 3.5 }}>
@@ -304,11 +304,11 @@ const ReportDetails = () => {
                     <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
                       <CalendarIcon sx={{ fontSize: 20, color: 'primary.main' }} />
                       <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                        Reported On
+                        Dilaporkan Pada
                       </Typography>
                     </Stack>
                     <Typography variant="body1" sx={{ fontWeight: 500, pl: 3.5 }}>
-                      {new Date(report.createdAt).toLocaleDateString('en-US', {
+                      {new Date(report.createdAt).toLocaleDateString('id-ID', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
@@ -326,7 +326,7 @@ const ReportDetails = () => {
                     <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
                       <LocationIcon sx={{ fontSize: 20, color: 'primary.main' }} />
                       <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                        Location
+                        Lokasi
                       </Typography>
                     </Stack>
                     <Typography variant="body1" sx={{ fontWeight: 500, pl: 3.5 }}>
@@ -342,7 +342,7 @@ const ReportDetails = () => {
                       <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
                         <PersonIcon sx={{ fontSize: 20, color: 'primary.main' }} />
                         <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                          Reported By
+                          Dilaporkan Oleh
                         </Typography>
                       </Stack>
                       <Stack direction="row" alignItems="center" spacing={2} sx={{ pl: 3.5 }}>
@@ -362,7 +362,7 @@ const ReportDetails = () => {
             {/* Description Section */}
             <Box sx={{ mt: 4 }}>
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
-                Description
+                Deskripsi
               </Typography>
               <Paper 
                 elevation={0} 
@@ -384,7 +384,7 @@ const ReportDetails = () => {
             {report?.images?.length > 0 && (
               <Box sx={{ mt: 4 }}>
                 <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-                  Attachments ({report.images.length} images)
+                  Lampiran ({report.images.length} gambar)
                 </Typography>
                 <Grid container spacing={3}>
                   {report.images.map((image, index) => (
@@ -411,7 +411,7 @@ const ReportDetails = () => {
                             component="img"
                             height="220"
                             image={getImageUrl(image)}
-                            alt={`Report image ${index + 1}`}
+                            alt={`Gambar laporan ${index + 1}`}
                             sx={{ 
                               objectFit: 'cover',
                               transition: 'transform 0.3s ease'
@@ -494,7 +494,7 @@ const ReportDetails = () => {
             </IconButton>
             <img
               src={previewImage}
-              alt="Preview"
+              alt="Pratinjau"
               style={{ 
                 maxWidth: '100%', 
                 maxHeight: '90vh', 

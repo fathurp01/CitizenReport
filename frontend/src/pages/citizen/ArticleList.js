@@ -353,7 +353,7 @@ const ArticleList = () => {
                   }}>
                     <span>📅 Hari ini</span>
                     <span style={{ color: '#c4b5fd' }}>•</span>
-                    <span>5 min baca</span>
+                    <span>5 menit baca</span>
                   </div>
                   
                   <button 
@@ -636,5 +636,5 @@ const ArticleList = () => {
     </>
   );
 };
-//
+
 export default ArticleList;
