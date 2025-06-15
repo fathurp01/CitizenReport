@@ -21,8 +21,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -47,7 +45,6 @@ const gradientShift = keyframes`
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -323,13 +320,12 @@ const Login = () => {
                         }
                       }}
                     />
-                    
-                    <TextField
+                      <TextField
                       required
                       fullWidth
                       name="password"
                       label="Kata Sandi"
-                      type={showPassword ? 'text' : 'password'}
+                      type="password"
                       id="password"
                       autoComplete="current-password"
                       value={password}
@@ -339,27 +335,6 @@ const Login = () => {
                         startAdornment: (
                           <InputAdornment position="start">
                             <LockIcon sx={{ color: '#6366f1', fontSize: 22 }} />
-                          </InputAdornment>
-                        ),
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={() => setShowPassword(!showPassword)}
-                              edge="end"
-                              size="small"
-                              sx={{
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                  color: '#6366f1',
-                                  transform: 'scale(1.1)'
-                                }                              
-                              }}>
-                              {showPassword ? 
-                                <VisibilityOffIcon sx={{ fontSize: 22 }} /> : 
-                                <VisibilityIcon sx={{ fontSize: 22 }} />
-                              }
-                            </IconButton>
                           </InputAdornment>
                         ),
                       }}

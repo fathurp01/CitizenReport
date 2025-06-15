@@ -197,6 +197,8 @@ const ReportDetails = () => {
     }
   };
 
+
+
   if (loading) {
     return (
       <Box 
@@ -499,7 +501,7 @@ const ReportDetails = () => {
             </Typography>
           </Paper>
 
-          {/* Reporter Info */}
+          {/* Reporter Info - PERBAIKAN DI SINI */}
           <Paper 
             elevation={0} 
             sx={{ 
@@ -518,11 +520,11 @@ const ReportDetails = () => {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
               <Avatar sx={{ width: 32, height: 32, mr: 2, bgcolor: 'primary.light' }}>
-                {(report.user?.name || 'A').charAt(0).toUpperCase()}
+                  {report.user.fullName.charAt(0).toUpperCase()}
               </Avatar>
               <Box>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {report.user?.name || 'Anonim'}
+                  {report.user.fullName}
                 </Typography>
                 {report.user?.phone && (
                   <Typography variant="body2" color="text.secondary">

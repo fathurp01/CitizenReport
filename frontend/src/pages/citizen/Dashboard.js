@@ -14,7 +14,14 @@ import {
   IconButton,
   Paper,
   Fade,
-  useTheme
+  useTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { 
   Add as AddIcon,
@@ -23,7 +30,9 @@ import {
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
   Visibility as VisibilityIcon,
-  TrendingUp as TrendingUpIcon
+  TrendingUp as TrendingUpIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -32,6 +41,9 @@ const Dashboard = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [reportToDelete, setReportToDelete] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const navigate = useNavigate();
   const theme = useTheme();
 
@@ -41,6 +53,58 @@ const Dashboard = () => {
       return;
     }
     navigate(`/citizen/reports/${reportId}`);
+  };
+
+  const editReport = (e, reportId) => {
+    e.stopPropagation(); // Mencegah event klik card
+    if (!reportId) {
+      console.error('Invalid report ID');
+      return;
+    }
+    navigate(`/citizen/edit-report/${reportId}`);
+  };
+
+  // Handler untuk buka/tutup dialog
+  const openDeleteDialog = (e, report) => {
+    e.stopPropagation();               
+    setReportToDelete(report);
+    setDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setReportToDelete(null);
+  };
+
+  // Handler delete
+  const deleteReport = async (e, report) => {
+    e.stopPropagation();  // pastikan event tidak menerus ke parent
+    try {
+      await axios.delete(`/api/reports/${report.id}`);
+      setReports(rs => rs.filter(r => r.id !== report.id));
+      setSnackbar({
+        open: true,
+        message: 'Laporan berhasil dihapus',
+        severity: 'success'
+      });
+      closeDeleteDialog();
+    } catch (err) {
+      console.error('Error deleting report:', err);
+      setSnackbar({
+        open: true,
+        message: `Gagal menghapus laporan: ${err.response?.data?.message || err.message}`,
+        severity: 'error'
+      });
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  // Function to check if report can be edited/deleted (only pending status)
+  const canEditOrDelete = (status) => {
+    return status === 'pending';
   };
 
   useEffect(() => {
@@ -106,72 +170,74 @@ const Dashboard = () => {
   const stats = getStatusStats();
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 3 } }}>
-      {/* Header Section */}
-      <Paper
-        elevation={0}
-        sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          p: { xs: 3, md: 4 },
-          borderRadius: 3,
-          mb: 3,
-          position: 'relative',
-          overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="white" fill-opacity="0.1"%3E%3Cpath d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/svg%3E")',
-          }
-        }}        >
-        <Box sx={{ position: 'relative', zIndex: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box>
-              <Typography 
-                variant="h4"
-                component="h1"
-                fontWeight="bold"
-                sx={{ mb: 1 }}
+    <>
+      <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 3 } }}>
+        {/* Header Section */}
+        <Paper
+          elevation={0}
+          sx={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            p: { xs: 3, md: 4 },
+            borderRadius: 3,
+            mb: 3,
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="white" fill-opacity="0.1"%3E%3Cpath d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/svg%3E")',
+            }
+          }}        
+        >
+          <Box sx={{ position: 'relative', zIndex: 1 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box>
+                <Typography 
+                  variant="h4"
+                  component="h1"
+                  fontWeight="bold"
+                  sx={{ mb: 1 }}
+                >
+                  Laporan Saya
+                </Typography>
+                <Typography variant="h6" sx={{ opacity: 0.9 }}>
+                  Kelola dan lacak laporan yang telah Anda kirimkan
+                </Typography>
+              </Box>
+              <Button 
+                variant="contained" 
+                size="large"
+                startIcon={<AddIcon />}
+                onClick={() => navigate('/citizen/create-report')}
+                sx={{
+                  borderRadius: 3,
+                  py: 1.5,
+                  px: 3,
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.3)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+                  },
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
               >
-                Laporan Saya
-              </Typography>
-              <Typography variant="h6" sx={{ opacity: 0.9 }}>
-                Kelola dan lacak laporan yang telah Anda kirimkan
-              </Typography>
+                Buat Laporan Baru
+              </Button>
             </Box>
-            <Button 
-              variant="contained" 
-              size="large"
-              startIcon={<AddIcon />}
-              onClick={() => navigate('/citizen/create-report')}
-              sx={{
-                borderRadius: 3,
-                py: 1.5,
-                px: 3,
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 600,
-                background: 'rgba(255, 255, 255, 0.2)',
-                color: 'white',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                '&:hover': {
-                  background: 'rgba(255, 255, 255, 0.3)',
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-                },
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-              }}
-            >
-              Buat Laporan Baru
-            </Button>
           </Box>
-        </Box>
-      </Paper>
+        </Paper>
 
         {/* Stats Cards */}
         {!loading && !error && reports.length > 0 && (
@@ -411,7 +477,8 @@ const Dashboard = () => {
                             </Box>
                           </Box>
                           
-                          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                            {/* Tombol View - selalu tampil */}
                             <IconButton
                               size="small"
                               sx={{
@@ -426,6 +493,44 @@ const Dashboard = () => {
                             >
                               <VisibilityIcon fontSize="small" />
                             </IconButton>
+                            
+                            {/* Tombol Edit - hanya tampil jika status pending */}
+                            {canEditOrDelete(report.status) && (
+                              <IconButton
+                                size="small"
+                                onClick={(e) => editReport(e, report.id)}
+                                sx={{
+                                  bgcolor: 'warning.main',
+                                  color: 'white',
+                                  '&:hover': {
+                                    bgcolor: 'warning.dark',
+                                    transform: 'scale(1.1)'
+                                  },
+                                  transition: 'all 0.2s'
+                                }}
+                              >
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            )}
+                            
+                            {/* Tombol Delete - hanya tampil jika status pending */}
+                            {canEditOrDelete(report.status) && (
+                              <IconButton
+                                size="small"
+                                onClick={(e) => openDeleteDialog(e, report)}
+                                sx={{
+                                  bgcolor: 'error.main',
+                                  color: 'white',
+                                  '&:hover': {
+                                    bgcolor: 'error.dark',
+                                    transform: 'scale(1.1)',
+                                  },
+                                  transition: 'all 0.2s',
+                                }}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            )}
                           </Box>
                         </CardContent>
                       </Card>
@@ -437,7 +542,69 @@ const Dashboard = () => {
           )}
         </Paper>
       </Box>
-    );
-  };
+
+      {/* Dialog konfirmasi delete */}
+      <Dialog 
+        open={deleteDialogOpen} 
+        onClose={closeDeleteDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ pb: 1 }}>
+          <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
+            Hapus Laporan?
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ fontSize: '1rem', lineHeight: 1.6 }}>
+            Apakah Anda yakin ingin menghapus laporan <strong>"{reportToDelete?.title}"</strong>? 
+            Tindakan ini tidak dapat dibatalkan.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button 
+            onClick={closeDeleteDialog}
+            sx={{ 
+              textTransform: 'none',
+              fontWeight: 600,
+              px: 3
+            }}
+          >
+            Batal
+          </Button>
+          <Button
+            onClick={(e) => deleteReport(e, reportToDelete)}
+            variant="contained"
+            color="error"
+            sx={{ 
+              textTransform: 'none',
+              fontWeight: 600,
+              px: 3,
+              ml: 2
+            }}
+          >
+            Hapus
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar untuk notifikasi */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity} 
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </>
+  );
+};
 
 export default Dashboard;

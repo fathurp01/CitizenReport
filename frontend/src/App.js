@@ -28,6 +28,7 @@ import EditProfile from './components/EditProfile';
 
 // Import context
 import { AuthProvider } from './context/AuthContext';
+import EditReport from './components/EditReport';
 
 // Theme setup
 const theme = createTheme({
@@ -55,7 +56,8 @@ function App() {
               <Route path="create-report" element={<CreateReport />} />
               <Route path="reports/:id" element={<CitizenReportDetails />} />
               <Route path="articles" element={<ArticleList />} />
-              <Route path="profile" element={<EditProfile />} /> 
+              <Route path="profile" element={<EditProfile />} />
+              <Route path="edit-report/:id" element={<EditReport />} />
             </Route>
 
             <Route path="/staff" element={
