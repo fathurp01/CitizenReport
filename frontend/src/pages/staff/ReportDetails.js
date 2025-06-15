@@ -19,9 +19,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Snackbar
+  Snackbar,
+  Stack,
+  Avatar
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import CategoryIcon from '@mui/icons-material/Category';
+import HistoryIcon from '@mui/icons-material/History';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -68,7 +75,7 @@ const ReportDetails = () => {
     const fetchReport = async () => {
       try {
         if (!id) {
-          setError('Report ID is missing');
+          setError('ID Laporan tidak ditemukan');
           setLoading(false);
           return;
         }
@@ -79,7 +86,7 @@ const ReportDetails = () => {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching report:', err);
-        setError('Failed to load report details. Please try again later.');
+        setError('Gagal memuat detail laporan. Silakan coba lagi nanti.');
         setLoading(false);
       }
     };
@@ -99,7 +106,7 @@ const ReportDetails = () => {
     if (!actionDescription.trim()) {
       setSnackbar({
         open: true,
-        message: 'Please provide a description of the action taken',
+        message: 'Silakan berikan deskripsi tindakan yang diambil',
         severity: 'error'
       });
       return;
@@ -123,12 +130,12 @@ const ReportDetails = () => {
       setActionDescription('');
       setSnackbar({
         open: true,
-        message: 'Report status updated successfully',
+        message: 'Status laporan berhasil diperbarui',
         severity: 'success'
       });
     } catch (err) {
       console.error('Error updating report status:', err);
-      const errorMessage = err.response?.data?.message || 'Failed to update report status';
+      const errorMessage = err.response?.data?.message || 'Gagal memperbarui status laporan';
       setSnackbar({
         open: true,
         message: errorMessage,
@@ -159,57 +166,81 @@ const ReportDetails = () => {
   const getStatusLabel = (status) => {
     switch (status) {
       case 'pending':
-        return 'Pending';
+        return 'Menunggu';
       case 'received':
-        return 'Received';
+        return 'Diterima';
       case 'in_progress':
-        return 'In Progress';
+        return 'Sedang Diproses';
       case 'completed':
-        return 'Completed';
+        return 'Selesai';
       case 'rejected':
-        return 'Rejected';
+        return 'Ditolak';
       default:
-        return 'Unknown';
+        return 'Tidak Diketahui';
     }
   };
 
   const getCategoryLabel = (category) => {
     switch (category) {
       case 'road_damage':
-        return 'Road Damage';
+        return 'Kerusakan Jalan';
       case 'garbage':
-        return 'Garbage';
+        return 'Sampah';
       case 'flood':
-        return 'Flood';
+        return 'Banjir';
       case 'street_light':
-        return 'Street Light';
+        return 'Lampu Jalan';
       case 'other':
-        return 'Other';
+        return 'Lainnya';
       default:
         return category;
     }
   };
 
+
+
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-        <CircularProgress />
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          minHeight: '50vh',
+          my: 4 
+        }}
+      >
+        <CircularProgress size={48} />
       </Box>
     );
   }
 
   if (error) {
     return (
-      <Container maxWidth="md">
-        <Alert severity="error" sx={{ mt: 4 }}>
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Alert 
+          severity="error" 
+          sx={{ 
+            mt: 4,
+            borderRadius: 2,
+            boxShadow: 1
+          }}
+        >
           {error}
         </Alert>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Button 
             variant="contained" 
             onClick={() => navigate('/staff/dashboard')}
+            sx={{ 
+              borderRadius: 2,
+              px: 4,
+              py: 1.5,
+              textTransform: 'none',
+              fontWeight: 600
+            }}
           >
-            Back to Dashboard
+            Kembali ke Dashboard
           </Button>
         </Box>
       </Container>
@@ -218,16 +249,30 @@ const ReportDetails = () => {
 
   if (!report) {
     return (
-      <Container maxWidth="md">
-        <Alert severity="warning" sx={{ mt: 4 }}>
-          Report not found.
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Alert 
+          severity="warning" 
+          sx={{ 
+            mt: 4,
+            borderRadius: 2,
+            boxShadow: 1
+          }}
+        >
+          Laporan tidak ditemukan.
         </Alert>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Button 
             variant="contained" 
             onClick={() => navigate('/staff/dashboard')}
+            sx={{ 
+              borderRadius: 2,
+              px: 4,
+              py: 1.5,
+              textTransform: 'none',
+              fontWeight: 600
+            }}
           >
-            Back to Dashboard
+            Kembali ke Dashboard
           </Button>
         </Box>
       </Container>
@@ -235,190 +280,175 @@ const ReportDetails = () => {
   }
 
   return (
-    <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" component="h1">
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Header Section */}
+      <Paper 
+        elevation={0} 
+        sx={{ 
+          p: 4, 
+          mb: 3,
+          borderRadius: 3,
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white'
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 1 }}>
             {report.title}
           </Typography>
           <Chip 
             label={getStatusLabel(report.status)} 
-            color={getStatusColor(report.status)} 
+            color={getStatusColor(report.status)}
+            sx={{ 
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              height: 32,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              color: 'white',
+              border: '1px solid rgba(255,255,255,0.3)'
+            }}
           />
         </Box>
-
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="subtitle1" fontWeight="bold">
-              Category
-            </Typography>
-            <Typography variant="body1" paragraph>
+        
+        <Stack direction="row" spacing={3} sx={{ mt: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <CategoryIcon sx={{ fontSize: 20, opacity: 0.8 }} />
+            <Typography variant="body2" sx={{ opacity: 0.9 }}>
               {getCategoryLabel(report.category)}
             </Typography>
-          </Grid>
-          
-          <Grid item xs={12} md={6}>
-            <Typography variant="subtitle1" fontWeight="bold">
-              Date Submitted
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <CalendarTodayIcon sx={{ fontSize: 20, opacity: 0.8 }} />
+            <Typography variant="body2" sx={{ opacity: 0.9 }}>
+              {new Date(report.createdAt).toLocaleDateString('id-ID')}
             </Typography>
-            <Typography variant="body1" paragraph>
-              {new Date(report.createdAt).toLocaleString()}
+          </Box>
+        </Stack>
+      </Paper>
+
+      <Grid container spacing={3}>
+        {/* Main Content */}
+        <Grid item xs={12} lg={8}>
+          {/* Description Card */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 3, 
+              mb: 3,
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'divider'
+            }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: 'text.primary' }}>
+              Deskripsi
             </Typography>
-          </Grid>
-          
-          <Grid item xs={12}>
-            <Typography variant="subtitle1" fontWeight="bold">
-              Description
-            </Typography>
-            <Typography variant="body1" paragraph>
+            <Typography variant="body1" sx={{ lineHeight: 1.6, color: 'text.secondary' }}>
               {report.description}
             </Typography>
-          </Grid>
-          
-          <Grid item xs={12}>
-            <Typography variant="subtitle1" fontWeight="bold">
-              Location
-            </Typography>
-            <Typography variant="body1">
-              {report.address}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              RT {report.rt} / RW {report.rw}
-            </Typography>
-          </Grid>
-          
-          <Grid item xs={12}>
-            <Typography variant="subtitle1" fontWeight="bold">
-              Reporter Information
-            </Typography>
-            <Typography variant="body1">
-              {report.user?.name || 'Anonymous'}
-            </Typography>
-            {report.user?.phone && (
-              <Typography variant="body2">
-                Phone: {report.user.phone}
-              </Typography>
-            )}
-          </Grid>
-          
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h6" gutterBottom>
-              Images
+          </Paper>
+
+          {/* Images Section */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 3, 
+              mb: 3,
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'divider'
+            }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, color: 'text.primary' }}>
+              Gambar ({report.images?.length || 0})
             </Typography>
             <Grid container spacing={2}>
               {report.images && report.images.map((image, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
+                <Grid item xs={6} sm={4} md={3} key={index}>
                   <Card 
                     sx={{ 
                       cursor: 'pointer',
-                      transition: 'transform 0.2s',
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      transition: 'all 0.3s ease',
                       '&:hover': {
-                        transform: 'scale(1.03)',
-                        boxShadow: 3
+                        transform: 'translateY(-4px)',
+                        boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
                       }
                     }}
                     onClick={() => handleOpenPreview(image)}
                   >
                     <CardMedia
                       component="img"
-                      height="200"
+                      height="120"
                       image={getImageUrl(image)}
-                      alt={`Report image ${index + 1}`}
+                      alt={`Gambar laporan ${index + 1}`}
                       sx={{ objectFit: 'cover' }}
                     />
                   </Card>
                 </Grid>
               ))}
             </Grid>
-          </Grid>
-          
-          {/* Modal untuk preview gambar */}
-          <Modal
-            open={openPreview}
-            onClose={handleClosePreview}
-            aria-labelledby="image-preview-modal"
-            aria-describedby="preview of report image"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              p: 2
+          </Paper>
+
+          {/* Process Report Section */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 3,
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'divider',
+              background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
             }}
           >
-            <Box sx={{ 
-              position: 'relative',
-              maxWidth: '90vw',
-              maxHeight: '90vh',
-              bgcolor: 'background.paper',
-              borderRadius: 1,
-              boxShadow: 24,
-              p: 1
-            }}>
-              <IconButton
-                aria-label="close"
-                onClick={handleClosePreview}
-                sx={{
-                  position: 'absolute',
-                  right: 8,
-                  top: 8,
-                  color: 'white',
-                  bgcolor: 'rgba(0,0,0,0.5)',
-                  '&:hover': {
-                    bgcolor: 'rgba(0,0,0,0.7)',
-                  }
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-              <img
-                src={previewImage}
-                alt="Preview"
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: 'calc(90vh - 2rem)',
-                  display: 'block',
-                  margin: '0 auto'
-                }}
-              />
-            </Box>
-          </Modal>
-          
-          {/* Bagian untuk pemrosesan status */}
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h6" gutterBottom>
-              Process Report
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, color: 'text.primary' }}>
+              Proses Laporan
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="status-select-label">Status</InputLabel>
+                  <InputLabel id="status-select-label" sx={{ fontWeight: 500 }}>Status</InputLabel>
                   <Select
                     labelId="status-select-label"
                     id="status-select"
                     value={status}
                     label="Status"
                     onChange={handleStatusChange}
+                    sx={{ 
+                      borderRadius: 2,
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'rgba(255,255,255,0.8)'
+                      }
+                    }}
                   >
-                    <MenuItem value="pending">Pending</MenuItem>
-                    <MenuItem value="received">Received</MenuItem>
-                    <MenuItem value="in_progress">In Progress</MenuItem>
-                    <MenuItem value="completed">Completed</MenuItem>
-                    <MenuItem value="rejected">Rejected</MenuItem>
+                    <MenuItem value="pending">Menunggu</MenuItem>
+                    <MenuItem value="received">Diterima</MenuItem>
+                    <MenuItem value="in_progress">Sedang Diproses</MenuItem>
+                    <MenuItem value="completed">Selesai</MenuItem>
+                    <MenuItem value="rejected">Ditolak</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Action Description"
+                  label="Deskripsi Tindakan"
                   multiline
                   rows={4}
                   value={actionDescription}
                   onChange={handleActionDescriptionChange}
-                  placeholder="Describe the action taken or reason for status change"
-                  helperText="This will be visible to the citizen who reported the issue"
+                  placeholder="Jelaskan tindakan yang diambil atau alasan perubahan status"
+                  helperText="Informasi ini akan terlihat oleh warga yang melaporkan masalah"
+                  sx={{ 
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      backgroundColor: 'rgba(255,255,255,0.8)'
+                    },
+                    '& .MuiInputLabel-root': {
+                      fontWeight: 500
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -427,44 +457,205 @@ const ReportDetails = () => {
                   color="primary"
                   onClick={handleUpdateStatus}
                   disabled={updating || status === report.status && !actionDescription}
-                  sx={{ mt: 1 }}
+                  sx={{ 
+                    mt: 1,
+                    borderRadius: 2,
+                    px: 4,
+                    py: 1.5,
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    minWidth: 140
+                  }}
                 >
-                  {updating ? <CircularProgress size={24} /> : 'Update Status'}
+                  {updating ? <CircularProgress size={24} color="inherit" /> : 'Perbarui Status'}
                 </Button>
               </Grid>
             </Grid>
-          </Grid>
-          
-          {/* Bagian untuk menampilkan riwayat tindakan */}
-          {report.actions && report.actions.length > 0 && (
-            <Grid item xs={12}>
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="h6" gutterBottom>
-                Action History
+          </Paper>
+        </Grid>
+
+        {/* Sidebar */}
+        <Grid item xs={12} lg={4}>
+          {/* Location Info */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 3, 
+              mb: 3,
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'divider'
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <LocationOnIcon sx={{ mr: 1, color: 'primary.main' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                Lokasi
               </Typography>
+            </Box>
+            <Typography variant="body1" sx={{ mb: 1, fontWeight: 500 }}>
+              {report.address}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              RT {report.rt} / RW {report.rw}
+            </Typography>
+          </Paper>
+
+          {/* Reporter Info - PERBAIKAN DI SINI */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 3, 
+              mb: 3,
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'divider'
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                Pelapor
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Avatar sx={{ width: 32, height: 32, mr: 2, bgcolor: 'primary.light' }}>
+                  {report.user.fullName.charAt(0).toUpperCase()}
+              </Avatar>
+              <Box>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {report.user.fullName}
+                </Typography>
+                {report.user?.phone && (
+                  <Typography variant="body2" color="text.secondary">
+                    {report.user.phone}
+                  </Typography>
+                )}
+              </Box>
+            </Box>
+          </Paper>
+
+          {/* Action History */}
+          {report.actions && report.actions.length > 0 && (
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: 3,
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'divider'
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <HistoryIcon sx={{ mr: 1, color: 'primary.main' }} />
+                <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                  Riwayat Tindakan
+                </Typography>
+              </Box>
               {report.actions.map((action, index) => (
-                <Box key={index} sx={{ mb: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
-                  <Typography variant="body1">
+                <Box 
+                  key={index} 
+                  sx={{ 
+                    mb: 2, 
+                    p: 2, 
+                    bgcolor: 'grey.50', 
+                    borderRadius: 2,
+                    borderLeft: '4px solid',
+                    borderLeftColor: 'primary.main'
+                  }}
+                >
+                  <Typography variant="body2" sx={{ mb: 1, lineHeight: 1.5 }}>
                     {action.description}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {new Date(action.createdAt).toLocaleString()}
+                  <Typography variant="caption" color="text.secondary">
+                    {new Date(action.createdAt).toLocaleString('id-ID')}
                   </Typography>
                 </Box>
               ))}
-            </Grid>
+            </Paper>
           )}
         </Grid>
-        
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <Button 
-            variant="contained" 
-            onClick={() => navigate('/staff/dashboard')}
+      </Grid>
+      
+      {/* Back Button */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <Button 
+          variant="outlined"
+          onClick={() => navigate('/staff/dashboard')}
+          sx={{ 
+            borderRadius: 2,
+            px: 4,
+            py: 1.5,
+            textTransform: 'none',
+            fontWeight: 600,
+            borderWidth: 2,
+            color: 'blue',
+            borderColor: 'blue',
+            '&:hover': {
+              borderWidth: 2,
+              backgroundColor: 'rgba(0, 0, 255, 0.1)',
+              borderColor: 'darkblue'
+            }
+          }}
+        >
+          Kembali ke Beranda
+        </Button>
+      </Box>
+      
+      {/* Image Preview Modal */}
+      <Modal
+        open={openPreview}
+        onClose={handleClosePreview}
+        aria-labelledby="image-preview-modal"
+        aria-describedby="preview of report image"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 2
+        }}
+      >
+        <Box sx={{ 
+          position: 'relative',
+          maxWidth: '90vw',
+          maxHeight: '90vh',
+          bgcolor: 'background.paper',
+          borderRadius: 3,
+          boxShadow: 24,
+          p: 1,
+          outline: 'none'
+        }}>
+          <IconButton
+            aria-label="close"
+            onClick={handleClosePreview}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: 'white',
+              bgcolor: 'rgba(0,0,0,0.6)',
+              backdropFilter: 'blur(10px)',
+              zIndex: 1,
+              '&:hover': {
+                bgcolor: 'rgba(0,0,0,0.8)',
+              }
+            }}
           >
-            Back to Dashboard
-          </Button>
+            <CloseIcon />
+          </IconButton>
+          <img
+            src={previewImage}
+            alt="Pratinjau"
+            style={{
+              maxWidth: '100%',
+              maxHeight: 'calc(90vh - 2rem)',
+              display: 'block',
+              margin: '0 auto',
+              borderRadius: '8px'
+            }}
+          />
         </Box>
-      </Paper>
+      </Modal>
       
       <Snackbar
         open={snackbar.open}

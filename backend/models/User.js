@@ -12,7 +12,7 @@ const User = sequelize.define('User', {
     allowNull: false,
     unique: true,
     validate: {
-      isEmail: true
+     isEmail: true
     }
   },
   password: {
@@ -38,6 +38,18 @@ const User = sequelize.define('User', {
   role: {
     type: DataTypes.ENUM('citizen', 'village_staff', 'admin'),
     defaultValue: 'citizen'
+  },
+  birthDate: {
+  type: DataTypes.DATEONLY,
+  allowNull: true
+  },
+  gender: {
+    type: DataTypes.ENUM('male', 'female'),
+    allowNull: true
+  },
+  occupation: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   timestamps: true

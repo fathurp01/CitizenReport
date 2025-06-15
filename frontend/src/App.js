@@ -24,9 +24,11 @@ import NotFound from './pages/NotFound';
 // Import components
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import EditProfile from './components/EditProfile';
 
 // Import context
 import { AuthProvider } from './context/AuthContext';
+import EditReport from './components/EditReport';
 
 // Theme setup
 const theme = createTheme({
@@ -53,7 +55,9 @@ function App() {
               <Route path="dashboard" element={<CitizenDashboard />} />
               <Route path="create-report" element={<CreateReport />} />
               <Route path="reports/:id" element={<CitizenReportDetails />} />
-              <Route path="articles" element={<ArticleList />} /> 
+              <Route path="articles" element={<ArticleList />} />
+              <Route path="profile" element={<EditProfile />} />
+              <Route path="edit-report/:id" element={<EditReport />} />
             </Route>
 
             <Route path="/staff" element={
@@ -65,6 +69,7 @@ function App() {
               <Route path="dashboard" element={<StaffDashboard />} />
               <Route path="reports/:id" element={<StaffReportDetails />} />
               <Route path="articles" element={<ArticleForm />} />
+              <Route path="profile" element={<EditProfile />} />
             </Route>
 
             <Route path="/admin" element={
@@ -76,6 +81,7 @@ function App() {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="articles" element={<ArticleManagement />} />
+              <Route path="profile" element={<EditProfile />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

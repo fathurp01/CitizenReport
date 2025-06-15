@@ -54,7 +54,7 @@ exports.upload = multer({
 exports.getReportById = async (req, res) => {
   try {
     console.log('Getting report with ID:', req.params.id);
-    
+   
     const report = await Report.findByPk(req.params.id, {
       include: [
         {
@@ -92,6 +92,7 @@ exports.getReportById = async (req, res) => {
 
     console.log('Report found, sending response');
     res.json(report);
+
   } catch (error) {
     console.error('Get report by ID error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -129,6 +130,7 @@ exports.createReport = async (req, res) => {
     });
 
     res.status(201).json(report);
+
   } catch (error) {
     console.error('Create report error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -170,6 +172,7 @@ exports.getReports = async (req, res) => {
     }
 
     res.json(reports);
+
   } catch (error) {
     console.error('Get reports error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -185,54 +188,136 @@ exports.getMyReports = async (req, res) => {
       where: { userId: req.user.id },
       order: [['createdAt', 'DESC']]
     });
+
     res.json(reports);
+
   } catch (error) {
     console.error('Get my reports error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// @desc    Get report by ID
-// @route   GET /api/reports/:id
-// @access  Private
-exports.getReportById = async (req, res) => {
+// @desc    Update report
+// @route   PUT /api/reports/:id
+// @access  Private (Citizen - own reports only)
+exports.updateReport = async (req, res) => {
   try {
-    const report = await Report.findByPk(req.params.id, {
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['fullName']
-        },
-        {
-          model: ReportAction,
-          as: 'actions',
-          include: [
-            {
-              model: User,
-              as: 'user',
-              attributes: ['fullName']
-            }
-          ]
-        }
-      ]
-    });
+    const { id } = req.params;
+    const { title, description, category, address, rt, rw } = req.body;
+
+    // Find the report
+    const report = await Report.findByPk(id);
 
     if (!report) {
       return res.status(404).json({ message: 'Report not found' });
     }
 
-    // Check if user is authorized to view this report
-    if (
-      req.user.role === 'citizen' &&
-      report.userId !== req.user.id
-    ) {
-      return res.status(403).json({ message: 'Not authorized' });
+    // Check if user is authorized to update this report
+    if (req.user.role === 'citizen' && report.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to update this report' });
     }
 
-    res.json(report);
+    // Check if report status allows editing (only pending reports can be edited)
+    if (report.status !== 'pending') {
+      return res.status(400).json({ 
+        message: 'Report cannot be edited after it has been processed' 
+      });
+    }
+
+    // Process uploaded images if any
+    let images = report.images; // Keep existing images
+    if (req.files && req.files.length > 0) {
+      // Delete old image files
+      if (report.images && report.images.length > 0) {
+        report.images.forEach(imageUrl => {
+          const filename = imageUrl.split('/').pop();
+          const filepath = path.join(uploadDir, filename);
+          if (fs.existsSync(filepath)) {
+            fs.unlinkSync(filepath);
+          }
+        });
+      }
+
+      // Add new images
+      images = req.files.map(
+        (file) => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
+      );
+    }
+
+    // Update report
+    await report.update({
+      title: title || report.title,
+      description: description || report.description,
+      category: category || report.category,
+      address: address || report.address,
+      rt: rt || report.rt,
+      rw: rw || report.rw,
+      images: images
+    });
+
+    // Get updated report with associations
+    const updatedReport = await Report.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['fullName']
+        }
+      ]
+    });
+
+    res.json(updatedReport);
+
   } catch (error) {
-    console.error('Get report by ID error:', error);
+    console.error('Update report error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Delete report
+// @route   DELETE /api/reports/:id
+// @access  Private (Citizen - own reports only)
+exports.deleteReport = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the report
+    const report = await Report.findByPk(id);
+
+    if (!report) {
+      return res.status(404).json({ message: 'Report not found' });
+    }
+
+    // Check if user is authorized to delete this report
+    if (req.user.role === 'citizen' && report.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to delete this report' });
+    }
+
+    // Check if report status allows deletion (only pending reports can be deleted)
+    if (report.status !== 'pending') {
+      return res.status(400).json({ 
+        message: 'Report cannot be deleted after it has been processed' 
+      });
+    }
+
+    // Delete associated image files
+    if (report.images && report.images.length > 0) {
+      report.images.forEach(imageUrl => {
+        const filename = imageUrl.split('/').pop();
+        const filepath = path.join(uploadDir, filename);
+        if (fs.existsSync(filepath)) {
+          fs.unlinkSync(filepath);
+        }
+      });
+    }
+
+    // Delete the report
+    await report.destroy();
+
+    res.json({ message: 'Laporan berhasil dihapus' });
+
+  } catch (error) {
+    console.error('Delete report error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -243,7 +328,7 @@ exports.getReportById = async (req, res) => {
 exports.updateReportStatus = async (req, res) => {
   try {
     console.log('Update status request body:', req.body);
-    
+   
     const { status, actionDescription } = req.body;
 
     // Validasi input
@@ -301,6 +386,7 @@ exports.updateReportStatus = async (req, res) => {
     });
 
     res.json(updatedReport);
+
   } catch (error) {
     console.error('Update report status error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -351,6 +437,7 @@ exports.addReportAction = async (req, res) => {
     });
 
     res.json(updatedReport);
+
   } catch (error) {
     console.error('Add report action error:', error);
     res.status(500).json({ message: 'Server error' });

@@ -16,6 +16,7 @@ dotenv.config();
 const authRoutes = require('./routes/auth');
 const reportRoutes = require('./routes/reports');
 const adminRoutes = require('./routes/admin');
+const profileRoutes = require('./routes/profile'); // Tambahkan import ini
 
 // Initialize express app
 const app = express();
@@ -65,6 +66,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/profile', profileRoutes); // Tambahkan route ini
 
 // ✅ Default API route
 app.get('/api', (req, res) => {
@@ -168,16 +170,25 @@ app.use((err, req, res, next) => {
 
 // ✅ Koneksi DB dan jalankan server
 const PORT = process.env.PORT || 5001;
+
+// Import semua models sebelum sync
+const Article = require('./models/article');
+const articleRoutes = require('./routes/articleRoutes');
+app.use('/api/articles', articleRoutes);
+
+// Hanya satu sequelize.sync() yang diperlukan
 sequelize.sync({ alter: process.env.NODE_ENV === 'development' })
   .then(() => {
     console.log('\x1b[32m%s\x1b[0m', '✅ Database connected successfully');
+    console.log('\x1b[32m%s\x1b[0m', '✅ All models synced successfully');
     app.listen(PORT, () => {
       console.log('\x1b[36m%s\x1b[0m', `✅ Server running at http://localhost:${PORT}`);
-      console.log('\x1b[33m%s\x1b[0m', '📝 API Documentation available at http://localhost:${PORT}/api');
+      console.log('\x1b[33m%s\x1b[0m', `📝 API Documentation available at http://localhost:${PORT}/api-docs`);
     });
   })
   .catch(err => {
-    console.error('\x1b[31m%s\x1b[0m', '❌ Failed to connect to database:', err);
+    console.error('\x1b[31m%s\x1b[0m', '❌ DB Sync Error:', err);
+    process.exit(1);
   });
 
 // Serve API documentation
@@ -185,14 +196,9 @@ app.get('/api-docs', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'api-docs.html'));
 });
 
-// ini untuk article yah
-const Article = require('./models/article');
-
-sequelize.sync({ alter: true }) // atau { force: true } jika kamu ingin drop ulang
-  .then(() => {
-    console.log('DB Synced!');
-  })
-  .catch(err => console.error('DB Sync Error:', err));
-
-const articleRoutes = require('./routes/articleRoutes');
-app.use('/api/articles', articleRoutes);
+// HAPUS BAGIAN INI - duplikasi yang menyebabkan error:
+// sequelize.sync({ alter: true })
+//   .then(() => {
+//     console.log('DB Synced!');
+//   })
+//   .catch(err => console.error('DB Sync Error:', err));
