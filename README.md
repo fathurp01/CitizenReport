@@ -435,12 +435,7 @@ Contributions are welcome! Please follow these steps:
 
 ## 📄 License
 
-This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Author
-
-**Fathur Rahman**
-- GitHub: [@fathurp01](https://github.com/fathurp01)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
