@@ -11,7 +11,7 @@ const ArticleList = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/api/articles');
+        const res = await axios.get('/api/articles');
         const approved = res.data.filter(article => article.status === 'approved');
         setArticles(approved);
       } catch (err) {
@@ -518,7 +518,7 @@ const ArticleList = () => {
               {/* Article Image */}
               {selectedArticle.image && (
                 <img 
-                  src={`http://localhost:3000/uploads/${selectedArticle.image}`} 
+                  src={`/uploads/${selectedArticle.image}`} 
                   alt={selectedArticle.title} 
                   style={{
                     width: '100%',

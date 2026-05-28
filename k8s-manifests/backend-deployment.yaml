@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: citizenreport-backend-deployment
+  namespace: default
+  labels:
+    app: citizenreport-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: citizenreport-backend
+  template:
+    metadata:
+      labels:
+        app: citizenreport-backend
+    spec:
+      containers:
+      - name: citizenreport-backend
+        # Local or Docker Hub image tag. Ensure the image is built or uploaded.
+        image: citizenreport-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5001
+          name: backend-port
+        env:
+        - name: PORT
+          value: "5001"
+        - name: NODE_ENV
+          value: "production"
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: citizenreport-config
+              key: DB_HOST
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: citizenreport-config
+              key: DB_NAME
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: citizenreport-config
+              key: DB_USER
+        - name: FRONTEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: citizenreport-config
+              key: FRONTEND_URL
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: citizenreport-secrets
+              key: DB_PASSWORD
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: citizenreport-secrets
+              key: JWT_SECRET
+        
+        # Kubernetes Probes for observability
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 5001
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          
+        # Resource requests and limits (crucial for HPA triggers)
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "300m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: citizenreport-backend-service
+  namespace: default
+spec:
+  ports:
+  - port: 5001
+    targetPort: 5001
+  selector:
+    app: citizenreport-backend
+  type: ClusterIP

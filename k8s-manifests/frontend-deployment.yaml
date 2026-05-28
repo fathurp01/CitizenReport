@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: citizenreport-frontend-deployment
+  namespace: default
+  labels:
+    app: citizenreport-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: citizenreport-frontend
+  template:
+    metadata:
+      labels:
+        app: citizenreport-frontend
+    spec:
+      containers:
+      - name: citizenreport-frontend
+        image: citizenreport-frontend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        # BACKEND_URL variable will be substituted into Nginx config at startup
+        - name: BACKEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: citizenreport-config
+              key: BACKEND_URL
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: citizenreport-frontend-service
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30080  # Accessible directly at http://<kubernetes-node-ip>:30080
+  selector:
+    app: citizenreport-frontend
+  type: NodePort

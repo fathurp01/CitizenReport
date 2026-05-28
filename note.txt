@@ -1,0 +1,375 @@
+================================================================================
+LAPORAN PERUBAHAN & STRUKTUR APLIKASI CITIZENREPORT (UNTUK CONTEXT GEMINI AI WEB)
+================================================================================
+
+Dokumen ini memuat detail arsitektur, struktur folder, kode yang dimodifikasi, dan 
+seluruh berkas baru yang dibuat untuk kesiapan deployment Kubernetes dan integrasi SDGs.
+Gunakan dokumen ini sebagai context utuh saat berdiskusi lebih lanjut dengan Gemini AI.
+
+--------------------------------------------------------------------------------
+1. STRUKTUR LENGKAP WORKSPACE CITIZENREPORT (POHON REPOSITORI)
+--------------------------------------------------------------------------------
+Berikut adalah pohon repositori lengkap CitizenReport setelah dilakukan modifikasi:
+
+CitizenReport/
+├── .gitignore
+├── LICENSE
+├── package.json
+├── package-lock.json
+├── README.md
+├── note.txt                              <-- [BARU] Dokumen referensi konteks ini
+├── backend/
+│   ├── Dockerfile                        <-- [BARU] Multi-stage build Node.js
+│   ├── .dockerignore                     <-- [BARU] Mengabaikan node_modules, .env, uploads
+│   ├── .env.example                      <-- [BARU] Template environment variables backend
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── server.js                         <-- [MODIFIKASI] Ditambahkan Probes, Dynamic CORS, Load Simulation
+│   ├── seeder.js
+│   ├── config/
+│   │   └── database.js                   <-- [MODIFIKASI] Ditambahkan dukungan DATABASE_URL + Fallbacks
+│   ├── controllers/
+│   │   ├── adminController.js
+│   │   ├── articleController.js
+│   │   ├── authController.js
+│   │   └── reportController.js
+│   ├── middleware/
+│   │   └── auth.js
+│   ├── models/
+│   │   ├── article.js
+│   │   ├── report.js
+│   │   └── user.js
+│   ├── routes/
+│   │   ├── admin.js
+│   │   ├── articleRoutes.js
+│   │   ├── auth.js
+│   │   ├── profile.js
+│   │   └── reports.js
+│   ├── public/
+│   │   └── api-docs.html
+│   └── uploads/
+├── frontend/
+│   ├── Dockerfile                        <-- [BARU] Multi-stage build + Nginx Production Serve
+│   ├── .dockerignore                     <-- [BARU] Mengabaikan build, node_modules, dll
+│   ├── .env.example                      <-- [BARU] Template env frontend
+│   ├── nginx.conf.template               <-- [BARU] Konfigurasi reverse proxy dynamic Nginx (${BACKEND_URL})
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── README.md
+│   ├── public/
+│   └── src/
+│       ├── App.js
+│       ├── App.css
+│       ├── App.test.js
+│       ├── index.js
+│       ├── index.css
+│       ├── animations.css
+│       ├── logo.svg
+│       ├── reportWebVitals.js
+│       ├── setupTests.js
+│       ├── components/
+│       │   ├── Layout.js
+│       │   ├── ProtectedRoute.js
+│       │   ├── EditProfile.js
+│       │   ├── EditReport.js
+│       │   └── common/
+│       │       └── ArticleCard.js        <-- [MODIFIKASI] Mengubah upload url ke relative path
+│       ├── context/
+│       │   └── AuthContext.js
+│       ├── pages/
+│       │   ├── LandingPage.js            <-- [MODIFIKASI] Ditambahkan visualisasi komitmen SDG 16
+│       │   ├── Login.js
+│       │   ├── Register.js
+│       │   ├── NotFound.js
+│       │   ├── citizen/
+│       │   │   ├── Dashboard.js
+│       │   │   ├── CreateReport.js
+│       │   │   ├── ReportDetails.js
+│       │   │   └── ArticleList.js        <-- [MODIFIKASI] Mengubah get api & upload url ke relative path
+│       │   ├── staff/
+│       │   │   ├── Dashboard.js
+│       │   │   ├── ReportDetails.js
+│       │   │   └── ArticleForm.js
+│       │   └── admin/
+│       │       ├── Dashboard.js
+│       │       ├── UserManagement.js
+│       │       └── ArticleManagement.js
+└── k8s-manifests/
+    ├── configmap.yaml                    <-- [BARU] Konfigurasi global k8s
+    ├── secrets.yaml                      <-- [BARU] Kredensial base64 k8s
+    ├── db-deployment.yaml                <-- [BARU] Deployment & Service MySQL (EmptyDir Storage)
+    ├── backend-deployment.yaml           <-- [BARU] Deployment & Service Backend + Probes + Resource Limits
+    ├── frontend-deployment.yaml          <-- [BARU] Deployment & Service Frontend Nginx (NodePort 30080)
+    └── hpa.yaml                          <-- [BARU] Horizontal Pod Autoscaler target CPU 50%
+
+--------------------------------------------------------------------------------
+2. DETAIL PERUBAHAN KODE SUMBER (SOURCE CODE CHANGES)
+--------------------------------------------------------------------------------
+
+A. BACKEND - DYNAMIC CORS (backend/server.js)
+Origin CORS diubah dari hardcoded 'http://localhost:3000' menjadi dinamis membaca 
+variabel 'FRONTEND_URL'. Kode mendukung multi-origin dengan comma-separated list.
+--------------------------------------------------------------------------------
+// [SEBELUMNYA]
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
+
+// [SESUDAHNYA]
+const frontendOrigin = process.env.FRONTEND_URL 
+  ? (process.env.FRONTEND_URL.includes(',') ? process.env.FRONTEND_URL.split(',') : process.env.FRONTEND_URL)
+  : 'http://localhost:3000';
+
+app.use(cors({
+  origin: frontendOrigin,
+  credentials: true
+}));
+--------------------------------------------------------------------------------
+
+B. BACKEND - DATABASE DYNAMIC SETTINGS (backend/config/database.js)
+Mendukung inisialisasi Sequelize menggunakan connection string tunggal 'DATABASE_URL' 
+(sangat umum di cloud/Kubernetes) dengan fallback ke individual credentials.
+--------------------------------------------------------------------------------
+// [SEBELUMNYA]
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  { host: process.env.DB_HOST, dialect: 'mysql', ... }
+);
+
+// [SESUDAHNYA]
+let sequelize;
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'mysql',
+    logging: process.env.NODE_ENV === 'development' ? console.log : false,
+    pool: { max: 5, min: 0, acquire: 30000, idle: 10000 }
+  });
+} else {
+  sequelize = new Sequelize(
+    process.env.DB_NAME || 'citizenreport',
+    process.env.DB_USER || 'root',
+    process.env.DB_PASSWORD || '',
+    {
+      host: process.env.DB_HOST || '127.0.0.1',
+      dialect: 'mysql',
+      logging: process.env.NODE_ENV === 'development' ? console.log : false,
+      pool: { max: 5, min: 0, acquire: 30000, idle: 10000 }
+    }
+  );
+}
+--------------------------------------------------------------------------------
+
+C. BACKEND - HEALTH CHECK & LOAD SIMULATOR ENDPOINTS (backend/server.js)
+Menyediakan route liveness/readiness probe Kubernetes dan simulator CPU load.
+--------------------------------------------------------------------------------
+// Liveness probe (Verifikasi server hidup)
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() });
+});
+
+// Readiness probe (Verifikasi database terkoneksi)
+app.get('/ready', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.status(200).json({ status: 'READY', database: 'CONNECTED', timestamp: new Date().toISOString() });
+  } catch (err) {
+    res.status(500).json({ status: 'NOT_READY', database: 'DISCONNECTED', error: err.message, timestamp: new Date().toISOString() });
+  }
+});
+
+// CPU Load Simulation (Menggunakan kalkulasi matematika berat loop jutaan kali untuk memicu HPA)
+app.get('/api/simulate-load', (req, res) => {
+  const start = Date.now();
+  const iterations = parseInt(req.query.iterations) || 50000000;
+  
+  let result = 0;
+  for (let i = 0; i < iterations; i++) {
+    result += Math.sqrt(Math.random()) * Math.sin(Math.random());
+  }
+  
+  const duration = Date.now() - start;
+  res.status(200).json({
+    message: 'Load simulation complete',
+    iterations,
+    durationMs: duration,
+    result: result.toFixed(4),
+    timestamp: new Date().toISOString()
+  });
+});
+--------------------------------------------------------------------------------
+
+D. FRONTEND - TEMA SDGs GOAL 16 (frontend/src/pages/LandingPage.js)
+Telah diintegrasikan visual komitmen SDG 16 secara eksplisit pada LandingPage:
+1. Menambahkan Badge SDG 16 di Hero Section:
+   `<Chip label="🇺🇳 Mendukung SDG 16: Keadilan & Kelembagaan Tangguh" sx={{ bgcolor: 'rgba(12, 64, 106, 0.45)', ... }} />`
+2. Menambahkan satu section utuh "SDG 16 Commitment Section" bernuansa biru resmi PBB (`#0a3a60`), glassmorphism card, hover animations, dan rujukan ke Bappenas SDGs. Seksi ini menyoroti 4 pilar CitizenReport:
+   - Kelembagaan Akuntabel (MUI AccountBalanceIcon)
+   - Akses Keadilan Sosial (MUI GavelIcon)
+   - Partisipasi Inklusif (MUI GroupsIcon)
+   - Lingkungan Damai (MUI SecurityIcon)
+
+E. FRONTEND - CLEANUP HARDCODED HOSTS (frontend/src/pages/citizen/ArticleList.js & ArticleCard.js)
+Mengganti url absolut backend 'http://localhost:3000' ke relative path. Hal ini 
+penting agar ketika di-serve oleh Nginx di dalam container, request otomatis diarahkan 
+ke domain Nginx saat ini dan diteruskan ke backend via reverse proxy tanpa CORS error.
+--------------------------------------------------------------------------------
+// [SEBELUMNYA di ArticleList.js]
+const res = await axios.get('http://localhost:3000/api/articles');
+src={`http://localhost:3000/uploads/${selectedArticle.image}`}
+
+// [SESUDAHNYA di ArticleList.js]
+const res = await axios.get('/api/articles');
+src={`/uploads/${selectedArticle.image}`}
+
+// [SEBELUMNYA di ArticleCard.js]
+src={`http://localhost:3000/uploads/${image}`}
+
+// [SESUDAHNYA di ArticleCard.js]
+src={`/uploads/${image}`}
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+3. DOCKERIZATION (BERKAS DOCKER & NGINX)
+--------------------------------------------------------------------------------
+
+A. BACKEND DOCKERFILE (backend/Dockerfile)
+Multi-stage build untuk menjaga image seringan mungkin (base alpine).
+--------------------------------------------------------------------------------
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY . .
+
+ENV PORT=5001
+ENV NODE_ENV=production
+EXPOSE 5001
+CMD ["node", "server.js"]
+--------------------------------------------------------------------------------
+
+B. FRONTEND DOCKERFILE (frontend/Dockerfile)
+Build static React asset, lalu salin ke Nginx container dengan konfigurasi reverse proxy.
+--------------------------------------------------------------------------------
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+ENV REACT_APP_API_URL=""
+RUN npm run build
+
+FROM nginx:1.25-alpine
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+--------------------------------------------------------------------------------
+
+C. DYNAMIC NGINX PROXY (frontend/nginx.conf.template)
+Nginx dikonfigurasi menggunakan template. Nginx alpine otomatis mengeksekusi 
+'envsubst' saat container menyala, menggantikan '${BACKEND_URL}' dengan service backend k8s.
+Hal ini memproksikan `/api` dan `/uploads` ke backend secara instan tanpa CORS error.
+--------------------------------------------------------------------------------
+server {
+    listen 80;
+    
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api {
+        proxy_pass ${BACKEND_URL};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    location /uploads {
+        proxy_pass ${BACKEND_URL};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+4. KUBERNETES MANIFESTS (k8s-manifests/)
+--------------------------------------------------------------------------------
+
+A. ConfigMap (k8s-manifests/configmap.yaml)
+Menyimpan variabel lingkungan non-rahasia.
+- `DB_HOST`: "mysql-service" (DNS internal k8s)
+- `DB_NAME`: "citizenreport"
+- `DB_USER`: "root"
+- `FRONTEND_URL`: "http://citizenreport-frontend-service"
+- `BACKEND_URL`: "http://citizenreport-backend-service:5001" (proxy target Nginx)
+
+B. Secrets (k8s-manifests/secrets.yaml)
+Menyimpan password database dan JWT secret terenkripsi Base64.
+- `DB_PASSWORD`: "YWRtaW4xMjM=" ("admin123")
+- `JWT_SECRET`: "c3VwZXJzZWNyZXRqd3RrZXkxMjM0NQ==" ("supersecretjwtkey12345")
+
+C. Database (k8s-manifests/db-deployment.yaml)
+- Image: `mysql:8.0`
+- Service type: ClusterIP (Hanya bisa diakses di dalam internal cluster demi keamanan)
+- Volume: emptyDir (Praktis untuk demo pengujian / tugas akhir)
+
+D. Backend Deployment (k8s-manifests/backend-deployment.yaml)
+- Image: `citizenreport-backend:latest`
+- Service type: ClusterIP
+- Liveness Probe: `GET /health` (initialDelay: 15s, period: 10s)
+- Readiness Probe: `GET /ready` (initialDelay: 20s, period: 10s)
+- Resources (Kunci demo HPA):
+  - requests.cpu: "100m", requests.memory: "128Mi"
+  - limits.cpu: "300m", limits.memory: "256Mi"
+
+E. Frontend Deployment (k8s-manifests/frontend-deployment.yaml)
+- Image: `citizenreport-frontend:latest`
+- Service type: NodePort (Port 30080) -> Memudahkan akses browser lokal dari mesin luar Kubernetes.
+- Environment: Memasok `BACKEND_URL` dari ConfigMap ke container untuk digunakan Nginx template.
+
+F. HPA (k8s-manifests/hpa.yaml)
+Horizontal Pod Autoscaler dikonfigurasi untuk memantau backend deployment.
+- minReplicas: 1, maxReplicas: 5
+- targetAverageUtilization: 50% CPU
+Lonjakan CPU dipicu lewat endpoint `/api/simulate-load?iterations=150000000`.
+
+--------------------------------------------------------------------------------
+5. PANDUAN RUN & DEMO KUBERNETES
+--------------------------------------------------------------------------------
+1. Build docker images lokal:
+   $ docker build -t citizenreport-backend:latest ./backend
+   $ docker build -t citizenreport-frontend:latest ./frontend
+
+2. Deploy ke cluster Kubernetes:
+   $ kubectl apply -f k8s-manifests/configmap.yaml
+   $ kubectl apply -f k8s-manifests/secrets.yaml
+   $ kubectl apply -f k8s-manifests/db-deployment.yaml
+   $ kubectl apply -f k8s-manifests/backend-deployment.yaml
+   $ kubectl apply -f k8s-manifests/frontend-deployment.yaml
+   $ kubectl apply -f k8s-manifests/hpa.yaml
+
+3. Uji HPA Autoscaling:
+   Terminal A: Pantau skala pod
+   $ kubectl get hpa citizenreport-backend-hpa -w
+   
+   Terminal B: Kirim request pembebanan CPU ke Service NodePort Frontend
+   $ curl "http://<kubernetes-node-ip>:30080/api/simulate-load?iterations=150000000"
+
+   Kubernetes akan mendeteksi utilitas CPU melampaui 50% dan secara otomatis menambah 
+   pod backend (scaling up) dari 1 replica hingga maksimum 5 replica.
+================================================================================

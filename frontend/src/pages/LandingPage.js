@@ -35,6 +35,8 @@ import StarIcon from '@mui/icons-material/Star';
 import QuoteIcon from '@mui/icons-material/FormatQuote';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import GroupsIcon from '@mui/icons-material/Groups';
+import GavelIcon from '@mui/icons-material/Gavel';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { keyframes } from '@mui/system';
 
 // Smooth animations
@@ -221,19 +223,33 @@ const LandingPage = () => {
             <Grid item xs={12} md={6}>
               <Fade in={isVisible} timeout={800}>
                 <Box sx={{ animation: `${slideInUp} 0.8s ease-out` }}>
-                  <Chip 
-                    label="🚀 Platform Terpercaya #1 di Indonesia" 
-                    sx={{ 
-                      mb: 3, 
-                      bgcolor: 'rgba(255,255,255,0.15)', 
-                      color: 'white',
-                      fontWeight: 500,
-                      borderRadius: '16px',
-                      px: 2,
-                      py: 0.5,
-                      fontSize: '0.9rem'
-                    }} 
-                  />
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mb: 3 }} alignItems="flex-start">
+                    <Chip 
+                      label="🚀 Platform Terpercaya #1 di Indonesia" 
+                      sx={{ 
+                        bgcolor: 'rgba(255,255,255,0.15)', 
+                        color: 'white',
+                        fontWeight: 500,
+                        borderRadius: '16px',
+                        px: 2,
+                        py: 0.5,
+                        fontSize: '0.9rem'
+                      }} 
+                    />
+                    <Chip 
+                      label="🇺🇳 Mendukung SDG 16: Keadilan & Kelembagaan Tangguh" 
+                      sx={{ 
+                        bgcolor: 'rgba(12, 64, 106, 0.45)', 
+                        color: 'white',
+                        fontWeight: 600,
+                        borderRadius: '16px',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        px: 2,
+                        py: 0.5,
+                        fontSize: '0.9rem'
+                      }} 
+                    />
+                  </Stack>
                   <Typography
                     variant={isMobile ? 'h3' : 'h2'}
                     component="h1"
@@ -418,6 +434,178 @@ const LandingPage = () => {
               </Box>
             </Box>
           </Fade>
+        </Container>
+      </Box>
+
+      {/* SDG 16 Commitment Section */}
+      <Box sx={{ py: 10, background: 'linear-gradient(135deg, #0a3a60 0%, #1c5a90 100%)', color: 'white', position: 'relative', overflow: 'hidden' }}>
+        {/* Decorative background circle */}
+        <Box sx={{
+          position: 'absolute',
+          top: '-20%',
+          right: '-10%',
+          width: '400px',
+          height: '400px',
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.03)',
+          pointerEvents: 'none'
+        }} />
+        <Box sx={{
+          position: 'absolute',
+          bottom: '-20%',
+          left: '-10%',
+          width: '400px',
+          height: '400px',
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.03)',
+          pointerEvents: 'none'
+        }} />
+        
+        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+          <Grid container spacing={6} alignItems="center">
+            <Grid item xs={12} md={5}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', md: 'flex-start' }, textAlign: { xs: 'center', md: 'left' } }}>
+                <Box sx={{ 
+                  width: 90, 
+                  height: 90, 
+                  borderRadius: '16px', 
+                  bgcolor: 'white', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
+                  mb: 3
+                }}>
+                  <Typography variant="h3" sx={{ fontWeight: 800, color: '#0a3a60' }}>16</Typography>
+                </Box>
+                <Typography variant="h6" sx={{ color: '#93c5fd', fontWeight: 600, letterSpacing: '0.1em', mb: 1, textTransform: 'uppercase' }}>
+                  Aksi PBB & SDGs
+                </Typography>
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.8rem', md: '2.3rem' } }}>
+                  SDG 16: Perdamaian, Keadilan, dan Kelembagaan yang Tangguh
+                </Typography>
+                <Typography variant="body1" sx={{ opacity: 0.9, lineHeight: 1.7, mb: 4 }}>
+                  CitizenReport berkomitmen penuh dalam mendukung program PBB Sustainable Development Goals (SDGs), khususnya Goal 16, dengan mewujudkan tata kelola desa yang transparan, adil, inklusif, dan akuntabel.
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  href="https://sdgs.bappenas.go.id/tujuan-16/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    color: 'white',
+                    borderColor: 'rgba(255,255,255,0.4)',
+                    borderRadius: '10px',
+                    px: 4,
+                    py: 1.2,
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    '&:hover': {
+                      borderColor: 'white',
+                      bgcolor: 'rgba(255,255,255,0.08)',
+                      transform: 'translateY(-2px)'
+                    },
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  Pelajari Selengkapnya tentang SDG 16
+                </Button>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={7}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                  <Paper elevation={0} sx={{ 
+                    p: 4, 
+                    borderRadius: '20px', 
+                    bgcolor: 'rgba(255,255,255,0.06)', 
+                    backdropFilter: 'blur(10px)', 
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'white',
+                    height: '100%',
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      transform: 'translateY(-5px)',
+                      bgcolor: 'rgba(255,255,255,0.09)'
+                    }
+                  }}>
+                    <AccountBalanceIcon sx={{ fontSize: 40, color: '#60a5fa', mb: 2 }} />
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>Kelembagaan Akuntabel</Typography>
+                    <Typography variant="body2" sx={{ opacity: 0.8, lineHeight: 1.6 }}>
+                      Membangun kelembagaan desa yang transparan dan efisien dengan menyediakan rekam jejak digital laporan dan respons aparat yang terbuka serta akuntabel.
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Paper elevation={0} sx={{ 
+                    p: 4, 
+                    borderRadius: '20px', 
+                    bgcolor: 'rgba(255,255,255,0.06)', 
+                    backdropFilter: 'blur(10px)', 
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'white',
+                    height: '100%',
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      transform: 'translateY(-5px)',
+                      bgcolor: 'rgba(255,255,255,0.09)'
+                    }
+                  }}>
+                    <GavelIcon sx={{ fontSize: 40, color: '#60a5fa', mb: 2 }} />
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>Akses Keadilan Sosial</Typography>
+                    <Typography variant="body2" sx={{ opacity: 0.8, lineHeight: 1.6 }}>
+                      Menjamin keadilan sosial bagi seluruh lapisan masyarakat dalam menyampaikan aspirasi pembangunan atau kerusakan infrastruktur tanpa diskriminasi.
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Paper elevation={0} sx={{ 
+                    p: 4, 
+                    borderRadius: '20px', 
+                    bgcolor: 'rgba(255,255,255,0.06)', 
+                    backdropFilter: 'blur(10px)', 
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'white',
+                    height: '100%',
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      transform: 'translateY(-5px)',
+                      bgcolor: 'rgba(255,255,255,0.09)'
+                    }
+                  }}>
+                    <GroupsIcon sx={{ fontSize: 40, color: '#60a5fa', mb: 2 }} />
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>Partisipasi Inklusif</Typography>
+                    <Typography variant="body2" sx={{ opacity: 0.8, lineHeight: 1.6 }}>
+                      Meningkatkan partisipasi aktif warga dalam pengambilan keputusan dan pengawasan publik di tingkat daerah demi kelembagaan yang responsif.
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Paper elevation={0} sx={{ 
+                    p: 4, 
+                    borderRadius: '20px', 
+                    bgcolor: 'rgba(255,255,255,0.06)', 
+                    backdropFilter: 'blur(10px)', 
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'white',
+                    height: '100%',
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      transform: 'translateY(-5px)',
+                      bgcolor: 'rgba(255,255,255,0.09)'
+                    }
+                  }}>
+                    <SecurityIcon sx={{ fontSize: 40, color: '#60a5fa', mb: 2 }} />
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>Lingkungan Damai</Typography>
+                    <Typography variant="body2" sx={{ opacity: 0.8, lineHeight: 1.6 }}>
+                      Menyelesaikan konflik/kerusakan lingkungan dengan koordinasi yang harmonis antara warga dan aparat, menciptakan lingkungan yang kondusif.
+                    </Typography>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
         </Container>
       </Box>
 

@@ -21,9 +21,13 @@ const profileRoutes = require('./routes/profile'); // Tambahkan import ini
 // Initialize express app
 const app = express();
 
-// ✅ CORS Middleware – Fix utama di sini
+// ✅ CORS Middleware – Dinamis menggunakan FRONTEND_URL
+const frontendOrigin = process.env.FRONTEND_URL 
+  ? (process.env.FRONTEND_URL.includes(',') ? process.env.FRONTEND_URL.split(',') : process.env.FRONTEND_URL)
+  : 'http://localhost:3000';
+
 app.use(cors({
-  origin: 'http://localhost:3000', // asal frontend React
+  origin: frontendOrigin, // asal frontend React dinamis
   credentials: true
 }));
 
@@ -67,6 +71,54 @@ app.use('/api/auth', authRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/profile', profileRoutes); // Tambahkan route ini
+
+// ✅ Liveness probe
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'UP',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// ✅ Readiness probe (cek koneksi database)
+app.get('/ready', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.status(200).json({
+      status: 'READY',
+      database: 'CONNECTED',
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'NOT_READY',
+      database: 'DISCONNECTED',
+      error: err.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ✅ CPU Load Simulation for HPA Testing
+app.get('/api/simulate-load', (req, res) => {
+  const start = Date.now();
+  // Default ke 50 juta iterasi jika tidak didefinisikan
+  const iterations = parseInt(req.query.iterations) || 50000000;
+  
+  let result = 0;
+  for (let i = 0; i < iterations; i++) {
+    result += Math.sqrt(Math.random()) * Math.sin(Math.random());
+  }
+  
+  const duration = Date.now() - start;
+  res.status(200).json({
+    message: 'Load simulation complete',
+    iterations,
+    durationMs: duration,
+    result: result.toFixed(4),
+    timestamp: new Date().toISOString()
+  });
+});
 
 // ✅ Default API route
 app.get('/api', (req, res) => {

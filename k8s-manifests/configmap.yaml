@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: citizenreport-config
+  namespace: default
+data:
+  # Database Hostname (resolves to the mysql-service in cluster)
+  DB_HOST: "mysql-service"
+  DB_NAME: "citizenreport"
+  DB_USER: "root"
+  
+  # Backend CORS settings
+  FRONTEND_URL: "http://citizenreport-frontend-service"
+  
+  # Frontend Nginx proxy URL to Backend
+  BACKEND_URL: "http://citizenreport-backend-service:5001"
