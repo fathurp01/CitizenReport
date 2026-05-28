@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: citizenreport-frontend
-        image: citizenreport-frontend:latest
+        image: aafathur01/citizenreport:frontend
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80

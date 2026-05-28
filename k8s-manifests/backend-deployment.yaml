@@ -18,7 +18,7 @@ spec:
       containers:
       - name: citizenreport-backend
         # Local or Docker Hub image tag. Ensure the image is built or uploaded.
-        image: citizenreport-backend:latest
+        image: aafathur01/citizenreport:backend
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5001
